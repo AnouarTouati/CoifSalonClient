@@ -35,7 +35,7 @@ public class ShopDetailsActivity extends AppCompatActivity {
     CustomFragmentPagerAdapter  customFragmentPagerAdapter;
 
 
-    String ShopNameFromRecyclerView;
+   public static String ShopNameFromRecyclerView;
 
     static final String URL="";
 
@@ -75,11 +75,22 @@ public class ShopDetailsActivity extends AppCompatActivity {
     public String Thursday;
     public String Friday;
 
+    //////////////////////////////////////////////////////////////////////////////
+    //FRAGMENT 1 SERVICES
     public static  ArrayList<String> ServicesHairCutsNames=new ArrayList<>();
     public static ArrayList<String> ServicesHairCutsPrices=new ArrayList<>();
     public static  ArrayList<String> ServicesHairCutsDuration=new ArrayList<>();
     public static String successfullyBookedServicesHaircut=null;
+    ///////////////////////////////////////////////////////////////////////////////
 
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //FRAGMENT 3 REVIEWS
+    public static ArrayList<String> reviewersNames=new ArrayList<>();
+    public static ArrayList<String> reviewersComments=new ArrayList<>();
+    public static ArrayList<String> reviewersCommentDate=new ArrayList<>();
+    public static ArrayList<Integer> reviewersGivenStars=new ArrayList<>();
+    ///////////////////////////////////////////////////////////////////////////////
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +123,8 @@ public class ShopDetailsActivity extends AppCompatActivity {
         };
        Toast.makeText(this,""+ getIntent().getIntExtra("ShopIndexInRecycler",22),Toast.LENGTH_LONG).show();
         ShopNameFromRecyclerView=getIntent().getStringExtra("ShopName");
-       GetStoreInfo(ShopNameFromRecyclerView);
+
+
 
 
         // we might want to use the code below after we receive the data
@@ -120,6 +132,7 @@ public class ShopDetailsActivity extends AppCompatActivity {
         customFragmentPagerAdapter=new CustomFragmentPagerAdapter(getSupportFragmentManager());
         customFragmentPagerAdapter.addFragment(new ShopDetails_Frag1(), "ShopDetails_Frag1");
         customFragmentPagerAdapter.addFragment(new ShopDetails_Frag2(), "ShopDetails_Frag2");
+        customFragmentPagerAdapter.addFragment(new ShopDetails_Frag3(), "ShopDetails_Frag3");
         viewPager.setAdapter(customFragmentPagerAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -129,6 +142,7 @@ public class ShopDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int i) {
+
                 tabLayout.getTabAt(i).select();
             }
 
@@ -158,7 +172,7 @@ public class ShopDetailsActivity extends AppCompatActivity {
 
 
     }
-    void GetStoreInfo(String shopName){
+  public static  void GetStoreServiesInfo(String shopName){
 
         ServicesHairCutsNames.add("Haircut1");
         ServicesHairCutsNames.add("Haircut2");
@@ -183,10 +197,45 @@ public class ShopDetailsActivity extends AppCompatActivity {
         ServicesHairCutsDuration.add("70");
         ServicesHairCutsDuration.add("80");
         ServicesHairCutsDuration.add("90");
-        /*
+        //"the function below" even though it is intended  for book response it also usable for info since it updates every thing
+        ShopDetails_Frag1.BookWasSuccessfulNorifyRecyclerViewAdapter();
+/*
       JSONObject getStoreInfo=new JSONObject();
         try {
-            getStoreInfo.put("RequestStoreInfo_StoreName", shopName);
+            getStoreInfo.put("RequestStoreServicesInfo_StoreName", shopName);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.POST, URL, getStoreInfo, volleyListener, volleyErrorListener);
+        requestQueue.add(jsonObjectRequest);*/
+    }
+   public static  void GetStoreReviewsInfo(String shopName){
+
+        reviewersNames.add("Anouar Touati");
+        reviewersNames.add("Marouan Touati");
+        reviewersNames.add("Fares Karim");
+        reviewersNames.add("Said Nacer");
+
+        reviewersComments.add("Good");
+        reviewersComments.add("Bad");
+        reviewersComments.add("Exclent");
+        reviewersComments.add("Poor");
+
+        reviewersCommentDate.add("2019/06/02");
+        reviewersCommentDate.add("2018/04/15");
+        reviewersCommentDate.add("2019/11/09");
+        reviewersCommentDate.add("2019/04/13");
+
+        reviewersGivenStars.add(4);
+        reviewersGivenStars.add(5);
+        reviewersGivenStars.add(2);
+        reviewersGivenStars.add(3);
+        ShopDetails_Frag3.ReceivedReviewersInfoNotifyRecyclerViewAdapter();
+
+/*
+        JSONObject getStoreInfo=new JSONObject();
+        try {
+            getStoreInfo.put("RequestStoreReviewsInfo_StoreName", shopName);
         } catch (JSONException e) {
             e.printStackTrace();
         }
