@@ -32,12 +32,14 @@
         android:layout_marginTop="@dimen/_20sdp"
         android:layout_marginRight="@dimen/_8sdp"
         android:layout_marginBottom="@dimen/_500sdp"
+        android:background="@drawable/custom_tablayout_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/viewPagerShopDetails"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.47"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.056">
+        app:layout_constraintVertical_bias="0.25"
+        app:tabTextAppearance="@style/signup_button">
 
         <android.support.design.widget.TabItem
             android:layout_width="wrap_content"

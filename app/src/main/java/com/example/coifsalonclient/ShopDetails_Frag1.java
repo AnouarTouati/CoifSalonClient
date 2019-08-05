@@ -19,18 +19,23 @@ public class ShopDetails_Frag1 extends Fragment {
     View view;
    static  RecyclerView recyclerView;
     static CustomRecyclerViewAdapterFrag1Services  customRecyclerViewAdapterFrag1Services;
-    static Context mContext;
+   public static Context mContext;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view=inflater.inflate(R.layout.shopdetails_frag1, container,false);
 
-        mContext=getActivity();
+        mContext=getContext();
         recyclerView=view.findViewById(R.id.recyclerView_Frag1);
         customRecyclerViewAdapterFrag1Services=new CustomRecyclerViewAdapterFrag1Services(ShopDetailsActivity.successfullyBookedServicesHaircut,ShopDetailsActivity.ServicesHairCutsNames,ShopDetailsActivity.ServicesHairCutsDuration,ShopDetailsActivity.ServicesHairCutsPrices,mContext);
         recyclerView.setAdapter(customRecyclerViewAdapterFrag1Services);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        ///////////////////////////////////////////////////////////
+        ///the code below is used after recyclerView is initialized so we dont get null reference
+        if(ShopDetailsActivity.ServicesHairCutsNames.size()==0){
+         ShopDetailsActivity.GetStoreServiesInfo(ShopDetailsActivity.ShopNameFromRecyclerView);
 
+        }
 
 
         return view;
@@ -39,6 +44,7 @@ public class ShopDetails_Frag1 extends Fragment {
    ShopDetailsActivity.book(ServiceHairCutToReseve);
     }
     public static void BookWasSuccessfulNorifyRecyclerViewAdapter(){
+
         customRecyclerViewAdapterFrag1Services=new CustomRecyclerViewAdapterFrag1Services(ShopDetailsActivity.successfullyBookedServicesHaircut,ShopDetailsActivity.ServicesHairCutsNames,ShopDetailsActivity.ServicesHairCutsDuration,ShopDetailsActivity.ServicesHairCutsPrices,mContext);
     recyclerView.swapAdapter(customRecyclerViewAdapterFrag1Services,true);
 
