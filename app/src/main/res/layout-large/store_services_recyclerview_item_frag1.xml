@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_80sdp">
+
+    <TextView
+        android:id="@+id/durationFrag1"
+        android:layout_width="154dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="@dimen/_8ssp"
+        android:layout_marginTop="@dimen/_8ssp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="@dimen/_8ssp"
+        android:layout_marginBottom="@dimen/_8ssp"
+        android:text="DURATION"
+        android:textAppearance="@style/texts"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.506"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.054" />
+
+    <TextView
+        android:id="@+id/hairCutNameFrag1"
+        android:layout_width="139dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="@dimen/_100sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:text="TextView"
+        android:textAppearance="@style/texts"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.13" />
+
+    <TextView
+        android:id="@+id/priceFrag1"
+        android:layout_width="154dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="@dimen/_80sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="@dimen/_80sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:text="PRICE"
+        android:textAppearance="@style/texts"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.943" />
+
+    <Button
+        android:id="@+id/book_Frag1"
+        android:layout_width="124dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="@dimen/_8ssp"
+        android:layout_marginTop="@dimen/_8ssp"
+        android:layout_marginBottom="@dimen/_8ssp"
+        android:background="@drawable/signup_button"
+        android:text="RESERVE"
+        android:textAppearance="@style/signup_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.954"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.183" />
+</android.support.constraint.ConstraintLayout>

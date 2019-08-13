@@ -3,6 +3,7 @@ package com.example.coifsalonclient;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,10 +21,14 @@ import java.util.ArrayList;
 public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecyclerViewAdapter.ViewHolder> {
 
     ArrayList<String> StoreNamesList=new ArrayList<>();
+    ArrayList<String> StoresAddresses =new ArrayList<>();
+    ArrayList<Bitmap> StoresImages=new ArrayList<>();
     Context mContext;
-    public CustomRecyclerViewAdapter(Context context, ArrayList<String> storeNamesList) {
+    public CustomRecyclerViewAdapter(Context context, ArrayList<String> storeNamesList,ArrayList<String> StoresAddresses,ArrayList<Bitmap> StoresImages) {
 
         this.StoreNamesList=storeNamesList;
+        this.StoresAddresses=StoresAddresses;
+        this.StoresImages=StoresImages;
         this.mContext=context;
     }
 
@@ -38,37 +44,28 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
 
-        viewHolder.storeNameTextView.setText(StoreNamesList.get(i));
-        viewHolder.storeNameTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent goToShopDetailsActivity=new Intent(mContext,ShopDetailsActivity.class);
-                goToShopDetailsActivity.putExtra("ShopName", StoreNamesList.get(i));
-                mContext.startActivity(goToShopDetailsActivity);
-            }
-        });
+        if(i<StoreNamesList.size()) {
+            viewHolder.storeNameTextView.setText(StoreNamesList.get(i));
 
+        }
+        if(i<StoresAddresses.size()) {
+            viewHolder.storeAddressTextView.setText(StoresAddresses.get(i));
 
-       viewHolder.storeAddressTextView.setText(StoreNamesList.get(i));
-       viewHolder.storeAddressTextView.setOnClickListener(new View.OnClickListener() {
+}
+       if(i<StoresImages.size()) {
+           viewHolder.storeMainImageImageView.setImageBitmap(StoresImages.get(i));
+
+       }
+
+       viewHolder.radioGroup.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
-               Intent goToShopDetailsActivity=new Intent(mContext,ShopDetailsActivity.class);
-               goToShopDetailsActivity.putExtra("ShopIndexInRecycler", i);
+               Intent goToShopDetailsActivity = new Intent(mContext, ShopDetailsActivity.class);
+               goToShopDetailsActivity.putExtra("ShopName", StoreNamesList.get(i));
+
                mContext.startActivity(goToShopDetailsActivity);
            }
        });
-
-       viewHolder.storeMainImageImageView.setImageResource(R.drawable.picturetouse);
-       viewHolder.storeMainImageImageView.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               Intent goToShopDetailsActivity=new Intent(mContext,ShopDetailsActivity.class);
-               goToShopDetailsActivity.putExtra("ShopIndexInRecycler", i);
-               mContext.startActivity(goToShopDetailsActivity);
-           }
-       });
-
     }
 
 
@@ -81,6 +78,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
         ImageView storeMainImageImageView;
         TextView storeNameTextView;
         TextView storeAddressTextView;
+        RadioGroup radioGroup;
         ConstraintLayout recyclerViewPeoplePendingItemLayout;
 
         @SuppressLint("ResourceType")
@@ -89,6 +87,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
             storeMainImageImageView=itemView.findViewById(R.id.storeMainImage);
             storeNameTextView=itemView.findViewById(R.id.storeName);
             storeAddressTextView=itemView.findViewById(R.id.storeAddress);
+            radioGroup=itemView.findViewById(R.id.radioGroup);
             recyclerViewPeoplePendingItemLayout=itemView.findViewById(R.layout.search_result_recyclerview_item);
         }
     }
