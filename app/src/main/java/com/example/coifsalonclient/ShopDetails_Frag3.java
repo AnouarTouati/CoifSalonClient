@@ -30,6 +30,7 @@ public class ShopDetails_Frag3 extends Fragment {
         ///the code below is used after recyclerView is initialized so we dont get null reference
         if(ShopDetailsActivity.reviewersNames.size()==0){
             ShopDetailsActivity.GetStoreReviewsInfo(ShopDetailsActivity.ShopNameFromRecyclerView);
+          //  ((ShopDetailsActivity)getActivity()).LoadLocalData(ShopDetailsActivity.ShopNameFromRecyclerView);
         }
 
         return view;
