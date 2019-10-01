@@ -48,6 +48,7 @@ public class CustomRecyclerViewAdapterFrag3Reviews extends RecyclerView.Adapter<
        viewHolder.ratingBar.setNumStars(5);
        viewHolder.ratingBar.setRating(reviewersGivenStars.get(i));
 
+
     }
 
     @Override

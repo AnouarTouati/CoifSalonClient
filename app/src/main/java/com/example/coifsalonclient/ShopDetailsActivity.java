@@ -10,13 +10,17 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +41,7 @@ public class ShopDetailsActivity extends AppCompatActivity {
     static Response.ErrorListener volleyErrorListener;
     static RequestQueue requestQueue;
     public String IMAGE_URL="DFSEFERWFGER";
+    static final String URL="http://192.168.43.139:81/SecondPage.php";
 
     ViewPager viewPager;
     TabLayout tabLayout;
@@ -45,7 +50,7 @@ public class ShopDetailsActivity extends AppCompatActivity {
 
    public static String ShopNameFromRecyclerView;
 
-    static final String URL="";
+
 
    static Context mContext;
 
@@ -111,22 +116,27 @@ public class ShopDetailsActivity extends AppCompatActivity {
         volleyErrorListener=new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.v("VolleyErrors", "onErrorResponse: IN SHOPDETAILS ACTIVITY "+error.toString());
             }
         };
         volleyListener=new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                String subject="";
-                try {
-                   subject=response.getString("Subject");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if(subject.equals("StoreInfo")){
-                    ServerResponseWithStoreInfo(response);
-                }else if(subject.equals("Booking")){
-                    ServerResponseWithBookingResult(response);
+                Log.v("VolleyReceived", "IN SHOP DETAILS ACTIVITY" +response.toString());
+
+
+                if(response.has("StoreDetailsInfo")){
+                    try {
+                        ServerResponseWithStoreInfo(response.getJSONObject("StoreDetailsInfo"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }else if(response.has("Booking")){
+                    try {
+                        ServerResponseWithBookingResult(response.getJSONObject("Booking"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }
@@ -135,9 +145,14 @@ public class ShopDetailsActivity extends AppCompatActivity {
         };
 
         ShopNameFromRecyclerView=getIntent().getStringExtra("ShopName");
-
+        requestQueue= Volley.newRequestQueue(this);
         LoadLocalData(ShopNameFromRecyclerView);
 
+
+
+
+    }
+    void WeGotTheDataDisplayIt(){
         // we might want to use the code below after we receive the data
         viewPager=findViewById(R.id.viewPagerShopDetails);
         customFragmentPagerAdapter=new CustomFragmentPagerAdapter(getSupportFragmentManager());
@@ -181,10 +196,8 @@ public class ShopDetailsActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
-  public static  void GetStoreServiesInfo(String shopName){
+  public static  void GetStoreServicesInfo(String shopName){
 /*
         ServicesHairCutsNames.add("Haircut1");
         ServicesHairCutsNames.add("Haircut2");
@@ -255,14 +268,14 @@ public class ShopDetailsActivity extends AppCompatActivity {
         JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.POST, URL, getStoreInfo, volleyListener, volleyErrorListener);
         requestQueue.add(jsonObjectRequest);*/
     }
-    void ServerResponseWithStoreInfo(JSONObject result){
+    void ServerResponseWithStoreInfo(JSONObject StoreDetailsInfo){
         try {
-            result.put("SelectedImage", SelectedImageAsString);//this means that ImageRequest should be called first so the data is ready
+            StoreDetailsInfo.put("SelectedImage", SelectedImageAsString);//this means that ImageRequest should be called first so the data is ready
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        useTheAcquiredData(result);
-       writeNewShopDataToLocalMemory(result);
+        useTheAcquiredData(StoreDetailsInfo);
+       writeNewShopDataToLocalMemory(StoreDetailsInfo);
       
     }
     void ServerResponseWithBookingResult(JSONObject result){
@@ -368,10 +381,10 @@ public class ShopDetailsActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-
-            fakeRequestAndResponde();
+            getStoreDetailsInfoFromServer(ShopNameFromRecyclerView);
+          //  fakeRequestAndResponde();
             //requesting data from server
-//            GetStoreServiesInfo(ShopNameFromRecyclerView);
+//            GetStoreServicesInfo(ShopNameFromRecyclerView);
   //          GetStoreReviewsInfo(ShopNameFromRecyclerView);
             return null;
         }
@@ -433,9 +446,10 @@ public class ShopDetailsActivity extends AppCompatActivity {
                     useTheAcquiredData(jsonObject.getJSONObject(ShopName));
                 }else{
 
-                    fakeRequestAndResponde();
+                  //  fakeRequestAndResponde();
+                    getStoreDetailsInfoFromServer(ShopName);
                     //requesting data from server
-                   // GetStoreServiesInfo(ShopNameFromRecyclerView);
+                   // GetStoreServicesInfo(ShopNameFromRecyclerView);
                    // GetStoreReviewsInfo(ShopNameFromRecyclerView);
 
                 }
@@ -447,6 +461,17 @@ public class ShopDetailsActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+    void getStoreDetailsInfoFromServer(String shopName){
+        JSONObject getStoreDetailsInfo=new JSONObject();
+        try {
+            getStoreDetailsInfo.put("Request", "StoreDetailsInfo");
+            getStoreDetailsInfo.put("ShopName",shopName);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.POST, URL, getStoreDetailsInfo, volleyListener, volleyErrorListener);
+        requestQueue.add(jsonObjectRequest);
     }
     void useTheAcquiredData(JSONObject dataToUse){
         try {
@@ -523,6 +548,7 @@ public class ShopDetailsActivity extends AppCompatActivity {
                 reviewersGivenStars.add(dataToUse.getJSONArray("reviewersGivenStars").getInt(i));
             }
 
+            WeGotTheDataDisplayIt();
 
         } catch (JSONException e) {
             Toast.makeText(this, "Problem in useTheAcquiredData function", Toast.LENGTH_LONG).show();
@@ -533,7 +559,7 @@ public class ShopDetailsActivity extends AppCompatActivity {
  void fakeRequestAndResponde(){
 
 JSONArray reviewersNamesJSON=new JSONArray();
-     reviewersNamesJSON.put("3azdine laagab");
+     reviewersNamesJSON.put("3azdine Nourine");
      reviewersNamesJSON.put("Gaceb Walid");
      reviewersNamesJSON.put("Nasrou dfef");
      reviewersNamesJSON.put("Zitouni ahmed");
@@ -576,14 +602,14 @@ JSONArray  reviewersGivenStarsJSON=new JSONArray();
      ServicesHairCutsPricesJSON.put("6000");
      ServicesHairCutsPricesJSON.put("7000");
 
-     JSONArray ServicesHairCutsDurationJSON=new JSONArray();
-     ServicesHairCutsDurationJSON.put("3000");
-     ServicesHairCutsDurationJSON.put("4000");
-     ServicesHairCutsDurationJSON.put("5000");
-     ServicesHairCutsDurationJSON.put("6000");
-     ServicesHairCutsDurationJSON.put("7000");
-     ServicesHairCutsDurationJSON.put("8000");
-     ServicesHairCutsDurationJSON.put("9000");
+     JSONArray ServicesHairCutsDurationsJSON=new JSONArray();
+     ServicesHairCutsDurationsJSON.put("3000");
+     ServicesHairCutsDurationsJSON.put("4000");
+     ServicesHairCutsDurationsJSON.put("5000");
+     ServicesHairCutsDurationsJSON.put("6000");
+     ServicesHairCutsDurationsJSON.put("7000");
+     ServicesHairCutsDurationsJSON.put("8000");
+     ServicesHairCutsDurationsJSON.put("9000");
 
 
 
@@ -597,7 +623,7 @@ JSONArray  reviewersGivenStarsJSON=new JSONArray();
 
          fakeserverResult.put("ServicesHairCutsNames", serviceHaircutsNamesJSON);
          fakeserverResult.put("ServicesHairCutsPrices",ServicesHairCutsPricesJSON);
-         fakeserverResult.put("ServicesHairCutsDuration",ServicesHairCutsDurationJSON);
+         fakeserverResult.put("ServicesHairCutsDurations",ServicesHairCutsDurationsJSON);
      } catch (JSONException e) {
          e.printStackTrace();
      }

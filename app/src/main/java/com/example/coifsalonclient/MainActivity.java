@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -29,7 +30,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String URL="";
+    private static final String URL="http://192.168.43.139:81/SecondPage.php";
     Response.Listener<JSONObject> volleyListener;
     Response.ErrorListener volleyErrorListener;
     RequestQueue requestQueue;
@@ -50,17 +51,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+      // getActionBar().hide();
 volleyErrorListener=new Response.ErrorListener() {
     @Override
     public void onErrorResponse(VolleyError error) {
+        error.printStackTrace();
+        Log.v("VolleyErrors", "onErrorResponse: IN MAIN ACTIVITY "+error.toString());
+      showToast(error.toString());
 
     }
 };
 volleyListener=new Response.Listener<JSONObject>() {
     @Override
     public void onResponse(JSONObject response) {
-        if(response.has("Search_Result")){
-            ServerResponseWithSearchResult(response);
+        Log.v("VolleyReceived","IN MAIN ACTIVITY"+ response.toString());
+        showToast(response.toString());
+        if(response.has("ListOfStoresMainDataOnly")){
+            try {
+                ServerResponseWithListOfStoresMainDataOnly(response.getJSONObject("ListOfStoresMainDataOnly"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 };
@@ -77,7 +89,7 @@ volleyListener=new Response.Listener<JSONObject>() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         requestQueue= Volley.newRequestQueue(this);
-        Search();
+        GetListOfStoresMainDataOnly();
      searchEditText=findViewById(R.id.searchEditText);
      searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
          @Override
@@ -113,10 +125,10 @@ volleyListener=new Response.Listener<JSONObject>() {
 
 
 
-    void Search(){
+    void GetListOfStoresMainDataOnly(){
         JSONObject jsonObject=new JSONObject();
         try {
-            jsonObject.put("Search", "");
+            jsonObject.put("Request", "ListOfStoresMainDataOnly");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -124,23 +136,23 @@ volleyListener=new Response.Listener<JSONObject>() {
         requestQueue.add(jsonObjectRequest);
     }
 
-    void  ServerResponseWithSearchResult(JSONObject response){
+    void  ServerResponseWithListOfStoresMainDataOnly(JSONObject ListOfStoresMainDataOnlyJSONObjectResponse){
         try {
             StoresNames.clear();
-            for(int i=0;i<response.getJSONArray("StoresNames").length();i++){
-              StoresNames.add(response.getJSONArray("StoresNames").getString(i));
+            for(int i=0;i<ListOfStoresMainDataOnlyJSONObjectResponse.getJSONArray("StoresNames").length();i++){
+              StoresNames.add(ListOfStoresMainDataOnlyJSONObjectResponse.getJSONArray("StoresNames").getString(i));
             }
 
             StoresAddresses.clear();
-            for(int i=0;i<response.getJSONArray("StoresAddresses").length();i++){
-                StoresAddresses.add(response.getJSONArray("StoresAddresses").getString(i));
+            for(int i=0;i<ListOfStoresMainDataOnlyJSONObjectResponse.getJSONArray("StoresAddresses").length();i++){
+                StoresAddresses.add(ListOfStoresMainDataOnlyJSONObjectResponse.getJSONArray("StoresAddresses").getString(i));
             }
 
             StoresImagesAsStrings.clear();
             StoresImages.clear();
-            for(int i=0;i<response.getJSONArray("StoresImages").length();i++){
-                StoresImagesAsStrings.add(response.getJSONArray("StoresImages").getString(i));
-                StoresImages.add(ConvertStringToBitmap(response.getJSONArray("StoresImages").getString(i)));
+            for(int i=0;i<ListOfStoresMainDataOnlyJSONObjectResponse.getJSONArray("StoresImages").length();i++){
+                StoresImagesAsStrings.add(ListOfStoresMainDataOnlyJSONObjectResponse.getJSONArray("StoresImages").getString(i));
+                StoresImages.add(ConvertStringToBitmap(ListOfStoresMainDataOnlyJSONObjectResponse.getJSONArray("StoresImages").getString(i)));
             }
 
             customRecyclerViewAdapter.notifyDataSetChanged();
@@ -184,7 +196,7 @@ volleyListener=new Response.Listener<JSONObject>() {
         }
         JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.POST, URL, jsonObject,volleyListener,volleyErrorListener );
         requestQueue.add(jsonObjectRequest);
-        showToast(criteria);
+       // showToast(criteria);
     }
 
     public  Bitmap ConvertStringToBitmap(String image){

@@ -16,4 +16,5 @@ public class NoUserInputRatingBar extends android.support.v7.widget.AppCompatRat
     public boolean onTouchEvent(MotionEvent event) {
         return false;
     }
+
 }
