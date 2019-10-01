@@ -44,7 +44,7 @@
 
     <style name="signup_button">
         <item name="android:textSize">
-            @dimen/_18ssp
+        @dimen/_18ssp
         </item>
         <item name="android:textColor">
             #FFFDFD

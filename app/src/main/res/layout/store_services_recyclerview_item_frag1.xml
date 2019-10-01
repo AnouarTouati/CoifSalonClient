@@ -3,81 +3,66 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_80sdp">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/durationFrag1"
-        android:layout_width="109dp"
-        android:layout_height="28dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="@dimen/_8ssp"
-        android:layout_marginTop="@dimen/_8ssp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="@dimen/_8ssp"
-        android:layout_marginBottom="@dimen/_8ssp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="DURATION"
         android:textAppearance="@style/texts"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.548"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/priceFrag1"
+        app:layout_constraintLeft_toRightOf="@id/hairCutNameFrag1"
+
+        app:layout_constraintRight_toLeftOf="@id/book_Frag1"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.083" />
+        app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <TextView
         android:id="@+id/hairCutNameFrag1"
-        android:layout_width="110dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="@dimen/_8sdp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="@dimen/_100sdp"
-        android:layout_marginBottom="@dimen/_8sdp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="TextView"
         android:textAppearance="@style/texts"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.13" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/durationFrag1"
+
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        android:layout_marginBottom="60dp"
+        />
 
     <TextView
         android:id="@+id/priceFrag1"
-        android:layout_width="105dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="@dimen/_80sdp"
-        android:layout_marginTop="@dimen/_8sdp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="@dimen/_80sdp"
-        android:layout_marginBottom="@dimen/_8sdp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="PRICE"
         android:textAppearance="@style/texts"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.539"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.695" />
+        app:layout_constraintLeft_toRightOf="@id/hairCutNameFrag1"
+        app:layout_constraintRight_toLeftOf="@id/book_Frag1"
+        app:layout_constraintTop_toBottomOf="@id/durationFrag1"
+        android:layout_marginBottom="60dp"
+        />
 
     <Button
         android:id="@+id/book_Frag1"
-        android:layout_width="97dp"
-        android:layout_height="27dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="@dimen/_8ssp"
-        android:layout_marginTop="@dimen/_8ssp"
-        android:layout_marginBottom="@dimen/_8ssp"
+        android:layout_width="150dp"
+        android:layout_height="37dp"
+
+        android:layout_marginBottom="60dp"
         android:background="@drawable/signup_button"
         android:text="RESERVE"
         android:textAppearance="@style/signup_button"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/durationFrag1"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.13" />
+
+        />
 </android.support.constraint.ConstraintLayout>
