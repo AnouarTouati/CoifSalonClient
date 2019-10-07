@@ -27,7 +27,7 @@
             android:orientation="vertical" >
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/imageView2_Frag2"
                 android:layout_width="match_parent"
                 android:layout_height="264dp"
                 app:srcCompat="@color/design_default_color_primary_dark" />

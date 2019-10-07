@@ -23,7 +23,7 @@ public class ShopDetails_Frag1 extends Fragment {
 
         mContext=getContext();
         recyclerView=view.findViewById(R.id.recyclerView_Frag1);
-        customRecyclerViewAdapterFrag1Services=new CustomRecyclerViewAdapterFrag1Services(ShopDetailsActivity.successfullyBookedServicesHaircut,ShopDetailsActivity.ServicesHairCutsNames,ShopDetailsActivity.ServicesHairCutsDuration,ShopDetailsActivity.ServicesHairCutsPrices,mContext);
+        customRecyclerViewAdapterFrag1Services=new CustomRecyclerViewAdapterFrag1Services(ShopDetailsActivity.successfullyBookedServicesHaircut,ShopDetailsActivity.successfullyBookedStore,ShopDetailsActivity.ServicesHairCutsNames,ShopDetailsActivity.ServicesHairCutsDuration,ShopDetailsActivity.ServicesHairCutsPrices,mContext);
         recyclerView.setAdapter(customRecyclerViewAdapterFrag1Services);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         ///////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ public class ShopDetails_Frag1 extends Fragment {
     }
     public static void BookWasSuccessfulNorifyRecyclerViewAdapter(){
 
-        customRecyclerViewAdapterFrag1Services=new CustomRecyclerViewAdapterFrag1Services(ShopDetailsActivity.successfullyBookedServicesHaircut,ShopDetailsActivity.ServicesHairCutsNames,ShopDetailsActivity.ServicesHairCutsDuration,ShopDetailsActivity.ServicesHairCutsPrices,mContext);
+        customRecyclerViewAdapterFrag1Services=new CustomRecyclerViewAdapterFrag1Services(ShopDetailsActivity.successfullyBookedServicesHaircut,ShopDetailsActivity.successfullyBookedStore,ShopDetailsActivity.ServicesHairCutsNames,ShopDetailsActivity.ServicesHairCutsDuration,ShopDetailsActivity.ServicesHairCutsPrices,mContext);
     recyclerView.swapAdapter(customRecyclerViewAdapterFrag1Services,true);
 
     }

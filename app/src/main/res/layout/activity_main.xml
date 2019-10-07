@@ -12,21 +12,59 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/BookedStoreMainActivityTextView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/BookedHairCutMainActivityTextView"
+        android:text="Store Booked"
+        android:textSize="24sp"
+
+
+        app:layout_constraintVertical_chainStyle="spread"
+        app:layout_constraintVertical_bias="0"
+
+></TextView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/BookedHairCutMainActivityTextView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/BookedStoreMainActivityTextView"
+
+        android:text="HairCut Booked"
+        android:textSize="24sp"
+
+        ></TextView>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/GoToBookedStoreFromMainActivityButton"
+        android:text="Go To Booked Store"
+        android:textSize="24sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/BookedHairCutMainActivityTextView"
+        app:layout_constraintBottom_toTopOf="@id/searchEditText"></Button>
     <EditText
         android:id="@+id/searchEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/GoToBookedStoreFromMainActivityButton"
         app:layout_constraintBottom_toTopOf="@id/searchResultRecyclerView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
 
-        app:layout_constraintVertical_chainStyle="packed"
+
         android:hint="@android:string/search_go"
         android:inputType="textPersonName"
         android:textSize="@dimen/_21sdp"
-        app:layout_constraintVertical_bias="0"
+
 
        />
 
