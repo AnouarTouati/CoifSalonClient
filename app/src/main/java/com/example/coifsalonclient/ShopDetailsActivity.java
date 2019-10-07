@@ -5,13 +5,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.util.TypedValue;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -24,6 +24,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,7 +36,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -171,6 +171,7 @@ public class ShopDetailsActivity extends AppCompatActivity {
     void WeGotTheDataDisplayIt() {
         // we might want to use the code below after we receive the data
         viewPager = findViewById(R.id.viewPagerShopDetails);
+
         customFragmentPagerAdapter = new CustomFragmentPagerAdapter(getSupportFragmentManager());
         customFragmentPagerAdapter.addFragment(new ShopDetails_Frag1(), "ShopDetails_Frag1");
         customFragmentPagerAdapter.addFragment(new ShopDetails_Frag2(), "ShopDetails_Frag2");
@@ -291,6 +292,7 @@ public class ShopDetailsActivity extends AppCompatActivity {
     void ServerResponseWithStoreInfo(JSONObject StoreDetailsInfo) {
 
         useTheAcquiredData(StoreDetailsInfo,true);
+        Log.v("LoadFromCache","Write Store Data for first time :"+StoreDetailsInfo);
         writeNewShopDataToLocalMemory(StoreDetailsInfo);//this should be here to save some info without images and it will be called again when download of images is done
 
     }
@@ -460,10 +462,11 @@ public class ShopDetailsActivity extends AppCompatActivity {
         try {
 
             String jsonAsString = loadJSONFile("StoresData.txt");
-
+            Log.v("LoadFromCache","From Load Local jsonAsString :"+jsonAsString);
             if (jsonAsString != null) {
 
                 JSONObject jsonObject = new JSONObject(jsonAsString);
+
                 if (jsonObject.has(ShopName)) {
 
                     /// for the FOR loop the case of ImagesLinkFromRecyclerView.size()> jsonObject.getJSONObject(ShopName).getJSONArray("ImagesLinks").lenght()
@@ -482,26 +485,33 @@ public class ShopDetailsActivity extends AppCompatActivity {
                        ArrayList<String> ListOfImagesThatDidNotChange = new ArrayList<>();
                        ArrayList<Integer> IndexOfTheImageThatDidNotChange = new ArrayList<>();
                        ArrayList<String> ListOfImagesLinksThatDidNotChange = new ArrayList<>();
-                       ArrayListParserFromJSONArray(ShopDataJSONObject.get("PortfolioImagesLinks").toString());
 
-                      ArrayList<String> PortfolioImagesLinks=new ArrayList<>();
+                      // ArrayList<String> PortfolioImagesLinks= ParseJSONtoArrayListOfStrings(ShopDataJSONObject.get("PortfolioImagesLinks").toString());
+                       ArrayList<String> PortfolioImagesLinksLocal=new ArrayList<>();
+                       for (int i=0;i<ShopDataJSONObject.getJSONArray("PortfolioImagesLinks").length();i++){
+                            PortfolioImagesLinksLocal.add(i, ShopDataJSONObject.getJSONArray("PortfolioImagesLinks").getString(i));
+                       }
 
-                      for (int i=0;i<ShopDataJSONObject.getJSONArray("PortfolioImagesLinks").length();i++){
-                          PortfolioImagesLinks.add(ShopDataJSONObject.getJSONArray("PortfolioImagesLinks").get(i).toString());
+                       Log.v("LoadFromCache","Loaded Portfolio Links :"+PortfolioImagesLinksLocal);
+
+                      ArrayList<String> PortfolioImagesAsStringsLocal=new ArrayList<>();
+                      for ( int i=0;i<ShopDataJSONObject.getJSONArray("PortfolioImagesAsStrings").length();i++){
+                          PortfolioImagesAsStringsLocal.add(i, ShopDataJSONObject.getJSONArray("PortfolioImagesAsStrings").getString(i));
                       }
-
+                    //   ArrayList<String> PortfolioImagesAsStrings=ParseJSONtoArrayListOfStrings(ShopDataJSONObject.get("PortfolioImagesAsStrings").toString());
+                      Log.v("LoadFromCache", "No Error in loading images as strings");
                        for (int i = 0; i < ImagesLinkFromRecyclerView.size(); i++) {
 
 
-                           if (i < PortfolioImagesLinks.size()) {
+                           if (i < PortfolioImagesLinksLocal.size()) {
                                Boolean LinkNotFound = true;
-                               for (int j = 0; j < ((ArrayList<String>)ShopDataJSONObject.get("PortfolioImagesLinks")).size(); j++) {
+                               for (int j = 0; j <PortfolioImagesLinksLocal.size(); j++) {
 
-                                   if (((ArrayList<String>)ShopDataJSONObject.get("PortfolioImagesLinks")).get(j).equals(ImagesLinkFromRecyclerView.get(i))) {
+                                   if (PortfolioImagesLinksLocal.get(j).equals(ImagesLinkFromRecyclerView.get(i))) {
                                        LinkNotFound = false;
                                        IndexOfTheImageThatDidNotChange.add(j);
-                                       ListOfImagesThatDidNotChange.add(((ArrayList<String>)ShopDataJSONObject.get("PortfolioImagesLinks")).get(j));
-                                       ListOfImagesLinksThatDidNotChange.add(((ArrayList<String>)ShopDataJSONObject.get("PortfolioImagesLinks")).get(j));
+                                       ListOfImagesThatDidNotChange.add(PortfolioImagesAsStringsLocal.get(j));
+                                       ListOfImagesLinksThatDidNotChange.add(PortfolioImagesLinksLocal.get(j));
                                    }
                                }
                                if (LinkNotFound) {
@@ -516,8 +526,17 @@ public class ShopDetailsActivity extends AppCompatActivity {
                        }
                        ShopDataJSONObject.remove("PortfolioImagesAsStrings");
                        ShopDataJSONObject.remove("PortfolioImagesLinks");
-                       ShopDataJSONObject.put("PortfolioImagesAsStrings", ListOfImagesThatDidNotChange);
-                       ShopDataJSONObject.put("PortfolioImagesLinks", ListOfImagesLinksThatDidNotChange);
+                       PortfolioImagesAsStrings.clear();
+                       PortfolioImagesAsStrings=ListOfImagesThatDidNotChange;
+                       PortfolioImagesLinks.clear();
+                       PortfolioImagesLinks=ListOfImagesLinksThatDidNotChange;
+
+                       PortfolioImages.clear();
+                       for (int i=0;i<PortfolioImagesAsStringsLocal.size();i++){
+                           PortfolioImages.add(ConvertStringToBitmap(PortfolioImagesAsStringsLocal.get(i)));
+                       }
+
+
                    } else{
                        for(int i=0;i<ImagesLinkFromRecyclerView.size();i++){
                            RequestImage(ImagesLinkFromRecyclerView.get(i), false);
@@ -601,18 +620,22 @@ public class ShopDetailsActivity extends AppCompatActivity {
                 ServicesHairCutsNames.add(dataToUse.getJSONArray("ServicesHairCutsNames").getString(i));
             }
 
+
+
+
             ServicesHairCutsPrices.clear();
+
             for (int i = 0; i < dataToUse.getJSONArray("ServicesHairCutsPrices").length(); i++) {
                 ServicesHairCutsPrices.add(dataToUse.getJSONArray("ServicesHairCutsPrices").getString(i));
             }
+
+
 
             ServicesHairCutsDuration.clear();
 
             for (int i = 0; i < dataToUse.getJSONArray("ServicesHairCutsDuration").length(); i++) {
                 ServicesHairCutsDuration.add(dataToUse.getJSONArray("ServicesHairCutsDuration").getString(i));
             }
-            //     successfullyBookedServicesHaircut="";
-            //    successfullyBookedServicesHaircut=dataToUse.getString("successfullyBookedServicesHaircut");
 
 
             reviewersNames.clear();
@@ -620,16 +643,24 @@ public class ShopDetailsActivity extends AppCompatActivity {
             for (int i = 0; i < dataToUse.getJSONArray("reviewersNames").length(); i++) {
                 reviewersNames.add(dataToUse.getJSONArray("reviewersNames").getString(i));
             }
+
+
             reviewersComments.clear();
+
             for (int i = 0; i < dataToUse.getJSONArray("reviewersComments").length(); i++) {
                 reviewersComments.add(dataToUse.getJSONArray("reviewersComments").getString(i));
             }
 
+
             reviewersCommentDate.clear();
+
             for (int i = 0; i < dataToUse.getJSONArray("reviewersCommentDate").length(); i++) {
                 reviewersCommentDate.add(dataToUse.getJSONArray("reviewersCommentDate").getString(i));
             }
+
+
             reviewersGivenStars.clear();
+
             for (int i = 0; i < dataToUse.getJSONArray("reviewersGivenStars").length(); i++) {
                 reviewersGivenStars.add(dataToUse.getJSONArray("reviewersGivenStars").getInt(i));
             }
@@ -637,9 +668,9 @@ public class ShopDetailsActivity extends AppCompatActivity {
             if(MethodCalledFromServer){
                 /// WE CALL THIS SO WE UPDATE PROTFOLIO FRAGMENT
                 /// AND SAVE THE NEW DATA WHEN ALL IMAGES ARE DOWNLOADED IN VOLLEY IMAGE LISTENER
+
                 LoadLocalData(ShopNameFromRecyclerView);
             }
-
             WeGotTheDataDisplayIt();
 
         } catch (JSONException e) {
@@ -746,16 +777,13 @@ public class ShopDetailsActivity extends AppCompatActivity {
             ImageRequest imageRequest = new ImageRequest(ImageLink, new Response.Listener<Bitmap>() {
                 @Override
                 public void onResponse(Bitmap response) {
-                    Log.v("VolleyReceived", "IN SHOP DETAILS ACTIVITY" + response.toString());
+                    Log.v("VolleyReceived", "IN SHOP DETAILS ACTIVITY Portfolio Image "+ ImageLink);
                     PortfolioImages.add(response);
                     PortfolioImagesAsStrings.add(BitmapToString(response));
                     PortfolioImagesLinks.add(ImageLink);
                     Toast.makeText(mContext, "Received Portfolio Image", Toast.LENGTH_SHORT).show();
-                //  SaveUpdatedStoreDataToMemoryAndNotifyPortfolioRecyclerView();
-                   if (ImagesLinkFromRecyclerView.indexOf(ImageLink) == ImagesLinkFromRecyclerView.size()-1) {
-                        SaveUpdatedStoreDataToMemoryAndNotifyPortfolioRecyclerView();
-                        Toast.makeText(mContext, "We are saving", Toast.LENGTH_LONG).show();
-                    }
+                  SaveUpdatedStoreDataToMemoryAndNotifyPortfolioRecyclerView();
+
                 }
             }, 0, 0, ImageView.ScaleType.CENTER_CROP, null, new Response.ErrorListener() {
                 @Override
@@ -770,53 +798,55 @@ public class ShopDetailsActivity extends AppCompatActivity {
 
     void SaveUpdatedStoreDataToMemoryAndNotifyPortfolioRecyclerView() {
      //   ShopDetails_Frag4.ReceivedNewImagesNotifyRecyclerView();
-        JSONObject UpdatedShopData=new JSONObject();
-        try {
+   //     JSONObject UpdatedShopData=new JSONObject();
+    /*    try {
 
-            UpdatedShopData.put("ServicesHairCutsDuration",ServicesHairCutsDuration);
-            UpdatedShopData.put("ServicesHairCutsPrices", ServicesHairCutsPrices);
-            UpdatedShopData.put("ServicesHairCutsNames", ServicesHairCutsNames);
+            UpdatedShopData.put("ServicesHairCutsDuration",AddQuoationMarksToStringArrayList(ServicesHairCutsDuration));
+            UpdatedShopData.put("ServicesHairCutsPrices", AddQuoationMarksToStringArrayList(ServicesHairCutsPrices));
+            UpdatedShopData.put("ServicesHairCutsNames",AddQuoationMarksToStringArrayList(ServicesHairCutsNames) );
 
             UpdatedShopData.put("reviewersGivenStars", reviewersGivenStars);
-            UpdatedShopData.put("reviewersCommentDate",reviewersCommentDate );
-            UpdatedShopData.put("reviewersComments",reviewersComments );
-            UpdatedShopData.put("reviewersNames",reviewersNames );
+            UpdatedShopData.put("reviewersCommentDate",AddQuoationMarksToStringArrayList(reviewersCommentDate) );
+            UpdatedShopData.put("reviewersComments",AddQuoationMarksToStringArrayList(reviewersComments) );
+            UpdatedShopData.put("reviewersNames",AddQuoationMarksToStringArrayList(reviewersNames) );
 
 
-            UpdatedShopData.put("ShopMainImageForMainActivityAsString",ShopMainImageForMainActivityAsString);
-            UpdatedShopData.put("ShopMainImageForMainActivityLink",ShopMainImageForMainActivityLink);
+            UpdatedShopData.put("ShopMainImageForMainActivityAsString",AddQuotaionMarkToString(ShopMainImageForMainActivityAsString));
+            UpdatedShopData.put("ShopMainImageForMainActivityLink",AddQuotaionMarkToString(ShopMainImageForMainActivityLink));
 
 
-            UpdatedShopData.put("PortfolioImagesAsStrings",PortfolioImagesAsStrings);
-            UpdatedShopData.put("PortfolioImagesLinks", PortfolioImagesLinks);
-/*
-            Map<String,Object> UpdatedShopDataMap=new HashMap<>();
+            UpdatedShopData.put("PortfolioImagesAsStrings",AddQuoationMarksToStringArrayList(PortfolioImagesAsStrings));
+            UpdatedShopData.put("PortfolioImagesLinks", AddQuoationMarksToStringArrayList(PortfolioImagesLinks));
 
-                    UpdatedShopDataMap.put("ServicesHairCutsDuration",ServicesHairCutsDuration);
-                    UpdatedShopDataMap.put("ServicesHairCutsPrices", ServicesHairCutsPrices);
-                    UpdatedShopDataMap.put("ServicesHairCutsNames", ServicesHairCutsNames);
-                    UpdatedShopDataMap.put("reviewersGivenStars", reviewersGivenStars);
-                    UpdatedShopDataMap.put("reviewersCommentDate",reviewersCommentDate );
-                    UpdatedShopDataMap.put("reviewersComments",reviewersComments );
-                    UpdatedShopDataMap.put("reviewersNames",reviewersNames );
-                    UpdatedShopDataMap.put("ShopMainImageForMainActivityAsString",ShopMainImageForMainActivityAsString);
-                    UpdatedShopDataMap.put("ShopMainImageForMainActivityLink",ShopMainImageForMainActivityLink);
-                    UpdatedShopDataMap.put("PortfolioImagesAsStrings",PortfolioImagesAsStrings);
-                    UpdatedShopDataMap.put("PortfolioImagesLinks", PortfolioImagesLinks);
+*/
 
-
-
-            String json=new Gson().toJson(UpdatedShopDataMap);
+         /*   String json=new Gson().toJson(UpdatedShopDataMap);
    ImageView image=findViewById(R.id.imageView2_Frag2);
    image.setImageBitmap(ConvertStringToBitmap(((ArrayList<String>)UpdatedShopData.get("PortfolioImagesAsStrings")).get(0)));*/
        //     Log.v("LoadFromCache","Save Updated "+(ArrayList<String>)UpdatedShopData.get("PortfolioImagesLinks"));
-
+/*
         } catch (JSONException e) {
             Log.v("LoadFromCache","Problem in save updated data");
             e.printStackTrace();
-        }
+        }*/
+        Map<String,Object> UpdatedShopDataMap=new HashMap<>();
 
-        writeNewShopDataToLocalMemory(UpdatedShopData);
+        UpdatedShopDataMap.put("ServicesHairCutsDuration",ServicesHairCutsDuration);
+        UpdatedShopDataMap.put("ServicesHairCutsPrices", ServicesHairCutsPrices);
+        UpdatedShopDataMap.put("ServicesHairCutsNames", ServicesHairCutsNames);
+        UpdatedShopDataMap.put("reviewersGivenStars", reviewersGivenStars);
+        UpdatedShopDataMap.put("reviewersCommentDate",reviewersCommentDate );
+        UpdatedShopDataMap.put("reviewersComments",reviewersComments );
+        UpdatedShopDataMap.put("reviewersNames",reviewersNames );
+        UpdatedShopDataMap.put("ShopMainImageForMainActivityAsString",ShopMainImageForMainActivityAsString);
+        UpdatedShopDataMap.put("ShopMainImageForMainActivityLink",ShopMainImageForMainActivityLink);
+        UpdatedShopDataMap.put("PortfolioImagesAsStrings",PortfolioImagesAsStrings);
+        UpdatedShopDataMap.put("PortfolioImagesLinks", PortfolioImagesLinks);
+
+
+        JSONObject jsonObject=new JSONObject(UpdatedShopDataMap);
+        Log.v("LoadFromCache","Updating Store Data to :"+jsonObject);
+        writeNewShopDataToLocalMemory(jsonObject);
     }
 
     public String BitmapToString(Bitmap bitmap) {
@@ -836,12 +866,38 @@ public class ShopDetailsActivity extends AppCompatActivity {
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
- ArrayList<String> ArrayListParserFromJSONArray(String JsonArrayAsString){
-   ArrayList<String> parsedArrayList=new ArrayList<>();
-   JsonArrayAsString=JsonArrayAsString.replace("[", "");
-   JsonArrayAsString=JsonArrayAsString.replace("]", "");
-   parsedArrayList.add(JsonArrayAsString);
-     Log.v("LoadFromCache","From parsing "+  JsonArrayAsString);
-return parsedArrayList;
- }
+    ArrayList<String> ParseJSONtoArrayListOfStrings(String JsonArrayAsString){
+        ArrayList<String> parsedArrayList=new ArrayList<>();
+        JsonArrayAsString=JsonArrayAsString.replace("[", "");
+        JsonArrayAsString=JsonArrayAsString.replace("]", "");
+        String onebackslash="\\\\";
+        JsonArrayAsString=JsonArrayAsString.replaceAll(onebackslash,"");
+        char quote='"';
+        JsonArrayAsString=JsonArrayAsString.replaceAll(String.valueOf(quote), "");
+        if(JsonArrayAsString.contains(",")){
+            /// json array has more than one item
+
+            int LastIndexOfComma=-1;
+            while(true){
+                int NewIndexOfComma= JsonArrayAsString.indexOf(",", LastIndexOfComma+1);
+                if(NewIndexOfComma!=-1){
+
+                    parsedArrayList.add(JsonArrayAsString.subSequence(LastIndexOfComma+1,NewIndexOfComma).toString());
+                }else{
+                    break;
+                }
+               LastIndexOfComma=NewIndexOfComma;
+            }
+
+
+
+        }else if(!JsonArrayAsString.contains(",") && JsonArrayAsString.length()>0){
+
+            parsedArrayList.add(JsonArrayAsString);
+
+        }
+
+        return parsedArrayList;
+    }
+
 }
