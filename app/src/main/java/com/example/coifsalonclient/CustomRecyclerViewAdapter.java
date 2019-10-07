@@ -23,12 +23,14 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     ArrayList<String> StoreNamesList=new ArrayList<>();
     ArrayList<String> StoresAddresses =new ArrayList<>();
     ArrayList<Bitmap> StoresImages=new ArrayList<>();
+    ArrayList<ArrayList<String>> StoresImagesLinks=new ArrayList<>();
     Context mContext;
-    public CustomRecyclerViewAdapter(Context context, ArrayList<String> storeNamesList,ArrayList<String> StoresAddresses,ArrayList<Bitmap> StoresImages) {
+    public CustomRecyclerViewAdapter(Context context, ArrayList<String> storeNamesList,ArrayList<String> StoresAddresses,ArrayList<Bitmap> StoresImages, ArrayList<ArrayList<String>> StoresImagesLinks) {
 
         this.StoreNamesList=storeNamesList;
         this.StoresAddresses=StoresAddresses;
         this.StoresImages=StoresImages;
+        this.StoresImagesLinks=StoresImagesLinks;
         this.mContext=context;
     }
 
@@ -62,6 +64,9 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
            public void onClick(View view) {
                Intent goToShopDetailsActivity = new Intent(mContext, ShopDetailsActivity.class);
                goToShopDetailsActivity.putExtra("ShopName", StoreNamesList.get(i));
+               if(i<StoresImagesLinks.size()){
+                   goToShopDetailsActivity.putExtra("ImagesLinks", StoresImagesLinks.get(i));
+               }
 
                mContext.startActivity(goToShopDetailsActivity);
            }

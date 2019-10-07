@@ -24,9 +24,11 @@ public ArrayList<String> servicesHairCuts=new ArrayList<>();
 public ArrayList<String> servicesHaircutDurations=new ArrayList<>();
 public ArrayList<String> servicesHairCutPrice=new ArrayList<>();
 public String successfullyBookedServicesHaircut=null;
+public String successfullyBookedStore=null;
 
-    public CustomRecyclerViewAdapterFrag1Services(String successfullyBookedServicesHaircut,ArrayList<String> servicesHairCuts, ArrayList<String> servicesHaircutDurations, ArrayList<String> servicesHairCutPrice, Context mContext) {
+    public CustomRecyclerViewAdapterFrag1Services(String successfullyBookedServicesHaircut, String successfullyBookedStore,ArrayList<String> servicesHairCuts, ArrayList<String> servicesHaircutDurations, ArrayList<String> servicesHairCutPrice, Context mContext) {
         this.successfullyBookedServicesHaircut=successfullyBookedServicesHaircut;
+        this.successfullyBookedStore= successfullyBookedStore;
         this.servicesHairCuts = servicesHairCuts;
         this.servicesHaircutDurations = servicesHaircutDurations;
         this.servicesHairCutPrice = servicesHairCutPrice;
@@ -50,12 +52,22 @@ public String successfullyBookedServicesHaircut=null;
         viewHolder.hairCutName.setText(servicesHairCuts.get(i));
       viewHolder.price.setText(servicesHairCutPrice.get(i)+" DA");
       viewHolder.duration.setText(servicesHaircutDurations.get(i)+" Min");
-      if(successfullyBookedServicesHaircut!=null){
-          if(successfullyBookedServicesHaircut.equals(servicesHairCuts.get(i))){
-              viewHolder.bookButton.setText("Resrved");
-              viewHolder.bookButton.setBackgroundColor(Color.GREEN);
+      if(successfullyBookedServicesHaircut!=null && successfullyBookedStore!=null){
+          if(successfullyBookedStore.equals(ShopDetailsActivity.ShopNameFromRecyclerView)){
+              if(successfullyBookedServicesHaircut.equals(servicesHairCuts.get(i))){
+                  viewHolder.bookButton.setText("Resrved");
+                  viewHolder.bookButton.setBackgroundColor(Color.GREEN);
+              }else{
+                  ResetTheButtons(viewHolder);
+              }
+          }else{
+              ResetTheButtons(viewHolder);
           }
+
+      }else{
+          ResetTheButtons(viewHolder);
       }
+
       viewHolder.bookButton.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View view) {
@@ -63,6 +75,10 @@ public String successfullyBookedServicesHaircut=null;
           }
       });
 
+    }
+    void ResetTheButtons(ViewHolder viewHolder){
+        viewHolder.bookButton.setText("RESERVE");
+        viewHolder.bookButton.setBackgroundColor(Color.BLUE);
     }
 
     @Override
