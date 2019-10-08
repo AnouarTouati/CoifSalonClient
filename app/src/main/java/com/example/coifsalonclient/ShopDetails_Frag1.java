@@ -23,25 +23,20 @@ public class ShopDetails_Frag1 extends Fragment {
 
         mContext=getContext();
         recyclerView=view.findViewById(R.id.recyclerView_Frag1);
-        customRecyclerViewAdapterFrag1Services=new CustomRecyclerViewAdapterFrag1Services(ShopDetailsActivity.successfullyBookedServicesHaircut,ShopDetailsActivity.successfullyBookedStore,ShopDetailsActivity.ServicesHairCutsNames,ShopDetailsActivity.ServicesHairCutsDuration,ShopDetailsActivity.ServicesHairCutsPrices,mContext);
+        customRecyclerViewAdapterFrag1Services=new CustomRecyclerViewAdapterFrag1Services(ShopDetailsActivity.successfullyBookedHaircut,ShopDetailsActivity.successfullyBookedShop,ShopDetailsActivity.ServicesHairCutsNames,ShopDetailsActivity.ServicesHairCutsDuration,ShopDetailsActivity.ServicesHairCutsPrices,mContext);
         recyclerView.setAdapter(customRecyclerViewAdapterFrag1Services);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        ///////////////////////////////////////////////////////////
-        ///the code below is used after recyclerView is initialized so we dont get null reference
-        if(ShopDetailsActivity.ServicesHairCutsNames.size()==0){
-         ShopDetailsActivity.GetStoreServicesInfo(ShopDetailsActivity.ShopNameFromRecyclerView);
 
-        }
 
 
         return view;
     }
     public static void callbook(String ServiceHairCutToReseve){
-   ShopDetailsActivity.book(ServiceHairCutToReseve);
+   ShopDetailsActivity.Book(ServiceHairCutToReseve);
     }
     public static void BookWasSuccessfulNorifyRecyclerViewAdapter(){
 
-        customRecyclerViewAdapterFrag1Services=new CustomRecyclerViewAdapterFrag1Services(ShopDetailsActivity.successfullyBookedServicesHaircut,ShopDetailsActivity.successfullyBookedStore,ShopDetailsActivity.ServicesHairCutsNames,ShopDetailsActivity.ServicesHairCutsDuration,ShopDetailsActivity.ServicesHairCutsPrices,mContext);
+        customRecyclerViewAdapterFrag1Services=new CustomRecyclerViewAdapterFrag1Services(ShopDetailsActivity.successfullyBookedHaircut,ShopDetailsActivity.successfullyBookedShop,ShopDetailsActivity.ServicesHairCutsNames,ShopDetailsActivity.ServicesHairCutsDuration,ShopDetailsActivity.ServicesHairCutsPrices,mContext);
     recyclerView.swapAdapter(customRecyclerViewAdapterFrag1Services,true);
 
     }

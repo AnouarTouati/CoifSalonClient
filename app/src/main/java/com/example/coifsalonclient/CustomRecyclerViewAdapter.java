@@ -4,14 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -20,17 +18,23 @@ import java.util.ArrayList;
 
 public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecyclerViewAdapter.ViewHolder> {
 
-    ArrayList<String> StoreNamesList=new ArrayList<>();
-    ArrayList<String> StoresAddresses =new ArrayList<>();
-    ArrayList<Bitmap> StoresImages=new ArrayList<>();
-    ArrayList<ArrayList<String>> StoresImagesLinks=new ArrayList<>();
+    ArrayList<String> ShopNamesList =new ArrayList<>();
+    ArrayList<String> ShopAddresses =new ArrayList<>();
+    ArrayList<Bitmap> ShopsImages =new ArrayList<>();
+    ArrayList<ArrayList<String>> ShopsImagesLinks =new ArrayList<>();
+    String  successfullyBookedShop;
+    String successfullyBookedHaircut;
     Context mContext;
-    public CustomRecyclerViewAdapter(Context context, ArrayList<String> storeNamesList,ArrayList<String> StoresAddresses,ArrayList<Bitmap> StoresImages, ArrayList<ArrayList<String>> StoresImagesLinks) {
 
-        this.StoreNamesList=storeNamesList;
-        this.StoresAddresses=StoresAddresses;
-        this.StoresImages=StoresImages;
-        this.StoresImagesLinks=StoresImagesLinks;
+
+    public CustomRecyclerViewAdapter(Context context, ArrayList<String> ShopNamesList, ArrayList<String> ShopAddresses, ArrayList<Bitmap> ShopsImages, ArrayList<ArrayList<String>> ShopsImagesLinks, String successfullyBookedShop, String successfullyBookedHaircut) {
+
+        this.ShopNamesList = ShopNamesList;
+        this.ShopAddresses = ShopAddresses;
+        this.ShopsImages = ShopsImages;
+        this.ShopsImagesLinks = ShopsImagesLinks;
+        this.successfullyBookedShop = successfullyBookedShop;
+        this.successfullyBookedHaircut = successfullyBookedHaircut;
         this.mContext=context;
     }
 
@@ -46,16 +50,16 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
 
-        if(i<StoreNamesList.size()) {
-            viewHolder.storeNameTextView.setText(StoreNamesList.get(i));
+        if(i< ShopNamesList.size()) {
+            viewHolder.ShopNameTextView.setText(ShopNamesList.get(i));
 
         }
-        if(i<StoresAddresses.size()) {
-            viewHolder.storeAddressTextView.setText(StoresAddresses.get(i));
+        if(i< ShopAddresses.size()) {
+            viewHolder.ShopAddressTextView.setText(ShopAddresses.get(i));
 
 }
-       if(i<StoresImages.size()) {
-           viewHolder.storeMainImageImageView.setImageBitmap(StoresImages.get(i));
+       if(i< ShopsImages.size()) {
+           viewHolder.ShopMainImageImageView.setImageBitmap(ShopsImages.get(i));
 
        }
 
@@ -63,9 +67,11 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
            @Override
            public void onClick(View view) {
                Intent goToShopDetailsActivity = new Intent(mContext, ShopDetailsActivity.class);
-               goToShopDetailsActivity.putExtra("ShopName", StoreNamesList.get(i));
-               if(i<StoresImagesLinks.size()){
-                   goToShopDetailsActivity.putExtra("ImagesLinks", StoresImagesLinks.get(i));
+               goToShopDetailsActivity.putExtra("ShopName", ShopNamesList.get(i));
+               goToShopDetailsActivity.putExtra("successfullyBookedShop", successfullyBookedShop);
+               goToShopDetailsActivity.putExtra("successfullyBookedHaircut", successfullyBookedHaircut);
+               if(i< ShopsImagesLinks.size()){
+                   goToShopDetailsActivity.putExtra("ImagesLinks", ShopsImagesLinks.get(i));
                }
 
                mContext.startActivity(goToShopDetailsActivity);
@@ -76,22 +82,22 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
 
     @Override
     public int getItemCount() {
-        return StoreNamesList.size();
+        return ShopNamesList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView storeMainImageImageView;
-        TextView storeNameTextView;
-        TextView storeAddressTextView;
+        ImageView ShopMainImageImageView;
+        TextView ShopNameTextView;
+        TextView ShopAddressTextView;
         RadioGroup radioGroup;
         ConstraintLayout recyclerViewPeoplePendingItemLayout;
 
         @SuppressLint("ResourceType")
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            storeMainImageImageView=itemView.findViewById(R.id.storeMainImage);
-            storeNameTextView=itemView.findViewById(R.id.storeName);
-            storeAddressTextView=itemView.findViewById(R.id.storeAddress);
+            ShopMainImageImageView =itemView.findViewById(R.id.storeMainImage);
+            ShopNameTextView =itemView.findViewById(R.id.storeName);
+            ShopAddressTextView =itemView.findViewById(R.id.storeAddress);
             radioGroup=itemView.findViewById(R.id.radioGroup);
             recyclerViewPeoplePendingItemLayout=itemView.findViewById(R.layout.search_result_recyclerview_item);
         }
