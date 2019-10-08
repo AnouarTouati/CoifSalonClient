@@ -63,7 +63,7 @@
 
         android:hint="@android:string/search_go"
         android:inputType="textPersonName"
-        android:textSize="@dimen/_21sdp"
+        android:textSize="21dp"
 
 
        />

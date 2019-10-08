@@ -163,7 +163,7 @@ public class ShopDetailsActivity extends AppCompatActivity {
     }
 
     void WeGotTheDataDisplayIt() {
-        // we might want to use the code below after we receive the data
+
         viewPager = findViewById(R.id.viewPagerShopDetails);
 
         customFragmentPagerAdapter = new CustomFragmentPagerAdapter(getSupportFragmentManager());

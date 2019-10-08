@@ -35,7 +35,7 @@
 
         android:text="TextView"
         android:textColor="@android:color/primary_text_light_nodisable"
-        android:textSize="@dimen/_18ssp"
+        android:textSize="18sp"
         />
 
 
@@ -54,7 +54,7 @@
         android:layout_marginBottom="60dp"
         android:text="TextView"
         android:textColor="@android:color/primary_text_light_nodisable"
-        android:textSize="@dimen/_16ssp"
+        android:textSize="16sp"
         />
 
     <RadioGroup
