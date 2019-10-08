@@ -2,7 +2,6 @@ package com.example.coifsalonclient;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -11,11 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CustomRecyclerViewAdapterFrag1Services extends RecyclerView.Adapter<CustomRecyclerViewAdapterFrag1Services.ViewHolder> {
 
@@ -23,12 +20,12 @@ public class CustomRecyclerViewAdapterFrag1Services extends RecyclerView.Adapter
 public ArrayList<String> servicesHairCuts=new ArrayList<>();
 public ArrayList<String> servicesHaircutDurations=new ArrayList<>();
 public ArrayList<String> servicesHairCutPrice=new ArrayList<>();
-public String successfullyBookedServicesHaircut=null;
-public String successfullyBookedStore=null;
+public String successfullyBookedHaircut =null;
+public String successfullyBookedShop =null;
 
-    public CustomRecyclerViewAdapterFrag1Services(String successfullyBookedServicesHaircut, String successfullyBookedStore,ArrayList<String> servicesHairCuts, ArrayList<String> servicesHaircutDurations, ArrayList<String> servicesHairCutPrice, Context mContext) {
-        this.successfullyBookedServicesHaircut=successfullyBookedServicesHaircut;
-        this.successfullyBookedStore= successfullyBookedStore;
+    public CustomRecyclerViewAdapterFrag1Services(String successfullyBookedHaircut, String successfullyBookedShop, ArrayList<String> servicesHairCuts, ArrayList<String> servicesHaircutDurations, ArrayList<String> servicesHairCutPrice, Context mContext) {
+        this.successfullyBookedHaircut = successfullyBookedHaircut;
+        this.successfullyBookedShop = successfullyBookedShop;
         this.servicesHairCuts = servicesHairCuts;
         this.servicesHaircutDurations = servicesHaircutDurations;
         this.servicesHairCutPrice = servicesHairCutPrice;
@@ -52,9 +49,9 @@ public String successfullyBookedStore=null;
         viewHolder.hairCutName.setText(servicesHairCuts.get(i));
       viewHolder.price.setText(servicesHairCutPrice.get(i)+" DA");
       viewHolder.duration.setText(servicesHaircutDurations.get(i)+" Min");
-      if(successfullyBookedServicesHaircut!=null && successfullyBookedStore!=null){
-          if(successfullyBookedStore.equals(ShopDetailsActivity.ShopNameFromRecyclerView)){
-              if(successfullyBookedServicesHaircut.equals(servicesHairCuts.get(i))){
+      if(successfullyBookedHaircut !=null && successfullyBookedShop !=null){
+          if(successfullyBookedShop.equals(ShopDetailsActivity.ShopNameFromRecyclerView)){
+              if(successfullyBookedHaircut.equals(servicesHairCuts.get(i))){
                   viewHolder.bookButton.setText("Resrved");
                   viewHolder.bookButton.setBackgroundColor(Color.GREEN);
               }else{

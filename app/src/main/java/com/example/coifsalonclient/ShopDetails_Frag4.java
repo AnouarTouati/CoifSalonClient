@@ -39,7 +39,7 @@ public class ShopDetails_Frag4 extends Fragment {
     public void onResume() {
         super.onResume();
         ReceivedNewImagesNotifyRecyclerView();
-        Toast.makeText(mContext, "Resumed Frag 4 ", Toast.LENGTH_LONG).show();
+
     }
 
     public static void ReceivedNewImagesNotifyRecyclerView(){

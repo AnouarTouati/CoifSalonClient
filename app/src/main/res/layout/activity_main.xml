@@ -15,7 +15,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/BookedStoreMainActivityTextView"
+        android:id="@+id/BookedShopMainActivityTextView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -34,7 +34,7 @@
         android:id="@+id/BookedHairCutMainActivityTextView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/BookedStoreMainActivityTextView"
+        app:layout_constraintTop_toBottomOf="@id/BookedShopMainActivityTextView"
 
         android:text="HairCut Booked"
         android:textSize="24sp"
@@ -43,7 +43,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/GoToBookedStoreFromMainActivityButton"
+        android:id="@+id/GoToBookedShopFromMainActivityButton"
         android:text="Go To Booked Store"
         android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -55,7 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        app:layout_constraintTop_toBottomOf="@id/GoToBookedStoreFromMainActivityButton"
+        app:layout_constraintTop_toBottomOf="@id/GoToBookedShopFromMainActivityButton"
         app:layout_constraintBottom_toTopOf="@id/searchResultRecyclerView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

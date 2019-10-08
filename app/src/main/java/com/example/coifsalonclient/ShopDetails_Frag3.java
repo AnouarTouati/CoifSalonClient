@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 public class ShopDetails_Frag3 extends Fragment {
    static  CustomRecyclerViewAdapterFrag3Reviews customRecyclerViewAdapterFrag3Reviews;
@@ -26,17 +25,8 @@ public class ShopDetails_Frag3 extends Fragment {
         customRecyclerViewAdapterFrag3Reviews=new CustomRecyclerViewAdapterFrag3Reviews(ShopDetailsActivity.reviewersNames, ShopDetailsActivity.reviewersComments, ShopDetailsActivity.reviewersCommentDate, ShopDetailsActivity.reviewersGivenStars, getContext());
         recyclerView.setAdapter(customRecyclerViewAdapterFrag3Reviews);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        ///////////////////////////////////////////////////////////
-        ///the code below is used after recyclerView is initialized so we dont get null reference
-        if(ShopDetailsActivity.reviewersNames.size()==0){
-            ShopDetailsActivity.GetStoreReviewsInfo(ShopDetailsActivity.ShopNameFromRecyclerView);
-          //  ((ShopDetailsActivity)getActivity()).LoadLocalData(ShopDetailsActivity.ShopNameFromRecyclerView);
-        }
 
         return view;
     }
-    public static void ReceivedReviewersInfoNotifyRecyclerViewAdapter(){
-        customRecyclerViewAdapterFrag3Reviews=new CustomRecyclerViewAdapterFrag3Reviews(ShopDetailsActivity.reviewersNames, ShopDetailsActivity.reviewersComments, ShopDetailsActivity.reviewersCommentDate, ShopDetailsActivity.reviewersGivenStars, mContext);
-        recyclerView.swapAdapter(customRecyclerViewAdapterFrag3Reviews, true);
-    }
+
 }
