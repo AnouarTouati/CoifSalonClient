@@ -27,6 +27,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -147,7 +154,18 @@ volleyListener=new Response.Listener<JSONObject>() {
        });
         GetListOfShopsMainDataOnly();
 
+        Button gotomapButton=findViewById(R.id.GoToMapActivity);
+        gotomapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               Intent gotomapActivity=new Intent(mContext,MapsActivity.class);
+              startActivity(gotomapActivity);
+
+            }
+        });
     }
+
+
     void showToast(){
         Toast.makeText(this, "Search", Toast.LENGTH_LONG).show();
     }
