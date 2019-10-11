@@ -11,6 +11,13 @@
 <android.support.constraint.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+<Button
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/GoToMapActivity"
+    android:text="GoToMapActivity">
+
+</Button>
 
     <TextView
         android:layout_width="match_parent"

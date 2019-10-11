@@ -6,8 +6,8 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ShopDetailsActivity extends AppCompatActivity {
+public class ShopDetailsActivity extends FragmentActivity {
     static Response.Listener<JSONObject> volleyListener;
     static Response.ErrorListener volleyErrorListener;
     static RequestQueue requestQueue;
@@ -65,9 +65,9 @@ public class ShopDetailsActivity extends AppCompatActivity {
     public String SalonName;
     public String SelectedState;
     public String SelectedCommune;
-    public Boolean UseCoordinatesAKAaddMap = false;
-    public Double ShopLatitude;
-    public Double ShopLongitude;
+    public static Boolean UsesCoordinates = false;
+    public static Double ShopLatitude;
+    public static Double ShopLongitude;
     public Boolean isMen = true;
     public String ShopPhoneNumber;
     public String FacebookLink;
@@ -158,7 +158,6 @@ public class ShopDetailsActivity extends AppCompatActivity {
         successfullyBookedHaircut =getIntent().getStringExtra("successfullyBookedHaircut");
         requestQueue = Volley.newRequestQueue(this);
         LoadLocalData(ShopNameFromRecyclerView);
-
 
     }
 
@@ -550,11 +549,11 @@ public class ShopDetailsActivity extends AppCompatActivity {
             isBusinessOwner  = dataToUse.getBoolean("isBusinessOwner");
             SalonName  = dataToUse.getString("SalonName");
             SelectedState   = dataToUse.getString("SelectedState");
-            SelectedCommune  = dataToUse.getString("SelectedCommune");
-            UseCoordinatesAKAaddMap     = dataToUse.getBoolean("UseCoordinatesAKAaddMap");
+            SelectedCommune  = dataToUse.getString("SelectedCommune");*/
+            UsesCoordinates = dataToUse.getBoolean("UsesCoordinates");
             ShopLatitude   = dataToUse.getDouble("ShopLatitude");
             ShopLongitude   = dataToUse.getDouble("ShopLongitude");
-            isMen  = dataToUse.getBoolean("isMen");
+        /*    isMen  = dataToUse.getBoolean("isMen");
            //this line is no longer needed since image is downloaded separately// ShopMainImageForMainActivity   = ConvertStringToBitmap(dataToUse.getString("ShopMainImageForMainActivity"));
             ShopPhoneNumber   = dataToUse.getString("ShopPhoneNumber");
             FacebookLink  = dataToUse.getString("FacebookLink");
@@ -678,6 +677,10 @@ public class ShopDetailsActivity extends AppCompatActivity {
         UpdatedShopDataMap.put("reviewersNames",reviewersNames );
         UpdatedShopDataMap.put("PortfolioImagesAsStrings",PortfolioImagesAsStrings);
         UpdatedShopDataMap.put("PortfolioImagesLinks", PortfolioImagesLinks);
+
+        UpdatedShopDataMap.put("UsesCoordinates",UsesCoordinates);
+        UpdatedShopDataMap.put("ShopLatitude", ShopLatitude);
+        UpdatedShopDataMap.put("ShopLongitude",ShopLongitude);
 
         JSONObject jsonObject=new JSONObject(UpdatedShopDataMap);
 
