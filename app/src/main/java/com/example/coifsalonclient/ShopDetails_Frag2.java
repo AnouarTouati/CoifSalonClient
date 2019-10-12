@@ -39,7 +39,6 @@ public class ShopDetails_Frag2 extends Fragment implements  OnMapReadyCallback {
             view.findViewById(R.id.mapView_Frag2).setVisibility(View.GONE);
         }
 
-
         return view;
     }
 

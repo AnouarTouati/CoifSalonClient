@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">CoifSalonClient</string>
     <string name="title_activity_maps">Map</string>
+
+    <string name="AddReviewButton_Frag3">Add a Review</string>
+    <string name="AddReviewSubmitPositiveAlarDialog_Frag3">Submit</string>
+    <string name="AddReviewSubmitNegativeAlarDialog_Frag3">Cancel</string>
+    <string name="AddReviewNameHint_Frag3">Name</string>
+    <string name="AddReviewCommentHint_Frag3">Comment</string>
 </resources>
