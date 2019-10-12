@@ -343,6 +343,17 @@ public class ShopDetailsActivity extends FragmentActivity {
 
 
     }
+    public void AddReview(String ReviewerName,String ReviewerComment,float ReviewerGivenStars){
+        Log.v("VolleyReceived",""+ReviewerName+" "+ReviewerComment+" "+ReviewerGivenStars);
+        Map<String,Object> map=new HashMap<>();
+        map.put("ReviewerName",ReviewerName);
+        map.put("ReviewerComment",ReviewerComment);
+        map.put("ReviewerGivenStars",ReviewerGivenStars);
+
+        JSONObject Data=new JSONObject(map);
+        JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(URL, Data, volleyListener, volleyErrorListener);
+        requestQueue.add(jsonObjectRequest);
+    }
 
     public String LoadJSONFile(String jsonFileName) {
         String[] mFileList = fileList();
