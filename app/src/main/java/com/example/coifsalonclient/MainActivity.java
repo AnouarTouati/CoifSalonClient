@@ -42,7 +42,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String URL="http://192.168.43.139:81/SecondPage.php";
+    private static final String URL="http://192.168.43.139:8888/Client.php";
     Response.Listener<JSONObject> volleyListener;
     Response.ErrorListener volleyErrorListener;
     RequestQueue requestQueue;
@@ -154,15 +154,7 @@ volleyListener=new Response.Listener<JSONObject>() {
        });
         GetListOfShopsMainDataOnly();
 
-        Button gotomapButton=findViewById(R.id.GoToMapActivity);
-        gotomapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               Intent gotomapActivity=new Intent(mContext,MapsActivity.class);
-              startActivity(gotomapActivity);
 
-            }
-        });
     }
 
 

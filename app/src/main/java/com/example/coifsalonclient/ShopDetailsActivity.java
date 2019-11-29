@@ -41,7 +41,7 @@ public class ShopDetailsActivity extends FragmentActivity {
     static Response.Listener<JSONObject> volleyListener;
     static Response.ErrorListener volleyErrorListener;
     static RequestQueue requestQueue;
-    static final String URL = "http://192.168.43.139:81/SecondPage.php";
+    static final String URL = "http://192.168.43.139:8888/Client.php";
 
     ViewPager viewPager;
     TabLayout tabLayout;
@@ -441,6 +441,8 @@ public class ShopDetailsActivity extends FragmentActivity {
 
     public void LoadLocalData(String ShopName) {
         try {
+            PortfolioImages.clear();
+            PortfolioImagesAsStrings.clear();
 
             String jsonAsString = LoadJSONFile("ShopsData.txt");
 
@@ -472,7 +474,7 @@ public class ShopDetailsActivity extends FragmentActivity {
                           PortfolioImagesAsStringsLocal.add(i, ShopDataJSONObject.getJSONArray("PortfolioImagesAsStrings").getString(i));
                       }
 
-                       for (int i = 0; i < ImagesLinkFromRecyclerView.size(); i++) {
+                       for (int i = 1; i < ImagesLinkFromRecyclerView.size(); i++) { //i=1 to ignore the main shop image
 
 
                            if (i < PortfolioImagesLinksLocal.size()) {
@@ -510,7 +512,7 @@ public class ShopDetailsActivity extends FragmentActivity {
 
 
                    } else{
-                       for(int i=0;i<ImagesLinkFromRecyclerView.size();i++){
+                       for(int i=1;i<ImagesLinkFromRecyclerView.size();i++){//i=1 to ignore the main shop image
                            RequestImage(ImagesLinkFromRecyclerView.get(i));
                        }
                    }
