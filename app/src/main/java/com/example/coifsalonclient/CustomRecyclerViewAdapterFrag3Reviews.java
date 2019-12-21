@@ -21,10 +21,10 @@ public class CustomRecyclerViewAdapterFrag3Reviews extends RecyclerView.Adapter<
     public ArrayList<String> reviewersNames=new ArrayList<>();
     public ArrayList<String> reviewersComments=new ArrayList<>();
     public ArrayList<String> reviewersCommentDate=new ArrayList<>();
-    public ArrayList<Integer> reviewersGivenStars=new ArrayList<>();
+    public ArrayList<Float> reviewersGivenStars=new ArrayList<>();
     public Context mContext;
 
-    public CustomRecyclerViewAdapterFrag3Reviews(ArrayList<String> reviewersNames, ArrayList<String> reviewersComments, ArrayList<String> reviewersCommentDate, ArrayList<Integer> reviewersGivenStars, Context mContext) {
+    public CustomRecyclerViewAdapterFrag3Reviews(ArrayList<String> reviewersNames, ArrayList<String> reviewersComments, ArrayList<String> reviewersCommentDate, ArrayList<Float> reviewersGivenStars, Context mContext) {
         this.reviewersNames = reviewersNames;
         this.reviewersComments = reviewersComments;
         this.reviewersCommentDate = reviewersCommentDate;
