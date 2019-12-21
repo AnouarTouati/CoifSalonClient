@@ -63,5 +63,8 @@ public class ShopDetails_Frag3 extends Fragment {
         });
         return view;
     }
-
+    public static void ReceivedNewReviewsNotifyRecyclerView(){
+        customRecyclerViewAdapterFrag3Reviews=new CustomRecyclerViewAdapterFrag3Reviews(ShopDetailsActivity.reviewersNames, ShopDetailsActivity.reviewersComments, ShopDetailsActivity.reviewersCommentDate, ShopDetailsActivity.reviewersGivenStars, mContext);
+        recyclerView.swapAdapter(customRecyclerViewAdapterFrag3Reviews, true);
+    }
 }

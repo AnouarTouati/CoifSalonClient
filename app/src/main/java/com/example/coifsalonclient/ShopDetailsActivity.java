@@ -104,7 +104,7 @@ public class ShopDetailsActivity extends FragmentActivity {
     public static ArrayList<String> reviewersNames = new ArrayList<>();
     public static ArrayList<String> reviewersComments = new ArrayList<>();
     public static ArrayList<String> reviewersCommentDate = new ArrayList<>();
-    public static ArrayList<Integer> reviewersGivenStars = new ArrayList<>();
+    public static ArrayList<Float> reviewersGivenStars = new ArrayList<>();
     ///////////////////////////////////////////////////////////////////////////////
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -142,6 +142,12 @@ public class ShopDetailsActivity extends FragmentActivity {
                 } else if (response.has("BookResult")) {
                     try {
                         ServerResponseWithBookingResult(response.getJSONObject("BookResult"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }else if (response.has("ReviewResult")) {
+                    try {
+                        ServerResponseWithAddReviewResult(response.getJSONObject("ReviewResult"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -344,8 +350,9 @@ public class ShopDetailsActivity extends FragmentActivity {
 
     }
     public void AddReview(String ReviewerName,String ReviewerComment,float ReviewerGivenStars){
-        Log.v("VolleyReceived",""+ReviewerName+" "+ReviewerComment+" "+ReviewerGivenStars);
+
         Map<String,Object> map=new HashMap<>();
+        map.put("Request","GiveReview");
         map.put("ReviewerName",ReviewerName);
         map.put("ReviewerComment",ReviewerComment);
         map.put("ReviewerGivenStars",ReviewerGivenStars);
@@ -354,7 +361,20 @@ public class ShopDetailsActivity extends FragmentActivity {
         JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(URL, Data, volleyListener, volleyErrorListener);
         requestQueue.add(jsonObjectRequest);
     }
+  void ServerResponseWithAddReviewResult(JSONObject AddReviewResult){
+      try {
+          if(AddReviewResult.getString("Successful").equals("true")){
+              reviewersNames.add(AddReviewResult.getString("ReviewerName"));
+              reviewersComments.add(AddReviewResult.getString("ReviewerComment"));
+              reviewersGivenStars.add((float)AddReviewResult.getDouble("ReviewerGivenStars"));
+              reviewersCommentDate.add(AddReviewResult.getString("ReviewDate"));
+              SaveUpdatedShopDataToMemoryAndNotifyPortfolioRecyclerView();
+          }
+      } catch (JSONException e) {
+          e.printStackTrace();
+      }
 
+  }
     public String LoadJSONFile(String jsonFileName) {
         String[] mFileList = fileList();
         Boolean fileExists = false;
@@ -634,7 +654,7 @@ public class ShopDetailsActivity extends FragmentActivity {
             reviewersGivenStars.clear();
 
             for (int i = 0; i < dataToUse.getJSONArray("reviewersGivenStars").length(); i++) {
-                reviewersGivenStars.add(dataToUse.getJSONArray("reviewersGivenStars").getInt(i));
+                reviewersGivenStars.add((float)dataToUse.getJSONArray("reviewersGivenStars").getDouble(i));
             }
 
             if(MethodCalledFromServer){
@@ -678,7 +698,12 @@ public class ShopDetailsActivity extends FragmentActivity {
 
 
     void SaveUpdatedShopDataToMemoryAndNotifyPortfolioRecyclerView() {
-
+        if(ShopDetails_Frag4.mContext!=null){
+            ShopDetails_Frag4.ReceivedNewImagesNotifyRecyclerView();
+        }
+        if(ShopDetails_Frag3.mContext!=null){
+            ShopDetails_Frag3.ReceivedNewReviewsNotifyRecyclerView();
+        }
         Map<String,Object> UpdatedShopDataMap=new HashMap<>();
 
         UpdatedShopDataMap.put("ServicesHairCutsDuration",ServicesHairCutsDuration);
