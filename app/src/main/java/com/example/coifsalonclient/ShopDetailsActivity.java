@@ -113,6 +113,8 @@ public class ShopDetailsActivity extends FragmentActivity {
    public static ArrayList<Bitmap> PortfolioImages = new ArrayList<>();//the first image is the main shop image
     ArrayList<String> PortfolioImagesAsStrings = new ArrayList<>();
     ArrayList<String> PortfolioImagesLinks = new ArrayList<>();//we use this in local memory so we are sure that we received the image pointed to by the link
+    Integer IndexOfImageToReceiveNext =0;
+    ArrayList<String> PortfolioImagesLinksToBeRequested = new ArrayList<>();
     //////////////////////////////////////////////////////////////////////////////
 
     @Override
@@ -460,6 +462,7 @@ public class ShopDetailsActivity extends FragmentActivity {
 
 
     public void LoadLocalData(String ShopName) {
+
         try {
             PortfolioImages.clear();
             PortfolioImagesAsStrings.clear();
@@ -497,7 +500,7 @@ public class ShopDetailsActivity extends FragmentActivity {
                        for (int i = 1; i < ImagesLinkFromRecyclerView.size(); i++) { //i=1 to ignore the main shop image
 
 
-                           if (i < PortfolioImagesLinksLocal.size()) {
+
                                Boolean LinkNotFound = true;
                                for (int j = 0; j <PortfolioImagesLinksLocal.size(); j++) {
 
@@ -510,13 +513,15 @@ public class ShopDetailsActivity extends FragmentActivity {
                                }
                                if (LinkNotFound) {
 
-                                   RequestImage(ImagesLinkFromRecyclerView.get(i));
+
+                                   PortfolioImagesLinksToBeRequested.add(ImagesLinkFromRecyclerView.get(i));
                                }
 
-                           } else {
-                               RequestImage(ImagesLinkFromRecyclerView.get(i));
-                           }
 
+
+                       }
+                       if(PortfolioImagesLinksToBeRequested.size()>0){
+                           RequestImage(PortfolioImagesLinksToBeRequested.get(IndexOfImageToReceiveNext));//IndexOfImageToReceiveNext should equal zero at this stage
                        }
                        ShopDataJSONObject.remove("PortfolioImagesAsStrings");
                        ShopDataJSONObject.remove("PortfolioImagesLinks");
@@ -532,9 +537,17 @@ public class ShopDetailsActivity extends FragmentActivity {
 
 
                    } else{
+                       PortfolioImagesLinksToBeRequested.addAll(ImagesLinkFromRecyclerView);
+                       PortfolioImagesLinksToBeRequested.remove(0);// to remove shop main image
+                       if(PortfolioImagesLinksToBeRequested.size()>0){
+                           RequestImage(PortfolioImagesLinksToBeRequested.get(IndexOfImageToReceiveNext));//IndexOfImageToReceiveNext should equal zero at this stage
+                       }
+                      /*
                        for(int i=1;i<ImagesLinkFromRecyclerView.size();i++){//i=1 to ignore the main shop image
                            RequestImage(ImagesLinkFromRecyclerView.get(i));
                        }
+
+                       */
                    }
 
 
@@ -684,6 +697,10 @@ public class ShopDetailsActivity extends FragmentActivity {
                     PortfolioImagesLinks.add(ImageLink);
 
                   SaveUpdatedShopDataToMemoryAndNotifyPortfolioRecyclerView();
+                    IndexOfImageToReceiveNext++;
+                    if(IndexOfImageToReceiveNext<PortfolioImagesLinksToBeRequested.size()){
+                        RequestImage(PortfolioImagesLinksToBeRequested.get(IndexOfImageToReceiveNext));
+                    }
 
                 }
             }, 0, 0, ImageView.ScaleType.CENTER_CROP, null, new Response.ErrorListener() {

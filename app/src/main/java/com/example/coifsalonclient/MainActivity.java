@@ -27,13 +27,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> ShopsImagesAsStrings =new ArrayList<>();
     ArrayList<Bitmap> ShopsImages =new ArrayList<>();
     ArrayList<ArrayList<String>> ShopsImagesLinks =new ArrayList<>();
+    Integer IndexOfImageToReceiveNext =0;
 
     EditText searchEditText;
     CustomRecyclerViewAdapter customRecyclerViewAdapter;
@@ -231,9 +225,9 @@ void ServerResponseWithBookForMainActivity(JSONObject BookInfoForMainActivityJSO
                ShopsImagesLinks.add(ListOfLinksOfEachShop);
             }
             ShopsImages.clear();
-            for (int i = 0; i< ShopsImagesLinks.size(); i++){
-                RequestImage(ShopsImagesLinks.get(i).get(0));
-            }
+            RequestImage(ShopsImagesLinks.get(IndexOfImageToReceiveNext).get(0));
+
+
            // customRecyclerViewAdapter.notifyDataSetChanged(); NOTTIFYING DID NOT WORK PROPERLY SINCE SUCCESSFULLYBOKKEDSTORE AND HAIRCUT DID NOT UPDATE TO NEW VALUE
             customRecyclerViewAdapter=new CustomRecyclerViewAdapter(this, ShopsNames, ShopsAddresses, ShopsImages, ShopsImagesLinks, successfullyBookedShop, successfullyBookedHaircut);
             recyclerView.swapAdapter(customRecyclerViewAdapter, true);
@@ -254,6 +248,11 @@ void RequestImage(String Link){
         ShopsImages.add(response);
         ShopsImagesAsStrings.add(BitmapToString(response));
         customRecyclerViewAdapter.notifyDataSetChanged();
+        IndexOfImageToReceiveNext++;
+        if(IndexOfImageToReceiveNext <ShopsImagesLinks.size()){
+            RequestImage(ShopsImagesLinks.get(IndexOfImageToReceiveNext).get(0));
+        }
+
         }
     }, 0, 0, ImageView.ScaleType.CENTER_CROP, null, new Response.ErrorListener() {
         @Override
