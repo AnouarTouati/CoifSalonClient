@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -496,7 +497,8 @@ public class ShopDetailsActivity extends FragmentActivity {
                       for ( int i=0;i<ShopDataJSONObject.getJSONArray("PortfolioImagesAsStrings").length();i++){
                           PortfolioImagesAsStringsLocal.add(i, ShopDataJSONObject.getJSONArray("PortfolioImagesAsStrings").getString(i));
                       }
-
+                       PortfolioImagesLinksToBeRequested.clear();
+                      IndexOfImageToReceiveNext=0;
                        for (int i = 1; i < ImagesLinkFromRecyclerView.size(); i++) { //i=1 to ignore the main shop image
 
 
@@ -537,6 +539,8 @@ public class ShopDetailsActivity extends FragmentActivity {
 
 
                    } else{
+                       PortfolioImagesLinksToBeRequested.clear();
+                       IndexOfImageToReceiveNext=0;
                        PortfolioImagesLinksToBeRequested.addAll(ImagesLinkFromRecyclerView);
                        PortfolioImagesLinksToBeRequested.remove(0);// to remove shop main image
                        if(PortfolioImagesLinksToBeRequested.size()>0){
