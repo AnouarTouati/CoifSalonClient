@@ -225,6 +225,7 @@ void ServerResponseWithBookForMainActivity(JSONObject BookInfoForMainActivityJSO
                ShopsImagesLinks.add(ListOfLinksOfEachShop);
             }
             ShopsImages.clear();
+            IndexOfImageToReceiveNext=0;
             RequestImage(ShopsImagesLinks.get(IndexOfImageToReceiveNext).get(0));
 
 
