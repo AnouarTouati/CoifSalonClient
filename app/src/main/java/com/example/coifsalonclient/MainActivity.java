@@ -41,20 +41,20 @@ public class MainActivity extends AppCompatActivity {
     RequestQueue requestQueue;
     Context mContext;
 
-    ArrayList<String> ShopsNames =new ArrayList();
-    ArrayList<String> ShopsNamesOriginal =new ArrayList();
-    ArrayList<String> ShopsAddresses =new ArrayList<>();
-    ArrayList<String> ShopsImagesAsStrings =new ArrayList<>();
-    ArrayList<Bitmap> ShopsImages =new ArrayList<>();
-    ArrayList<ArrayList<String>> ShopsImagesLinks =new ArrayList<>();
-    Integer IndexOfImageToReceiveNext =0;
+    ArrayList<String> shopsNames =new ArrayList();
+    ArrayList<String> shopsNamesOriginal =new ArrayList();
+    ArrayList<String> shopsAddresses =new ArrayList<>();
+    ArrayList<String> shopsImagesAsStrings =new ArrayList<>();
+    ArrayList<Bitmap> shopsImages =new ArrayList<>();
+    ArrayList<ArrayList<String>> shopsImagesLinks =new ArrayList<>();
+    Integer indexOfImageToReceiveNext =0;
 
     EditText searchEditText;
     CustomRecyclerViewAdapter customRecyclerViewAdapter;
     RecyclerView recyclerView;
-    TextView BookedShopMainActivityTextView;
-    TextView BookedHairCutMainActivityTextView;
-    Button GoToBookedShopMainActivityButton;
+    TextView bookedShopMainActivityTextView;
+    TextView bookedHairCutMainActivityTextView;
+    Button goToBookedShopMainActivityButton;
     public  String successfullyBookedHaircut =null;
     public  String successfullyBookedShop =null;
 
@@ -83,8 +83,8 @@ volleyListener=new Response.Listener<JSONObject>() {
         if(response.has("ListOfShopsMainDataOnly")){
             try {
                 //DONT FLIP THE ORDER OF THESE TWO FUNCTIONS
-                ServerResponseWithBookForMainActivity(response.getJSONObject("BookInfoForMainActivity"));
-                ServerResponseWithListOfShopsMainDataOnly(response.getJSONObject("ListOfShopsMainDataOnly"));
+                serverResponseWithBookForMainActivity(response.getJSONObject("BookInfoForMainActivity"));
+                serverResponseWithListOfShopsMainDataOnly(response.getJSONObject("ListOfShopsMainDataOnly"));
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -93,14 +93,14 @@ volleyListener=new Response.Listener<JSONObject>() {
     }
 };
 
-        ShopsNames.add("Marouan");
-        ShopsNames.add("Anouar");
-        ShopsNames.add("Said");
-        ShopsNames.add("Saleh");
-        ShopsNames.add("Marzek");
+        shopsNames.add("Marouan");
+        shopsNames.add("Anouar");
+        shopsNames.add("Said");
+        shopsNames.add("Saleh");
+        shopsNames.add("Marzek");
 
         recyclerView=findViewById(R.id.searchResultRecyclerView);
-        customRecyclerViewAdapter=new CustomRecyclerViewAdapter(this, ShopsNames, ShopsAddresses, ShopsImages, ShopsImagesLinks, successfullyBookedShop, successfullyBookedHaircut);
+        customRecyclerViewAdapter=new CustomRecyclerViewAdapter(this, shopsNames, shopsAddresses, shopsImages, shopsImagesLinks, successfullyBookedShop, successfullyBookedHaircut);
         recyclerView.setAdapter(customRecyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -113,7 +113,7 @@ volleyListener=new Response.Listener<JSONObject>() {
 
             if(actionId== EditorInfo.IME_ACTION_DONE || actionId==EditorInfo.IME_ACTION_SEARCH ||keyEvent!=null && keyEvent.getAction()==KeyEvent.ACTION_DOWN && keyEvent.getKeyCode()==KeyEvent.KEYCODE_ENTER ){
                     if(keyEvent==null || !keyEvent.isShiftPressed()){
-                        Search(searchEditText.getText().toString());
+                        search(searchEditText.getText().toString());
                         View view = getCurrentFocus();
                         if (view != null) {
                             //this code is used to close on screen keyboard
@@ -129,39 +129,31 @@ volleyListener=new Response.Listener<JSONObject>() {
 
      });
 
-        BookedShopMainActivityTextView =findViewById(R.id.BookedShopMainActivityTextView);
-        BookedShopMainActivityTextView.setVisibility(View.GONE);
-        BookedHairCutMainActivityTextView=findViewById(R.id.BookedHairCutMainActivityTextView);
-        BookedHairCutMainActivityTextView.setVisibility(View.GONE);
-        GoToBookedShopMainActivityButton =findViewById(R.id.GoToBookedShopFromMainActivityButton);
-        GoToBookedShopMainActivityButton.setVisibility(View.GONE);
-       GoToBookedShopMainActivityButton.setOnClickListener(new View.OnClickListener() {
+        bookedShopMainActivityTextView =findViewById(R.id.BookedShopMainActivityTextView);
+        bookedShopMainActivityTextView.setVisibility(View.GONE);
+        bookedHairCutMainActivityTextView =findViewById(R.id.BookedHairCutMainActivityTextView);
+        bookedHairCutMainActivityTextView.setVisibility(View.GONE);
+        goToBookedShopMainActivityButton =findViewById(R.id.GoToBookedShopFromMainActivityButton);
+        goToBookedShopMainActivityButton.setVisibility(View.GONE);
+       goToBookedShopMainActivityButton.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
                Intent goToShopDetailsActivity = new Intent(mContext, ShopDetailsActivity.class);
                goToShopDetailsActivity.putExtra("ShopName", successfullyBookedShop);
-               goToShopDetailsActivity.putExtra("ImagesLinks", ShopsImagesLinks.get(ShopsNames.indexOf(successfullyBookedShop)));
-               goToShopDetailsActivity.putExtra("successfullyBookedShop", successfullyBookedShop);
-               goToShopDetailsActivity.putExtra("successfullyBookedHaircut", successfullyBookedHaircut);
+               goToShopDetailsActivity.putExtra("ImagesLinks", shopsImagesLinks.get(shopsNames.indexOf(successfullyBookedShop)));
+               goToShopDetailsActivity.putExtra("SuccessfullyBookedShop", successfullyBookedShop);
+               goToShopDetailsActivity.putExtra("SuccessfullyBookedHaircut", successfullyBookedHaircut);
                mContext.startActivity(goToShopDetailsActivity);
            }
        });
-        GetListOfShopsMainDataOnly();
+        getListOfShopsMainDataOnly();
 
 
     }
 
 
-    void showToast(){
-        Toast.makeText(this, "Search", Toast.LENGTH_LONG).show();
-    }
-    void showToast(String toshow){
-        Toast.makeText(this, toshow, Toast.LENGTH_LONG).show();
-    }
 
-
-
-    void GetListOfShopsMainDataOnly(){
+    void getListOfShopsMainDataOnly(){
         JSONObject jsonObject=new JSONObject();
         try {
             jsonObject.put("Request", "ListOfShopsMainDataOnly");
@@ -171,7 +163,7 @@ volleyListener=new Response.Listener<JSONObject>() {
         JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.POST, URL, jsonObject,volleyListener,volleyErrorListener );
         requestQueue.add(jsonObjectRequest);
     }
-void ServerResponseWithBookForMainActivity(JSONObject BookInfoForMainActivityJSONObject){
+void serverResponseWithBookForMainActivity(JSONObject BookInfoForMainActivityJSONObject){
     try {
         successfullyBookedHaircut =BookInfoForMainActivityJSONObject.getString("ServicesHairCutToReserved");
     } catch (JSONException e) {
@@ -184,53 +176,53 @@ void ServerResponseWithBookForMainActivity(JSONObject BookInfoForMainActivityJSO
     }
     if(successfullyBookedShop !=null && successfullyBookedHaircut !=null){
         if(successfullyBookedShop.length()>0 && successfullyBookedHaircut.length()>0){
-            BookedShopMainActivityTextView.setText(successfullyBookedShop);
-            BookedShopMainActivityTextView.setVisibility(View.VISIBLE);
-            BookedHairCutMainActivityTextView.setText(successfullyBookedHaircut);
-            BookedHairCutMainActivityTextView.setVisibility(View.VISIBLE);
-            GoToBookedShopMainActivityButton.setVisibility(View.VISIBLE);
+            bookedShopMainActivityTextView.setText(successfullyBookedShop);
+            bookedShopMainActivityTextView.setVisibility(View.VISIBLE);
+            bookedHairCutMainActivityTextView.setText(successfullyBookedHaircut);
+            bookedHairCutMainActivityTextView.setVisibility(View.VISIBLE);
+            goToBookedShopMainActivityButton.setVisibility(View.VISIBLE);
         }else{
-            HideBookInfoVIEWS();
+            hideBookInfoVIEWS();
         }
 
     }else{
 
-        HideBookInfoVIEWS();
+        hideBookInfoVIEWS();
     }
 
-}  void HideBookInfoVIEWS(){
-        BookedShopMainActivityTextView.setVisibility(View.GONE);
-        BookedHairCutMainActivityTextView.setVisibility(View.GONE);
-        GoToBookedShopMainActivityButton.setVisibility(View.GONE);
+}  void hideBookInfoVIEWS(){
+        bookedShopMainActivityTextView.setVisibility(View.GONE);
+        bookedHairCutMainActivityTextView.setVisibility(View.GONE);
+        goToBookedShopMainActivityButton.setVisibility(View.GONE);
     }
-    void ServerResponseWithListOfShopsMainDataOnly(JSONObject ListOfShopsMainDataOnlyJSONObjectResponse){
+    void serverResponseWithListOfShopsMainDataOnly(JSONObject ListOfShopsMainDataOnlyJSONObjectResponse){
         try {
-            ShopsNames.clear();
+            shopsNames.clear();
             for(int i=0;i<ListOfShopsMainDataOnlyJSONObjectResponse.getJSONArray("ShopsNames").length();i++){
-              ShopsNames.add(ListOfShopsMainDataOnlyJSONObjectResponse.getJSONArray("ShopsNames").getString(i));
+              shopsNames.add(ListOfShopsMainDataOnlyJSONObjectResponse.getJSONArray("ShopsNames").getString(i));
             }
 
-            ShopsAddresses.clear();
+            shopsAddresses.clear();
             for(int i=0;i<ListOfShopsMainDataOnlyJSONObjectResponse.getJSONArray("ShopsAddresses").length();i++){
-                ShopsAddresses.add(ListOfShopsMainDataOnlyJSONObjectResponse.getJSONArray("ShopsAddresses").getString(i));
+                shopsAddresses.add(ListOfShopsMainDataOnlyJSONObjectResponse.getJSONArray("ShopsAddresses").getString(i));
             }
 
 
-            ShopsImagesLinks.clear();
+            shopsImagesLinks.clear();
             for (int i=0;i<ListOfShopsMainDataOnlyJSONObjectResponse.getJSONArray("ShopsImagesLinks").length();i++){
                 ArrayList<String> ListOfLinksOfEachShop= new ArrayList<>();
                 for(int j=0;j<ListOfShopsMainDataOnlyJSONObjectResponse.getJSONArray("ShopsImagesLinks").getJSONArray(i).length();j++){
                     ListOfLinksOfEachShop.add(ListOfShopsMainDataOnlyJSONObjectResponse.getJSONArray("ShopsImagesLinks").getJSONArray(i).getString(j));
                 }
-               ShopsImagesLinks.add(ListOfLinksOfEachShop);
+               shopsImagesLinks.add(ListOfLinksOfEachShop);
             }
-            ShopsImages.clear();
-            IndexOfImageToReceiveNext=0;
-            RequestImage(ShopsImagesLinks.get(IndexOfImageToReceiveNext).get(0));
+            shopsImages.clear();
+            indexOfImageToReceiveNext =0;
+            requestImage(shopsImagesLinks.get(indexOfImageToReceiveNext).get(0));
 
 
            // customRecyclerViewAdapter.notifyDataSetChanged(); NOTTIFYING DID NOT WORK PROPERLY SINCE SUCCESSFULLYBOKKEDSTORE AND HAIRCUT DID NOT UPDATE TO NEW VALUE
-            customRecyclerViewAdapter=new CustomRecyclerViewAdapter(this, ShopsNames, ShopsAddresses, ShopsImages, ShopsImagesLinks, successfullyBookedShop, successfullyBookedHaircut);
+            customRecyclerViewAdapter=new CustomRecyclerViewAdapter(this, shopsNames, shopsAddresses, shopsImages, shopsImagesLinks, successfullyBookedShop, successfullyBookedHaircut);
             recyclerView.swapAdapter(customRecyclerViewAdapter, true);
 
         } catch (JSONException e) {
@@ -241,17 +233,17 @@ void ServerResponseWithBookForMainActivity(JSONObject BookInfoForMainActivityJSO
     }
 
 
-void RequestImage(String Link){
+void requestImage(String Link){
 
     ImageRequest imageRequest=new ImageRequest(Link, new Response.Listener<Bitmap>() {
         @Override
         public void onResponse(Bitmap response) {
-        ShopsImages.add(response);
-        ShopsImagesAsStrings.add(BitmapToString(response));
+        shopsImages.add(response);
+        shopsImagesAsStrings.add(bitmapToString(response));
         customRecyclerViewAdapter.notifyDataSetChanged();
-        IndexOfImageToReceiveNext++;
-        if(IndexOfImageToReceiveNext <ShopsImagesLinks.size()){
-            RequestImage(ShopsImagesLinks.get(IndexOfImageToReceiveNext).get(0));
+        indexOfImageToReceiveNext++;
+        if(indexOfImageToReceiveNext < shopsImagesLinks.size()){
+            requestImage(shopsImagesLinks.get(indexOfImageToReceiveNext).get(0));
         }
 
         }
@@ -264,32 +256,32 @@ void RequestImage(String Link){
     requestQueue.add(imageRequest);
 }
 
-    void Search(String criteria){
+    void search(String criteria){
 //////////////////////////////////////////////////////////////////////
        /// USE CODE BELOW FOR LOCAL SEARCH ON AVAILBLE LIST
 /////////////////////////////////////////////////////////////////////
 /*
-      for (int i = 0; i< ShopsNames.size(); i++){
+      for (int i = 0; i< shopsNames.size(); i++){
 
-            if(!ShopsNamesOriginal.contains(ShopsNames.get(i))){
-                ShopsNamesOriginal.add(ShopsNames.get(i));
+            if(!shopsNamesOriginal.contains(shopsNames.get(i))){
+                shopsNamesOriginal.add(shopsNames.get(i));
             }
         }
 
-        ShopsNames.clear();
+        shopsNames.clear();
         String lowercaseCriteria=criteria.toLowerCase();
-        for (int i = 0; i< ShopsNamesOriginal.size(); i++){
+        for (int i = 0; i< shopsNamesOriginal.size(); i++){
 
-            String nameOriginalLowerCase= ShopsNamesOriginal.get(i).toLowerCase();
+            String nameOriginalLowerCase= shopsNamesOriginal.get(i).toLowerCase();
             if(nameOriginalLowerCase.contains(lowercaseCriteria)){
-                ShopsNames.add(ShopsNamesOriginal.get(i));
+                shopsNames.add(shopsNamesOriginal.get(i));
             }
         }
         customRecyclerViewAdapter.notifyDataSetChanged();
 */
 
 //////////////////////////////////////////////////////////////////////
-        /// USE CODE BELOW FOR ONLINE SEARCH ON SERVER SIDE RESULT WILL BE DISPLAYED FROM FUNCTION ServerResponseWithListOfShopsMainDataOnly
+        /// USE CODE BELOW FOR ONLINE SEARCH ON SERVER SIDE RESULT WILL BE DISPLAYED FROM FUNCTION serverResponseWithListOfShopsMainDataOnly
         /// THIS MEANS THE RESULT SHOULD BE RETURNED IN JSONOBJECT WITH NAME ListOfShopsMainDataOnly
 /////////////////////////////////////////////////////////////////////
         JSONObject jsonObject=new JSONObject();
@@ -304,7 +296,7 @@ void RequestImage(String Link){
 
     }
 
-    public String BitmapToString(Bitmap bitmap) {
+    public String bitmapToString(Bitmap bitmap) {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
      //   Toast.makeText(this, "Bitmap Size is " + bitmap.getByteCount(), Toast.LENGTH_LONG).show();
@@ -315,7 +307,7 @@ void RequestImage(String Link){
         return Base64.encodeToString(byteImage, Base64.DEFAULT);
     }
 
-    public  Bitmap ConvertStringToBitmap(String image){
+    public  Bitmap convertStringToBitmap(String image){
         byte[] bytes;
         bytes= Base64.decode(image, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);

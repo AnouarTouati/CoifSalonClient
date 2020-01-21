@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PorterDuff;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -49,52 +48,52 @@ public class ShopDetailsActivity extends FragmentActivity {
     CustomFragmentPagerAdapter customFragmentPagerAdapter;
 
 
-    public static String ShopNameFromRecyclerView;
+    public static String shopNameFromRecyclerView;
     public String ShopMainImageForMainActivityLinkFromRecyclerView;
 
 
     static Context mContext;
 
 
-    public String EmailAddress;
-    public String Password;
-    public String FirstName;
-    public String LastName;
-    public String PhoneNumber;
+    public String emailAddress;
+    public String password;
+    public String firstName;
+    public String lastName;
+    public String phoneNumber;
     public Boolean isEmployee = false;
     public Boolean isBusinessOwner = false;
-    public String SalonName;
-    public String SelectedState;
+    public String salonName;
+    public String selectedState;
     public String SelectedCommune;
-    public static Boolean UsesCoordinates = false;
-    public static Double ShopLatitude;
-    public static Double ShopLongitude;
+    public static Boolean usesCoordinates = false;
+    public static Double shopLatitude;
+    public static Double shopLongitude;
     public Boolean isMen = true;
-    public String ShopPhoneNumber;
-    public String FacebookLink;
-    public String InstagramLink;
-    public Boolean Coiffure = false;
-    public Boolean MakeUp = false;
-    public Boolean Meches = false;
-    public Boolean Tinte = false;
-    public Boolean Pedcure = false;
-    public Boolean Manage = false;
-    public Boolean Manicure = false;
-    public Boolean Coupe = false;
-    public String Saturday;
-    public String Sunday;
-    public String Monday;
-    public String Tuesday;
-    public String Wednesday;
-    public String Thursday;
-    public String Friday;
+    public String shopPhoneNumber;
+    public String facebookLink;
+    public String instagramLink;
+    public Boolean coiffure = false;
+    public Boolean makeUp = false;
+    public Boolean meches = false;
+    public Boolean tinte = false;
+    public Boolean pedcure = false;
+    public Boolean manage = false;
+    public Boolean manicure = false;
+    public Boolean coupe = false;
+    public String saturday;
+    public String sunday;
+    public String monday;
+    public String tuesday;
+    public String wednesday;
+    public String thursday;
+    public String friday;
 
 
     //////////////////////////////////////////////////////////////////////////////
     //FRAGMENT 1 SERVICES
-    public static ArrayList<String> ServicesHairCutsNames = new ArrayList<>();
-    public static ArrayList<String> ServicesHairCutsPrices = new ArrayList<>();
-    public static ArrayList<String> ServicesHairCutsDuration = new ArrayList<>();
+    public static ArrayList<String> servicesHairCutsNames = new ArrayList<>();
+    public static ArrayList<String> servicesHairCutsPrices = new ArrayList<>();
+    public static ArrayList<String> servicesHairCutsDuration = new ArrayList<>();
     public static String successfullyBookedHaircut = null;
     public static String successfullyBookedShop = null;
     ///////////////////////////////////////////////////////////////////////////////
@@ -110,12 +109,12 @@ public class ShopDetailsActivity extends FragmentActivity {
 
     ///////////////////////////////////////////////////////////////////////////////
     //FRAGMENT 4 PORTFOLIO
-    ArrayList<String> ImagesLinkFromRecyclerView = new ArrayList<>();
-   public static ArrayList<Bitmap> PortfolioImages = new ArrayList<>();//the first image is the main shop image
-    ArrayList<String> PortfolioImagesAsStrings = new ArrayList<>();
-    ArrayList<String> PortfolioImagesLinks = new ArrayList<>();//we use this in local memory so we are sure that we received the image pointed to by the link
-    Integer IndexOfImageToReceiveNext =0;
-    ArrayList<String> PortfolioImagesLinksToBeRequested = new ArrayList<>();
+    ArrayList<String> imagesLinkFromRecyclerView = new ArrayList<>();
+   public static ArrayList<Bitmap> portfolioImages = new ArrayList<>();//the first image is the main shop image
+    ArrayList<String> portfolioImagesAsStrings = new ArrayList<>();
+    ArrayList<String> portfolioImagesLinks = new ArrayList<>();//we use this in local memory so we are sure that we received the image pointed to by the link
+    Integer indexOfImageToReceiveNext =0;
+    ArrayList<String> portfolioImagesLinksToBeRequested = new ArrayList<>();
     //////////////////////////////////////////////////////////////////////////////
 
     @Override
@@ -138,19 +137,19 @@ public class ShopDetailsActivity extends FragmentActivity {
 
                 if (response.has("ShopDetailsInfo")) {
                     try {
-                        ServerResponseWithShopInfo(response.getJSONObject("ShopDetailsInfo"));
+                        serverResponseWithShopInfo(response.getJSONObject("ShopDetailsInfo"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 } else if (response.has("BookResult")) {
                     try {
-                        ServerResponseWithBookingResult(response.getJSONObject("BookResult"));
+                        serverResponseWithBookingResult(response.getJSONObject("BookResult"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }else if (response.has("ReviewResult")) {
                     try {
-                        ServerResponseWithAddReviewResult(response.getJSONObject("ReviewResult"));
+                        serverResponseWithAddReviewResult(response.getJSONObject("ReviewResult"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -161,16 +160,16 @@ public class ShopDetailsActivity extends FragmentActivity {
 
         };
 
-        ShopNameFromRecyclerView = getIntent().getStringExtra("ShopName");
-        ImagesLinkFromRecyclerView = getIntent().getStringArrayListExtra("ImagesLinks");//we get the links from mainactivity because when we load from cache we check the links
-        successfullyBookedShop =getIntent().getStringExtra("successfullyBookedShop");
-        successfullyBookedHaircut =getIntent().getStringExtra("successfullyBookedHaircut");
+        shopNameFromRecyclerView = getIntent().getStringExtra("ShopName");
+        imagesLinkFromRecyclerView = getIntent().getStringArrayListExtra("ImagesLinks");//we get the links from mainactivity because when we load from cache we check the links
+        successfullyBookedShop =getIntent().getStringExtra("SuccessfullyBookedShop");
+        successfullyBookedHaircut =getIntent().getStringExtra("SuccessfullyBookedHaircut");
         requestQueue = Volley.newRequestQueue(this);
-        LoadLocalData(ShopNameFromRecyclerView);
+        loadLocalData(shopNameFromRecyclerView);
 
     }
 
-    void WeGotTheDataDisplayIt() {
+    void weGotTheDataDisplayIt() {
 
         viewPager = findViewById(R.id.viewPagerShopDetails);
 
@@ -218,32 +217,32 @@ public class ShopDetailsActivity extends FragmentActivity {
         });
     }
 
-    public static void GetShopServicesInfo(String shopName) {
+    public static void getShopServicesInfo(String shopName) {
 /*
-        ServicesHairCutsNames.add("Haircut1");
-        ServicesHairCutsNames.add("Haircut2");
-        ServicesHairCutsNames.add("Haircut3");
-        ServicesHairCutsNames.add("Haircut4");
-        ServicesHairCutsNames.add("Haircut5");
-        ServicesHairCutsNames.add("Haircut6");
-        ServicesHairCutsNames.add("Haircut7");
+        servicesHairCutsNames.add("Haircut1");
+        servicesHairCutsNames.add("Haircut2");
+        servicesHairCutsNames.add("Haircut3");
+        servicesHairCutsNames.add("Haircut4");
+        servicesHairCutsNames.add("Haircut5");
+        servicesHairCutsNames.add("Haircut6");
+        servicesHairCutsNames.add("Haircut7");
 
-        ServicesHairCutsPrices.add("200");
-        ServicesHairCutsPrices.add("400");
-        ServicesHairCutsPrices.add("600");
-        ServicesHairCutsPrices.add("700");
-        ServicesHairCutsPrices.add("800");
-        ServicesHairCutsPrices.add("900");
-        ServicesHairCutsPrices.add("1000");
+        servicesHairCutsPrices.add("200");
+        servicesHairCutsPrices.add("400");
+        servicesHairCutsPrices.add("600");
+        servicesHairCutsPrices.add("700");
+        servicesHairCutsPrices.add("800");
+        servicesHairCutsPrices.add("900");
+        servicesHairCutsPrices.add("1000");
 
-        ServicesHairCutsDuration.add("30");
-        ServicesHairCutsDuration.add("40");
-        ServicesHairCutsDuration.add("50");
-        ServicesHairCutsDuration.add("60");
-        ServicesHairCutsDuration.add("70");
-        ServicesHairCutsDuration.add("80");
-        ServicesHairCutsDuration.add("90");
-        //"the function below" even though it is intended  for Book response it also usable for info since it updates every thing
+        servicesHairCutsDuration.add("30");
+        servicesHairCutsDuration.add("40");
+        servicesHairCutsDuration.add("50");
+        servicesHairCutsDuration.add("60");
+        servicesHairCutsDuration.add("70");
+        servicesHairCutsDuration.add("80");
+        servicesHairCutsDuration.add("90");
+        //"the function below" even though it is intended  for book response it also usable for info since it updates every thing
         ShopDetails_Frag1.BookWasSuccessfulNorifyRecyclerViewAdapter();
 */
 /*
@@ -257,7 +256,7 @@ public class ShopDetailsActivity extends FragmentActivity {
         requestQueue.add(jsonObjectRequest);*/
     }
 
-    public static void GetShopReviewsInfo(String shopName) {
+    public static void getShopReviewsInfo(String shopName) {
 /*
         reviewersNames.add("Anouar Touati");
         reviewersNames.add("Marouan Touati");
@@ -291,20 +290,20 @@ public class ShopDetailsActivity extends FragmentActivity {
         requestQueue.add(jsonObjectRequest);*/
     }
 
-    void ServerResponseWithShopInfo(JSONObject ShopDetailsInfo) {
+    void serverResponseWithShopInfo(JSONObject ShopDetailsInfo) {
         // dont change the order of these two functions
-        WriteNewShopDataToLocalMemory(ShopDetailsInfo);//this should be here to save some info without images and it will be called again when download of images is done
-        UseTheAcquiredData(ShopDetailsInfo,true);
+        writeNewShopDataToLocalMemory(ShopDetailsInfo);//this should be here to save some info without images and it will be called again when download of images is done
+        useTheAcquiredData(ShopDetailsInfo,true);
 
 
 
     }
 
-    void ServerResponseWithBookingResult(JSONObject BookResult) {
+    void serverResponseWithBookingResult(JSONObject BookResult) {
 
 
         try {
-            if (BookResult.getString("Successful").equals("true")) {
+            if (BookResult.getString("Successful").equals("True")) {
                 successfullyBookedHaircut = BookResult.getString("ServicesHairCutToReserve");
                 successfullyBookedShop = BookResult.getString("BookedShop");
                 ShopDetails_Frag1.BookWasSuccessfulNorifyRecyclerViewAdapter();
@@ -317,12 +316,12 @@ public class ShopDetailsActivity extends FragmentActivity {
 
     }
 
-    public static void Book(final String ServicesHairCutToReserve) {
+    public static void book(final String ServicesHairCutToReserve) {
 
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         alertDialogBuilder.setTitle("Reserve Confirmation");
-        alertDialogBuilder.setMessage("Do you want to Book for " + ServicesHairCutToReserve + " ?");
+        alertDialogBuilder.setMessage("Do you want to book for " + ServicesHairCutToReserve + " ?");
         alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -332,7 +331,7 @@ public class ShopDetailsActivity extends FragmentActivity {
                 try {
                     jsonObject.put("Request", "Book");
                     jsonObject.put("ServicesHairCutToReserve", ServicesHairCutToReserve);
-                    jsonObject.put("ShopNameToBook", ShopNameFromRecyclerView);
+                    jsonObject.put("ShopNameToBook", shopNameFromRecyclerView);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -344,7 +343,7 @@ public class ShopDetailsActivity extends FragmentActivity {
         alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(mContext, "We didnt Book any thing", Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, "We didnt book any thing", Toast.LENGTH_LONG).show();
 
             }
         });
@@ -352,7 +351,7 @@ public class ShopDetailsActivity extends FragmentActivity {
 
 
     }
-    public void AddReview(String ReviewerName,String ReviewerComment,float ReviewerGivenStars){
+    public void addReview(String ReviewerName, String ReviewerComment, float ReviewerGivenStars){
 
         Map<String,Object> map=new HashMap<>();
         map.put("Request","GiveReview");
@@ -364,21 +363,21 @@ public class ShopDetailsActivity extends FragmentActivity {
         JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(URL, Data, volleyListener, volleyErrorListener);
         requestQueue.add(jsonObjectRequest);
     }
-  void ServerResponseWithAddReviewResult(JSONObject AddReviewResult){
+  void serverResponseWithAddReviewResult(JSONObject AddReviewResult){
       try {
           if(AddReviewResult.getString("Successful").equals("true")){
               reviewersNames.add(AddReviewResult.getString("ReviewerName"));
               reviewersComments.add(AddReviewResult.getString("ReviewerComment"));
               reviewersGivenStars.add((float)AddReviewResult.getDouble("ReviewerGivenStars"));
               reviewersCommentDate.add(AddReviewResult.getString("ReviewDate"));
-              SaveUpdatedShopDataToMemoryAndNotifyPortfolioRecyclerView();
+              saveUpdatedShopDataToMemoryAndNotifyPortfolioRecyclerView();
           }
       } catch (JSONException e) {
           e.printStackTrace();
       }
 
   }
-    public String LoadJSONFile(String jsonFileName) {
+    public String loadJSONFile(String jsonFileName) {
         String[] mFileList = fileList();
         Boolean fileExists = false;
 
@@ -432,19 +431,19 @@ public class ShopDetailsActivity extends FragmentActivity {
 
     }
 
-    public void WriteNewShopDataToLocalMemory(JSONObject NewShopDataJSON) {
+    public void writeNewShopDataToLocalMemory(JSONObject NewShopDataJSON) {
         try {
 
 
-            String localMemoryJsonAsString = LoadJSONFile("ShopsData.txt");
+            String localMemoryJsonAsString = loadJSONFile("ShopsData.txt");
             if (localMemoryJsonAsString != null) {
 
                 JSONObject localMemoryJsonObject = new JSONObject(localMemoryJsonAsString);
-                if (localMemoryJsonObject.has(ShopNameFromRecyclerView)) {
-                    localMemoryJsonObject.remove(ShopNameFromRecyclerView);
+                if (localMemoryJsonObject.has(shopNameFromRecyclerView)) {
+                    localMemoryJsonObject.remove(shopNameFromRecyclerView);
 
                 }
-                localMemoryJsonObject.put(ShopNameFromRecyclerView, NewShopDataJSON);
+                localMemoryJsonObject.put(shopNameFromRecyclerView, NewShopDataJSON);
 
                 FileOutputStream fos = openFileOutput("ShopsData.txt", MODE_PRIVATE);
                 fos.write(localMemoryJsonObject.toString().getBytes());
@@ -462,13 +461,13 @@ public class ShopDetailsActivity extends FragmentActivity {
     }
 
 
-    public void LoadLocalData(String ShopName) {
+    public void loadLocalData(String ShopName) {
 
         try {
-            PortfolioImages.clear();
-            PortfolioImagesAsStrings.clear();
+            portfolioImages.clear();
+            portfolioImagesAsStrings.clear();
 
-            String jsonAsString = LoadJSONFile("ShopsData.txt");
+            String jsonAsString = loadJSONFile("ShopsData.txt");
 
             if (jsonAsString != null ) {
 
@@ -485,7 +484,7 @@ public class ShopDetailsActivity extends FragmentActivity {
                        ArrayList<Integer> IndexOfTheImageThatDidNotChange = new ArrayList<>();
                        ArrayList<String> ListOfImagesLinksThatDidNotChange = new ArrayList<>();
 
-                      // ArrayList<String> PortfolioImagesLinks= ParseJSONtoArrayListOfStrings(ShopDataJSONObject.get("PortfolioImagesLinks").toString());
+                      // ArrayList<String> portfolioImagesLinks= ParseJSONtoArrayListOfStrings(ShopDataJSONObject.get("portfolioImagesLinks").toString());
                        ArrayList<String> PortfolioImagesLinksLocal=new ArrayList<>();
                        for (int i=0;i<ShopDataJSONObject.getJSONArray("PortfolioImagesLinks").length();i++){
                             PortfolioImagesLinksLocal.add(i, ShopDataJSONObject.getJSONArray("PortfolioImagesLinks").getString(i));
@@ -497,16 +496,16 @@ public class ShopDetailsActivity extends FragmentActivity {
                       for ( int i=0;i<ShopDataJSONObject.getJSONArray("PortfolioImagesAsStrings").length();i++){
                           PortfolioImagesAsStringsLocal.add(i, ShopDataJSONObject.getJSONArray("PortfolioImagesAsStrings").getString(i));
                       }
-                       PortfolioImagesLinksToBeRequested.clear();
-                      IndexOfImageToReceiveNext=0;
-                       for (int i = 1; i < ImagesLinkFromRecyclerView.size(); i++) { //i=1 to ignore the main shop image
+                       portfolioImagesLinksToBeRequested.clear();
+                      indexOfImageToReceiveNext =0;
+                       for (int i = 1; i < imagesLinkFromRecyclerView.size(); i++) { //i=1 to ignore the main shop image
 
 
 
                                Boolean LinkNotFound = true;
                                for (int j = 0; j <PortfolioImagesLinksLocal.size(); j++) {
 
-                                   if (PortfolioImagesLinksLocal.get(j).equals(ImagesLinkFromRecyclerView.get(i))) {
+                                   if (PortfolioImagesLinksLocal.get(j).equals(imagesLinkFromRecyclerView.get(i))) {
                                        LinkNotFound = false;
                                        IndexOfTheImageThatDidNotChange.add(j);
                                        ListOfImagesThatDidNotChange.add(PortfolioImagesAsStringsLocal.get(j));
@@ -516,66 +515,66 @@ public class ShopDetailsActivity extends FragmentActivity {
                                if (LinkNotFound) {
 
 
-                                   PortfolioImagesLinksToBeRequested.add(ImagesLinkFromRecyclerView.get(i));
+                                   portfolioImagesLinksToBeRequested.add(imagesLinkFromRecyclerView.get(i));
                                }
 
 
 
                        }
-                       if(PortfolioImagesLinksToBeRequested.size()>0){
-                           RequestImage(PortfolioImagesLinksToBeRequested.get(IndexOfImageToReceiveNext));//IndexOfImageToReceiveNext should equal zero at this stage
+                       if(portfolioImagesLinksToBeRequested.size()>0){
+                           requestImage(portfolioImagesLinksToBeRequested.get(indexOfImageToReceiveNext));//indexOfImageToReceiveNext should equal zero at this stage
                        }
                        ShopDataJSONObject.remove("PortfolioImagesAsStrings");
                        ShopDataJSONObject.remove("PortfolioImagesLinks");
-                       PortfolioImagesAsStrings.clear();
-                       PortfolioImagesAsStrings=ListOfImagesThatDidNotChange;
-                       PortfolioImagesLinks.clear();
-                       PortfolioImagesLinks=ListOfImagesLinksThatDidNotChange;
+                       portfolioImagesAsStrings.clear();
+                       portfolioImagesAsStrings =ListOfImagesThatDidNotChange;
+                       portfolioImagesLinks.clear();
+                       portfolioImagesLinks =ListOfImagesLinksThatDidNotChange;
 
-                       PortfolioImages.clear();
+                       portfolioImages.clear();
                        for (int i=0;i<PortfolioImagesAsStringsLocal.size();i++){
-                           PortfolioImages.add(ConvertStringToBitmap(PortfolioImagesAsStringsLocal.get(i)));
+                           portfolioImages.add(convertStringToBitmap(PortfolioImagesAsStringsLocal.get(i)));
                        }
 
 
                    } else{
-                       PortfolioImagesLinksToBeRequested.clear();
-                       IndexOfImageToReceiveNext=0;
-                       PortfolioImagesLinksToBeRequested.addAll(ImagesLinkFromRecyclerView);
-                       PortfolioImagesLinksToBeRequested.remove(0);// to remove shop main image
-                       if(PortfolioImagesLinksToBeRequested.size()>0){
-                           RequestImage(PortfolioImagesLinksToBeRequested.get(IndexOfImageToReceiveNext));//IndexOfImageToReceiveNext should equal zero at this stage
+                       portfolioImagesLinksToBeRequested.clear();
+                       indexOfImageToReceiveNext =0;
+                       portfolioImagesLinksToBeRequested.addAll(imagesLinkFromRecyclerView);
+                       portfolioImagesLinksToBeRequested.remove(0);// to remove shop main image
+                       if(portfolioImagesLinksToBeRequested.size()>0){
+                           requestImage(portfolioImagesLinksToBeRequested.get(indexOfImageToReceiveNext));//indexOfImageToReceiveNext should equal zero at this stage
                        }
                       /*
-                       for(int i=1;i<ImagesLinkFromRecyclerView.size();i++){//i=1 to ignore the main shop image
-                           RequestImage(ImagesLinkFromRecyclerView.get(i));
+                       for(int i=1;i<imagesLinkFromRecyclerView.size();i++){//i=1 to ignore the main shop image
+                           requestImage(imagesLinkFromRecyclerView.get(i));
                        }
 
                        */
                    }
 
 
-                    UseTheAcquiredData(ShopDataJSONObject,false);
+                    useTheAcquiredData(ShopDataJSONObject,false);
 
 
                 } else {
 
-                    GetShopDetailsInfoFromServer(ShopName);
+                    getShopDetailsInfoFromServer(ShopName);
 
 
                 }
             } else {
-                //null is handled in the calling function LoadJSONFile()
+                //null is handled in the calling function loadJSONFile()
             }
 
 
         } catch (JSONException e) {
-            Log.v("LoadFromCache","Error parsing JSON in ShopDetailsActivity LoadLocalData function");
+            Log.v("LoadFromCache","Error parsing JSON in ShopDetailsActivity loadLocalData function");
             e.printStackTrace();
         }
     }
 
-    void GetShopDetailsInfoFromServer(String shopName) {
+    void getShopDetailsInfoFromServer(String shopName) {
 
         JSONObject getShopDetailsInfo = new JSONObject();
         try {
@@ -588,122 +587,122 @@ public class ShopDetailsActivity extends FragmentActivity {
         requestQueue.add(jsonObjectRequest);
     }
 
-    void UseTheAcquiredData(JSONObject dataToUse, Boolean MethodCalledFromServer) {
+    void useTheAcquiredData(JSONObject dataToUse, Boolean MethodCalledFromServer) {
         try {
 
-       /*     EmailAddress  = dataToUse.getString("EmailAddress");
-            Password    = dataToUse.getString("Password");
-            FirstName= dataToUse.getString("FirstName");
-            LastName     = dataToUse.getString("LastName");
-            PhoneNumber  = dataToUse.getString("PhoneNumber");
+       /*     emailAddress  = dataToUse.getString("emailAddress");
+            password    = dataToUse.getString("password");
+            firstName= dataToUse.getString("firstName");
+            lastName     = dataToUse.getString("lastName");
+            phoneNumber  = dataToUse.getString("phoneNumber");
             isBusinessOwner  = dataToUse.getBoolean("isBusinessOwner");
-            SalonName  = dataToUse.getString("SalonName");
-            SelectedState   = dataToUse.getString("SelectedState");
+            salonName  = dataToUse.getString("salonName");
+            selectedState   = dataToUse.getString("selectedState");
             SelectedCommune  = dataToUse.getString("SelectedCommune");*/
-            UsesCoordinates = dataToUse.getBoolean("UsesCoordinates");
-            ShopLatitude   = dataToUse.getDouble("ShopLatitude");
-            ShopLongitude   = dataToUse.getDouble("ShopLongitude");
+            usesCoordinates = dataToUse.getBoolean("UsesCoordinates");
+            shopLatitude = dataToUse.getDouble("ShopLatitude");
+            shopLongitude = dataToUse.getDouble("ShopLongitude");
         /*    isMen  = dataToUse.getBoolean("isMen");
-           //this line is no longer needed since image is downloaded separately// ShopMainImageForMainActivity   = ConvertStringToBitmap(dataToUse.getString("ShopMainImageForMainActivity"));
-            ShopPhoneNumber   = dataToUse.getString("ShopPhoneNumber");
-            FacebookLink  = dataToUse.getString("FacebookLink");
-            InstagramLink  = dataToUse.getString("InstagramLink");
-            Coiffure    = dataToUse.getBoolean("Coiffure");
-            Meches = dataToUse.getBoolean("Meches");
-            Tinte  = dataToUse.getBoolean("Tinte");
-            Pedcure = dataToUse.getBoolean("Pedcure");
-            Manage = dataToUse.getBoolean("Manage");
-            Manicure = dataToUse.getBoolean("Manicure");
-            Coupe = dataToUse.getBoolean("Coupe");
-            Saturday = dataToUse.getString("Saturday");
-            Sunday = dataToUse.getString("Sunday");
-            Monday  = dataToUse.getString("Monday");
-            Tuesday  = dataToUse.getString("Tuesday");
-            Wednesday = dataToUse.getString("Wednesday");
-            Thursday = dataToUse.getString("Thursday");
-            Friday = dataToUse.getString("Friday");
+           //this line is no longer needed since image is downloaded separately// ShopMainImageForMainActivity   = convertStringToBitmap(dataToUse.getString("ShopMainImageForMainActivity"));
+            shopPhoneNumber   = dataToUse.getString("shopPhoneNumber");
+            facebookLink  = dataToUse.getString("facebookLink");
+            instagramLink  = dataToUse.getString("instagramLink");
+            coiffure    = dataToUse.getBoolean("coiffure");
+            meches = dataToUse.getBoolean("meches");
+            tinte  = dataToUse.getBoolean("tinte");
+            pedcure = dataToUse.getBoolean("pedcure");
+            manage = dataToUse.getBoolean("manage");
+            manicure = dataToUse.getBoolean("manicure");
+            coupe = dataToUse.getBoolean("coupe");
+            saturday = dataToUse.getString("saturday");
+            sunday = dataToUse.getString("sunday");
+            monday  = dataToUse.getString("monday");
+            tuesday  = dataToUse.getString("tuesday");
+            wednesday = dataToUse.getString("wednesday");
+            thursday = dataToUse.getString("thursday");
+            friday = dataToUse.getString("friday");
 */
-            ServicesHairCutsNames.clear();
+            servicesHairCutsNames.clear();
 
             for (int i = 0; i < dataToUse.getJSONArray("ServicesHairCutsNames").length(); i++) {
-                ServicesHairCutsNames.add(dataToUse.getJSONArray("ServicesHairCutsNames").getString(i));
+                servicesHairCutsNames.add(dataToUse.getJSONArray("ServicesHairCutsNames").getString(i));
             }
 
 
 
 
-            ServicesHairCutsPrices.clear();
+            servicesHairCutsPrices.clear();
 
             for (int i = 0; i < dataToUse.getJSONArray("ServicesHairCutsPrices").length(); i++) {
-                ServicesHairCutsPrices.add(dataToUse.getJSONArray("ServicesHairCutsPrices").getString(i));
+                servicesHairCutsPrices.add(dataToUse.getJSONArray("ServicesHairCutsPrices").getString(i));
             }
 
 
 
-            ServicesHairCutsDuration.clear();
+            servicesHairCutsDuration.clear();
 
             for (int i = 0; i < dataToUse.getJSONArray("ServicesHairCutsDuration").length(); i++) {
-                ServicesHairCutsDuration.add(dataToUse.getJSONArray("ServicesHairCutsDuration").getString(i));
+                servicesHairCutsDuration.add(dataToUse.getJSONArray("ServicesHairCutsDuration").getString(i));
             }
 
 
             reviewersNames.clear();
 
-            for (int i = 0; i < dataToUse.getJSONArray("reviewersNames").length(); i++) {
-                reviewersNames.add(dataToUse.getJSONArray("reviewersNames").getString(i));
+            for (int i = 0; i < dataToUse.getJSONArray("ReviewersNames").length(); i++) {
+                reviewersNames.add(dataToUse.getJSONArray("ReviewersNames").getString(i));
             }
 
 
             reviewersComments.clear();
 
-            for (int i = 0; i < dataToUse.getJSONArray("reviewersComments").length(); i++) {
-                reviewersComments.add(dataToUse.getJSONArray("reviewersComments").getString(i));
+            for (int i = 0; i < dataToUse.getJSONArray("ReviewersComments").length(); i++) {
+                reviewersComments.add(dataToUse.getJSONArray("ReviewersComments").getString(i));
             }
 
 
             reviewersCommentDate.clear();
 
-            for (int i = 0; i < dataToUse.getJSONArray("reviewersCommentDate").length(); i++) {
-                reviewersCommentDate.add(dataToUse.getJSONArray("reviewersCommentDate").getString(i));
+            for (int i = 0; i < dataToUse.getJSONArray("ReviewersCommentDate").length(); i++) {
+                reviewersCommentDate.add(dataToUse.getJSONArray("ReviewersCommentDate").getString(i));
             }
 
 
             reviewersGivenStars.clear();
 
-            for (int i = 0; i < dataToUse.getJSONArray("reviewersGivenStars").length(); i++) {
-                reviewersGivenStars.add((float)dataToUse.getJSONArray("reviewersGivenStars").getDouble(i));
+            for (int i = 0; i < dataToUse.getJSONArray("ReviewersGivenStars").length(); i++) {
+                reviewersGivenStars.add((float)dataToUse.getJSONArray("ReviewersGivenStars").getDouble(i));
             }
 
             if(MethodCalledFromServer){
                 /// WE CALL THIS SO WE UPDATE PROTFOLIO FRAGMENT
                 /// AND SAVE THE NEW DATA WHEN ALL IMAGES ARE DOWNLOADED IN VOLLEY IMAGE LISTENER
 
-                LoadLocalData(ShopNameFromRecyclerView);
+                loadLocalData(shopNameFromRecyclerView);
             }
-            WeGotTheDataDisplayIt();
+            weGotTheDataDisplayIt();
 
         } catch (JSONException e) {
-            Toast.makeText(this, "Problem in UseTheAcquiredData function", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Problem in useTheAcquiredData function", Toast.LENGTH_LONG).show();
             e.printStackTrace();
 
         }
     }
 
 
-    void RequestImage(final String ImageLink) {
+    void requestImage(final String ImageLink) {
 
             ImageRequest imageRequest = new ImageRequest(ImageLink, new Response.Listener<Bitmap>() {
                 @Override
                 public void onResponse(Bitmap response) {
 
-                    PortfolioImages.add(response);
-                    PortfolioImagesAsStrings.add(BitmapToString(response));
-                    PortfolioImagesLinks.add(ImageLink);
+                    portfolioImages.add(response);
+                    portfolioImagesAsStrings.add(bitmapToString(response));
+                    portfolioImagesLinks.add(ImageLink);
 
-                  SaveUpdatedShopDataToMemoryAndNotifyPortfolioRecyclerView();
-                    IndexOfImageToReceiveNext++;
-                    if(IndexOfImageToReceiveNext<PortfolioImagesLinksToBeRequested.size()){
-                        RequestImage(PortfolioImagesLinksToBeRequested.get(IndexOfImageToReceiveNext));
+                  saveUpdatedShopDataToMemoryAndNotifyPortfolioRecyclerView();
+                    indexOfImageToReceiveNext++;
+                    if(indexOfImageToReceiveNext < portfolioImagesLinksToBeRequested.size()){
+                        requestImage(portfolioImagesLinksToBeRequested.get(indexOfImageToReceiveNext));
                     }
 
                 }
@@ -718,35 +717,35 @@ public class ShopDetailsActivity extends FragmentActivity {
 
 
 
-    void SaveUpdatedShopDataToMemoryAndNotifyPortfolioRecyclerView() {
+    void saveUpdatedShopDataToMemoryAndNotifyPortfolioRecyclerView() {
         if(ShopDetails_Frag4.mContext!=null){
-            ShopDetails_Frag4.ReceivedNewImagesNotifyRecyclerView();
+            ShopDetails_Frag4.receivedNewImagesNotifyRecyclerView();
         }
         if(ShopDetails_Frag3.mContext!=null){
             ShopDetails_Frag3.ReceivedNewReviewsNotifyRecyclerView();
         }
         Map<String,Object> UpdatedShopDataMap=new HashMap<>();
 
-        UpdatedShopDataMap.put("ServicesHairCutsDuration",ServicesHairCutsDuration);
-        UpdatedShopDataMap.put("ServicesHairCutsPrices", ServicesHairCutsPrices);
-        UpdatedShopDataMap.put("ServicesHairCutsNames", ServicesHairCutsNames);
-        UpdatedShopDataMap.put("reviewersGivenStars", reviewersGivenStars);
-        UpdatedShopDataMap.put("reviewersCommentDate",reviewersCommentDate );
-        UpdatedShopDataMap.put("reviewersComments",reviewersComments );
-        UpdatedShopDataMap.put("reviewersNames",reviewersNames );
-        UpdatedShopDataMap.put("PortfolioImagesAsStrings",PortfolioImagesAsStrings);
-        UpdatedShopDataMap.put("PortfolioImagesLinks", PortfolioImagesLinks);
+        UpdatedShopDataMap.put("ServicesHairCutsDuration", servicesHairCutsDuration);
+        UpdatedShopDataMap.put("ServicesHairCutsPrices", servicesHairCutsPrices);
+        UpdatedShopDataMap.put("ServicesHairCutsNames", servicesHairCutsNames);
+        UpdatedShopDataMap.put("ReviewersGivenStars", reviewersGivenStars);
+        UpdatedShopDataMap.put("ReviewersCommentDate",reviewersCommentDate );
+        UpdatedShopDataMap.put("ReviewersComments",reviewersComments );
+        UpdatedShopDataMap.put("ReviewersNames",reviewersNames );
+        UpdatedShopDataMap.put("PortfolioImagesAsStrings", portfolioImagesAsStrings);
+        UpdatedShopDataMap.put("PortfolioImagesLinks", portfolioImagesLinks);
 
-        UpdatedShopDataMap.put("UsesCoordinates",UsesCoordinates);
-        UpdatedShopDataMap.put("ShopLatitude", ShopLatitude);
-        UpdatedShopDataMap.put("ShopLongitude",ShopLongitude);
+        UpdatedShopDataMap.put("UsesCoordinates", usesCoordinates);
+        UpdatedShopDataMap.put("ShopLatitude", shopLatitude);
+        UpdatedShopDataMap.put("ShopLongitude", shopLongitude);
 
         JSONObject jsonObject=new JSONObject(UpdatedShopDataMap);
 
-        WriteNewShopDataToLocalMemory(jsonObject);
+        writeNewShopDataToLocalMemory(jsonObject);
     }
 
-    public String BitmapToString(Bitmap bitmap) {
+    public String bitmapToString(Bitmap bitmap) {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.WEBP, 85, byteArrayOutputStream);
@@ -755,7 +754,7 @@ public class ShopDetailsActivity extends FragmentActivity {
         return Base64.encodeToString(byteImage, Base64.DEFAULT);
     }
 
-    public Bitmap ConvertStringToBitmap(String image) {
+    public Bitmap convertStringToBitmap(String image) {
         byte[] bytes;
         bytes = Base64.decode(image, Base64.DEFAULT);
 

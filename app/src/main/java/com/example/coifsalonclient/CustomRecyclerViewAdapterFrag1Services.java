@@ -50,7 +50,7 @@ public String successfullyBookedShop =null;
       viewHolder.price.setText(servicesHairCutPrice.get(i)+" DA");
       viewHolder.duration.setText(servicesHaircutDurations.get(i)+" Min");
       if(successfullyBookedHaircut !=null && successfullyBookedShop !=null){
-          if(successfullyBookedShop.equals(ShopDetailsActivity.ShopNameFromRecyclerView)){
+          if(successfullyBookedShop.equals(ShopDetailsActivity.shopNameFromRecyclerView)){
               if(successfullyBookedHaircut.equals(servicesHairCuts.get(i))){
                   viewHolder.bookButton.setText("Resrved");
                   viewHolder.bookButton.setBackgroundColor(Color.GREEN);
