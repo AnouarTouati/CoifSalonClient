@@ -12,18 +12,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
-
-import com.google.android.gms.maps.model.LatLng;
 
 public class ShopDetails_Frag3 extends Fragment {
    static  CustomRecyclerViewAdapterFrag3Reviews customRecyclerViewAdapterFrag3Reviews;
    static  RecyclerView recyclerView;
     public static Context mContext;
-    Button AddReviewButton_Frag3;
+    Button addReviewButtonFrag3;
     View view;
     @Nullable
     @Override
@@ -34,8 +31,8 @@ public class ShopDetails_Frag3 extends Fragment {
         customRecyclerViewAdapterFrag3Reviews=new CustomRecyclerViewAdapterFrag3Reviews(ShopDetailsActivity.reviewersNames, ShopDetailsActivity.reviewersComments, ShopDetailsActivity.reviewersCommentDate, ShopDetailsActivity.reviewersGivenStars, getContext());
         recyclerView.setAdapter(customRecyclerViewAdapterFrag3Reviews);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        AddReviewButton_Frag3=view.findViewById(R.id.AddReviewButton_Frag3);
-        AddReviewButton_Frag3.setOnClickListener(new View.OnClickListener() {
+        addReviewButtonFrag3 =view.findViewById(R.id.AddReviewButton_Frag3);
+        addReviewButtonFrag3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder AlertDialogBuilder=new AlertDialog.Builder(mContext);
@@ -49,7 +46,7 @@ public class ShopDetails_Frag3 extends Fragment {
                        EditText ReviewerNameEditText=DialogView.findViewById(R.id.reviewerNameToAdd);
                        EditText ReviewerCommentEditText=DialogView.findViewById(R.id.reviewerCommentToAdd);
                        RatingBar RatingBar=DialogView.findViewById(R.id.ratingBarToAdd);
-                       ((ShopDetailsActivity)getActivity()).AddReview(ReviewerNameEditText.getText().toString(), ReviewerCommentEditText.getText().toString(), RatingBar.getRating());
+                       ((ShopDetailsActivity)getActivity()).addReview(ReviewerNameEditText.getText().toString(), ReviewerCommentEditText.getText().toString(), RatingBar.getRating());
                    }
                });
                AlertDialogBuilder.setNegativeButton(R.string.AddReviewSubmitNegativeAlarDialog_Frag3, new DialogInterface.OnClickListener() {
