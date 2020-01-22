@@ -14,11 +14,11 @@ import java.util.ArrayList;
 
 public class CustomRecyclerViewAdapterFrag4Portfolio extends RecyclerView.Adapter<CustomRecyclerViewAdapterFrag4Portfolio.ViewHolder> {
 
-    ArrayList<Bitmap> PortfolioImages=new ArrayList();
+    ArrayList<Bitmap> portfolioImages =new ArrayList();
     Context mContext;
 
     public CustomRecyclerViewAdapterFrag4Portfolio(ArrayList<Bitmap> portfolioImages, Context mContext) {
-        this.PortfolioImages = portfolioImages;
+        this.portfolioImages = portfolioImages;
         this.mContext = mContext;
     }
 
@@ -32,12 +32,12 @@ public class CustomRecyclerViewAdapterFrag4Portfolio extends RecyclerView.Adapte
 
     @Override
     public void onBindViewHolder(@NonNull CustomRecyclerViewAdapterFrag4Portfolio.ViewHolder viewHolder, int i) {
-       viewHolder.portfolioImageViewFrag4.setImageBitmap(PortfolioImages.get(i));
+       viewHolder.portfolioImageViewFrag4.setImageBitmap(portfolioImages.get(i));
     }
 
     @Override
     public int getItemCount() {
-        return PortfolioImages.size();
+        return portfolioImages.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

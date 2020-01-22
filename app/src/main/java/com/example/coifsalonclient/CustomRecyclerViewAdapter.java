@@ -18,10 +18,10 @@ import java.util.ArrayList;
 
 public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecyclerViewAdapter.ViewHolder> {
 
-    ArrayList<String> ShopNamesList =new ArrayList<>();
-    ArrayList<String> ShopAddresses =new ArrayList<>();
-    ArrayList<Bitmap> ShopsImages =new ArrayList<>();
-    ArrayList<ArrayList<String>> ShopsImagesLinks =new ArrayList<>();
+    ArrayList<String> shopNamesList =new ArrayList<>();
+    ArrayList<String> shopAddresses =new ArrayList<>();
+    ArrayList<Bitmap> shopsImages =new ArrayList<>();
+    ArrayList<ArrayList<String>> shopsImagesLinks =new ArrayList<>();
     String  successfullyBookedShop;
     String successfullyBookedHaircut;
     Context mContext;
@@ -29,10 +29,10 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
 
     public CustomRecyclerViewAdapter(Context context, ArrayList<String> ShopNamesList, ArrayList<String> ShopAddresses, ArrayList<Bitmap> ShopsImages, ArrayList<ArrayList<String>> ShopsImagesLinks, String successfullyBookedShop, String successfullyBookedHaircut) {
 
-        this.ShopNamesList = ShopNamesList;
-        this.ShopAddresses = ShopAddresses;
-        this.ShopsImages = ShopsImages;
-        this.ShopsImagesLinks = ShopsImagesLinks;
+        this.shopNamesList = ShopNamesList;
+        this.shopAddresses = ShopAddresses;
+        this.shopsImages = ShopsImages;
+        this.shopsImagesLinks = ShopsImagesLinks;
         this.successfullyBookedShop = successfullyBookedShop;
         this.successfullyBookedHaircut = successfullyBookedHaircut;
         this.mContext=context;
@@ -50,16 +50,16 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
 
-        if(i< ShopNamesList.size()) {
-            viewHolder.ShopNameTextView.setText(ShopNamesList.get(i));
+        if(i< shopNamesList.size()) {
+            viewHolder.shopNameTextView.setText(shopNamesList.get(i));
 
         }
-        if(i< ShopAddresses.size()) {
-            viewHolder.ShopAddressTextView.setText(ShopAddresses.get(i));
+        if(i< shopAddresses.size()) {
+            viewHolder.shopAddressTextView.setText(shopAddresses.get(i));
 
 }
-       if(i< ShopsImages.size()) {
-           viewHolder.ShopMainImageImageView.setImageBitmap(ShopsImages.get(i));
+       if(i< shopsImages.size()) {
+           viewHolder.shopMainImageImageView.setImageBitmap(shopsImages.get(i));
 
        }
 
@@ -67,11 +67,11 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
            @Override
            public void onClick(View view) {
                Intent goToShopDetailsActivity = new Intent(mContext, ShopDetailsActivity.class);
-               goToShopDetailsActivity.putExtra("ShopName", ShopNamesList.get(i));
+               goToShopDetailsActivity.putExtra("ShopName", shopNamesList.get(i));
                goToShopDetailsActivity.putExtra("SuccessfullyBookedShop", successfullyBookedShop);
                goToShopDetailsActivity.putExtra("SuccessfullyBookedHaircut", successfullyBookedHaircut);
-               if(i< ShopsImagesLinks.size()){
-                   goToShopDetailsActivity.putExtra("ImagesLinks", ShopsImagesLinks.get(i));
+               if(i< shopsImagesLinks.size()){
+                   goToShopDetailsActivity.putExtra("ImagesLinks", shopsImagesLinks.get(i));
                }
 
                mContext.startActivity(goToShopDetailsActivity);
@@ -82,22 +82,22 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
 
     @Override
     public int getItemCount() {
-        return ShopNamesList.size();
+        return shopNamesList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView ShopMainImageImageView;
-        TextView ShopNameTextView;
-        TextView ShopAddressTextView;
+        ImageView shopMainImageImageView;
+        TextView shopNameTextView;
+        TextView shopAddressTextView;
         RadioGroup radioGroup;
         ConstraintLayout recyclerViewPeoplePendingItemLayout;
 
         @SuppressLint("ResourceType")
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ShopMainImageImageView =itemView.findViewById(R.id.storeMainImage);
-            ShopNameTextView =itemView.findViewById(R.id.storeName);
-            ShopAddressTextView =itemView.findViewById(R.id.storeAddress);
+            shopMainImageImageView =itemView.findViewById(R.id.storeMainImage);
+            shopNameTextView =itemView.findViewById(R.id.storeName);
+            shopAddressTextView =itemView.findViewById(R.id.storeAddress);
             radioGroup=itemView.findViewById(R.id.radioGroup);
             recyclerViewPeoplePendingItemLayout=itemView.findViewById(R.layout.search_result_recyclerview_item);
         }
