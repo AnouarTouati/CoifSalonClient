@@ -68,8 +68,8 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
            public void onClick(View view) {
                Intent goToShopDetailsActivity = new Intent(mContext, ShopDetailsActivity.class);
                goToShopDetailsActivity.putExtra("ShopName", ShopNamesList.get(i));
-               goToShopDetailsActivity.putExtra("successfullyBookedShop", successfullyBookedShop);
-               goToShopDetailsActivity.putExtra("successfullyBookedHaircut", successfullyBookedHaircut);
+               goToShopDetailsActivity.putExtra("SuccessfullyBookedShop", successfullyBookedShop);
+               goToShopDetailsActivity.putExtra("SuccessfullyBookedHaircut", successfullyBookedHaircut);
                if(i< ShopsImagesLinks.size()){
                    goToShopDetailsActivity.putExtra("ImagesLinks", ShopsImagesLinks.get(i));
                }

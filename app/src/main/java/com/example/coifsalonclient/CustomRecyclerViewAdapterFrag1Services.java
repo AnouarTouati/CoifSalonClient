@@ -52,7 +52,7 @@ public String successfullyBookedShop =null;
       if(successfullyBookedHaircut !=null && successfullyBookedShop !=null){
           if(successfullyBookedShop.equals(ShopDetailsActivity.shopNameFromRecyclerView)){
               if(successfullyBookedHaircut.equals(servicesHairCuts.get(i))){
-                  viewHolder.bookButton.setText("Resrved");
+                  viewHolder.bookButton.setText("Reserved");
                   viewHolder.bookButton.setBackgroundColor(Color.GREEN);
               }else{
                   ResetTheButtons(viewHolder);
