@@ -366,6 +366,7 @@ public class ShopDetailsActivity extends FragmentActivity {
   void serverResponseWithAddReviewResult(JSONObject AddReviewResult){
       try {
           if(AddReviewResult.getString("Successful").equals("True")){
+
               reviewersNames.add(AddReviewResult.getString("ReviewerName"));
               reviewersComments.add(AddReviewResult.getString("ReviewerComment"));
               reviewersGivenStars.add((float)AddReviewResult.getDouble("ReviewerGivenStars"));
