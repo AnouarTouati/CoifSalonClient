@@ -378,65 +378,12 @@ public class ShopDetailsActivity extends FragmentActivity {
       }
 
   }
-    public String loadJSONFile(String jsonFileName) {
-        String[] mFileList = fileList();
-        Boolean fileExists = false;
-
-        for (int i = 0; i < mFileList.length; i++) {
-            if (jsonFileName.equals(mFileList[i])) {
-                fileExists = true;
-                break;
-            }
-        }
-        if (fileExists) {
-            String jsonAsString = null;
-
-            try {
-                FileInputStream fis = openFileInput(jsonFileName);
-                InputStreamReader isr = new InputStreamReader(fis);
-                BufferedReader br = new BufferedReader(isr);
-                StringBuilder sb = new StringBuilder();
-                String text;
-                while ((text = br.readLine()) != null) {
-                    sb.append(text);
-                }
-                jsonAsString = sb.toString();
-
-                fis.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return jsonAsString;
-        } else {
-
-            FileOutputStream fos = null;
-            JSONObject emptyJSONObject = new JSONObject();
-            try {
-                fos = openFileOutput("ShopsData.txt", MODE_PRIVATE);
-                fos.write(emptyJSONObject.toString().getBytes());
-                fos.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-
-            return emptyJSONObject.toString();
-        }
-
-
-    }
 
     public void writeNewShopDataToLocalMemory(JSONObject NewShopDataJSON) {
         try {
 
 
-            String localMemoryJsonAsString = loadJSONFile("ShopsData.txt");
+            String localMemoryJsonAsString = CommonMehods.loadJSONFile("ShopsData.txt",getApplicationContext());
             if (localMemoryJsonAsString != null) {
 
                 JSONObject localMemoryJsonObject = new JSONObject(localMemoryJsonAsString);
@@ -468,7 +415,7 @@ public class ShopDetailsActivity extends FragmentActivity {
             portfolioImages.clear();
             portfolioImagesAsStrings.clear();
 
-            String jsonAsString = loadJSONFile("ShopsData.txt");
+            String jsonAsString = CommonMehods.loadJSONFile("ShopsData.txt",getApplicationContext());
 
             if (jsonAsString != null ) {
 
@@ -534,7 +481,7 @@ public class ShopDetailsActivity extends FragmentActivity {
 
                        portfolioImages.clear();
                        for (int i=0;i<PortfolioImagesAsStringsLocal.size();i++){
-                           portfolioImages.add(convertStringToBitmap(PortfolioImagesAsStringsLocal.get(i)));
+                           portfolioImages.add(CommonMehods.convertStringToBitmap(PortfolioImagesAsStringsLocal.get(i)));
                        }
 
 
@@ -697,7 +644,7 @@ public class ShopDetailsActivity extends FragmentActivity {
                 public void onResponse(Bitmap response) {
 
                     portfolioImages.add(response);
-                    portfolioImagesAsStrings.add(bitmapToString(response));
+                    portfolioImagesAsStrings.add(CommonMehods.bitmapToString(response));
                     portfolioImagesLinks.add(ImageLink);
 
                   saveUpdatedShopDataToMemoryAndNotifyPortfolioRecyclerView();
@@ -746,21 +693,6 @@ public class ShopDetailsActivity extends FragmentActivity {
         writeNewShopDataToLocalMemory(jsonObject);
     }
 
-    public String bitmapToString(Bitmap bitmap) {
-
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.WEBP, 85, byteArrayOutputStream);
-        byte[] byteImage = byteArrayOutputStream.toByteArray();
-
-        return Base64.encodeToString(byteImage, Base64.DEFAULT);
-    }
-
-    public Bitmap convertStringToBitmap(String image) {
-        byte[] bytes;
-        bytes = Base64.decode(image, Base64.DEFAULT);
-
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-    }
 
 
 

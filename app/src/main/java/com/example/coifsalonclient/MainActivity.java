@@ -239,7 +239,7 @@ void requestImage(String Link){
         @Override
         public void onResponse(Bitmap response) {
         shopsImages.add(response);
-        shopsImagesAsStrings.add(bitmapToString(response));
+        shopsImagesAsStrings.add(CommonMehods.bitmapToString(response));
         customRecyclerViewAdapter.notifyDataSetChanged();
         indexOfImageToReceiveNext++;
         if(indexOfImageToReceiveNext < shopsImagesLinks.size()){
@@ -294,23 +294,6 @@ void requestImage(String Link){
         JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.POST, URL, jsonObject,volleyListener,volleyErrorListener );
         requestQueue.add(jsonObjectRequest);
 
-    }
-
-    public String bitmapToString(Bitmap bitmap) {
-
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-     //   Toast.makeText(this, "Bitmap Size is " + bitmap.getByteCount(), Toast.LENGTH_LONG).show();
-        bitmap.compress(Bitmap.CompressFormat.WEBP, 85, byteArrayOutputStream);
-        byte[] byteImage = byteArrayOutputStream.toByteArray();
-     //   Toast.makeText(this, "ByteImage Size is " + byteImage.length, Toast.LENGTH_LONG).show();
-       // Toast.makeText(this, "Base64 encoded Size is " + Base64.encodeToString(byteImage, Base64.DEFAULT).getBytes().length, Toast.LENGTH_LONG).show();
-        return Base64.encodeToString(byteImage, Base64.DEFAULT);
-    }
-
-    public  Bitmap convertStringToBitmap(String image){
-        byte[] bytes;
-        bytes= Base64.decode(image, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
 }
