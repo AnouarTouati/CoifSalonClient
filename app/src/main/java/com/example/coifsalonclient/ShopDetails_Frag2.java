@@ -19,18 +19,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class ShopDetails_Frag2 extends Fragment implements  OnMapReadyCallback {
+
     View view;
     GoogleMap mMap;
+
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view=inflater.inflate(R.layout.shopdetails_frag2, container,false);
 ///THE IMPORTANT PART IS TO USE this.getChildFragmentManager() instead of getSupportFragmentManager
-        if(GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getContext())!= ConnectionResult.SUCCESS){
-            Toast.makeText(getContext(),"Google Play Services Error",Toast.LENGTH_LONG).show();
-
-        }else{
-            Toast.makeText(getContext(),"Google Play Services Up To Date",Toast.LENGTH_LONG).show();
-        }
         if(ShopDetailsActivity.usesCoordinates){
             SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.mapView_Frag2);
             mapFragment.getMapAsync(this);
