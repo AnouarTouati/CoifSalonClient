@@ -3,12 +3,12 @@ package com.example.coifsalonclient;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -31,7 +31,6 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
     RequestQueue requestQueue;
     Context mContext;
 
-    ArrayList<String> shopsNames =new ArrayList();
-    ArrayList<String> shopsNamesOriginal =new ArrayList();
+    ArrayList<String> shopsNames =new ArrayList<>();
+    ArrayList<String> shopsNamesOriginal =new ArrayList<>();
     ArrayList<String> shopsAddresses =new ArrayList<>();
     ArrayList<String> shopsImagesAsStrings =new ArrayList<>();
     ArrayList<Bitmap> shopsImages =new ArrayList<>();

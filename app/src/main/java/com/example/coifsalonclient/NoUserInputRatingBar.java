@@ -3,9 +3,8 @@ package com.example.coifsalonclient;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.RatingBar;
 
-public class NoUserInputRatingBar extends android.support.v7.widget.AppCompatRatingBar {
+public class NoUserInputRatingBar extends androidx.appcompat.widget.AppCompatRatingBar {
 
 
     public NoUserInputRatingBar(Context context, AttributeSet attrs) {
