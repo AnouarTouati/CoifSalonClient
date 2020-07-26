@@ -13,9 +13,9 @@ import android.view.ViewGroup;
 
 public class ShopDetails_Frag4 extends Fragment {
     static RecyclerView recyclerViewFrag4Portfolio;
-    static CustomRecyclerViewAdapterFrag4Portfolio customRecyclerViewAdapterFrag4Portfolio;
+    CustomRecyclerViewAdapterFrag4Portfolio customRecyclerViewAdapterFrag4Portfolio;
 
-    public static Context mContext;
+    public  Context mContext;
     View view;
     @Nullable
     @Override
@@ -23,7 +23,7 @@ public class ShopDetails_Frag4 extends Fragment {
        mContext=getContext();
        view=inflater.inflate(R.layout.shopdetails_frag4, container,false);
        recyclerViewFrag4Portfolio =view.findViewById(R.id.recyclerView_Fra4);
-        customRecyclerViewAdapterFrag4Portfolio =new CustomRecyclerViewAdapterFrag4Portfolio(ShopDetailsActivity.portfolioImages,mContext);
+        customRecyclerViewAdapterFrag4Portfolio =new CustomRecyclerViewAdapterFrag4Portfolio(ShopDetailsActivity.portfolioPhotos,mContext);
         recyclerViewFrag4Portfolio.setAdapter(customRecyclerViewAdapterFrag4Portfolio);
         recyclerViewFrag4Portfolio.setLayoutManager(new LinearLayoutManager(mContext));
 
@@ -37,8 +37,8 @@ public class ShopDetails_Frag4 extends Fragment {
 
     }
 
-    public static void receivedNewImagesNotifyRecyclerView(){
-       customRecyclerViewAdapterFrag4Portfolio =new CustomRecyclerViewAdapterFrag4Portfolio(ShopDetailsActivity.portfolioImages,mContext);
+    public void receivedNewImagesNotifyRecyclerView(){
+       customRecyclerViewAdapterFrag4Portfolio =new CustomRecyclerViewAdapterFrag4Portfolio(ShopDetailsActivity.portfolioPhotos,mContext);
        recyclerViewFrag4Portfolio.swapAdapter(customRecyclerViewAdapterFrag4Portfolio, true);
     }
 }

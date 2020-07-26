@@ -21,14 +21,19 @@ public class ShopDetails_Frag3 extends Fragment {
    static  RecyclerView recyclerView;
     public static Context mContext;
     Button addReviewButtonFrag3;
+    ShopDetailsActivity shopDetailsActivity;
     View view;
+
+    public ShopDetails_Frag3(ShopDetailsActivity shopDetailsActivity){
+        this.shopDetailsActivity=shopDetailsActivity;
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mContext=getContext();
         view=inflater.inflate(R.layout.shopdetails_frag3, container, false);
         recyclerView=view.findViewById(R.id.recyclerView_Frag3);
-        customRecyclerViewAdapterFrag3Reviews=new CustomRecyclerViewAdapterFrag3Reviews(ShopDetailsActivity.reviewersNames, ShopDetailsActivity.reviewersComments, ShopDetailsActivity.reviewersCommentDate, ShopDetailsActivity.reviewersGivenStars, getContext());
+        customRecyclerViewAdapterFrag3Reviews=new CustomRecyclerViewAdapterFrag3Reviews(getContext(),shopDetailsActivity.aShop);
         recyclerView.setAdapter(customRecyclerViewAdapterFrag3Reviews);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         addReviewButtonFrag3 =view.findViewById(R.id.AddReviewButton_Frag3);
@@ -60,8 +65,8 @@ public class ShopDetails_Frag3 extends Fragment {
         });
         return view;
     }
-    public static void ReceivedNewReviewsNotifyRecyclerView(){
-        customRecyclerViewAdapterFrag3Reviews=new CustomRecyclerViewAdapterFrag3Reviews(ShopDetailsActivity.reviewersNames, ShopDetailsActivity.reviewersComments, ShopDetailsActivity.reviewersCommentDate, ShopDetailsActivity.reviewersGivenStars, mContext);
+    public  void ReceivedNewReviewsNotifyRecyclerView(){
+        customRecyclerViewAdapterFrag3Reviews=new CustomRecyclerViewAdapterFrag3Reviews( mContext,shopDetailsActivity.aShop);
         recyclerView.swapAdapter(customRecyclerViewAdapterFrag3Reviews, true);
     }
 }

@@ -13,47 +13,41 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import static com.example.coifsalonclient.R.layout.store_reviews_recyclerview_item_frag3;
+import static com.example.coifsalonclient.R.layout.shop_reviews_recyclerview_item_frag3;
 
 public class CustomRecyclerViewAdapterFrag3Reviews extends RecyclerView.Adapter<CustomRecyclerViewAdapterFrag3Reviews.ViewHolder> {
 
-    public ArrayList<String> reviewersNames=new ArrayList<>();
-    public ArrayList<String> reviewersComments=new ArrayList<>();
-    public ArrayList<String> reviewersCommentDate=new ArrayList<>();
-    public ArrayList<Float> reviewersGivenStars=new ArrayList<>();
+    AShop aShop;
     public Context mContext;
 
-    public CustomRecyclerViewAdapterFrag3Reviews(ArrayList<String> reviewersNames, ArrayList<String> reviewersComments, ArrayList<String> reviewersCommentDate, ArrayList<Float> reviewersGivenStars, Context mContext) {
-        this.reviewersNames = reviewersNames;
-        this.reviewersComments = reviewersComments;
-        this.reviewersCommentDate = reviewersCommentDate;
-        this.reviewersGivenStars = reviewersGivenStars;
+    public CustomRecyclerViewAdapterFrag3Reviews(Context mContext,AShop aShop) {
+        this.aShop=aShop;
         this.mContext = mContext;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(store_reviews_recyclerview_item_frag3, viewGroup,false);
+        View view= LayoutInflater.from(viewGroup.getContext()).inflate(shop_reviews_recyclerview_item_frag3, viewGroup,false);
         ViewHolder viewHolder=new ViewHolder(view);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-       viewHolder.reviewerName.setText(reviewersNames.get(i));
-       viewHolder.reviewerComment.setText(reviewersComments.get(i));
-       viewHolder.reviewerCommentDate.setText(reviewersCommentDate.get(i));
+       viewHolder.reviewerName.setText(aShop.getReviewersNames().get(i));
+       viewHolder.reviewerComment.setText(aShop.getReviewersComments().get(i));
+       viewHolder.reviewerCommentDate.setText(aShop.getReviewersCommentDate().get(i));
        viewHolder.ratingBar.setNumStars(5);
-       viewHolder.ratingBar.setRating(reviewersGivenStars.get(i));
-
+       viewHolder.ratingBar.setRating(aShop.getReviewersGivenStars().get(i));
 
     }
 
     @Override
     public int getItemCount() {
-        return reviewersNames.size();
+        return aShop.getReviewersNames().size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
@@ -69,7 +63,7 @@ public class CustomRecyclerViewAdapterFrag3Reviews extends RecyclerView.Adapter<
             reviewerComment=itemView.findViewById(R.id.reviewerComment);
             reviewerCommentDate=itemView.findViewById(R.id.reviewerCommentDate);
             ratingBar=itemView.findViewById(R.id.ratingBar);
-            recyclerViewPeopleReviewsItemLayout=itemView.findViewById(store_reviews_recyclerview_item_frag3);
+            recyclerViewPeopleReviewsItemLayout=itemView.findViewById(shop_reviews_recyclerview_item_frag3);
         }
     }
 }
