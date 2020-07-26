@@ -4,8 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,37 +20,32 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String URL="http://192.168.43.139:8888/Client.php";
-    Response.Listener<JSONObject> volleyListener;
-    Response.ErrorListener volleyErrorListener;
-    RequestQueue requestQueue;
-    Context mContext;
 
-    ArrayList<String> shopsNames =new ArrayList<>();
-    ArrayList<String> shopsNamesOriginal =new ArrayList<>();
-    ArrayList<String> shopsAddresses =new ArrayList<>();
-    ArrayList<String> shopsImagesAsStrings =new ArrayList<>();
-    ArrayList<Bitmap> shopsImages =new ArrayList<>();
-    ArrayList<ArrayList<String>> shopsImagesLinks =new ArrayList<>();
-    Integer indexOfImageToReceiveNext =0;
+    Context mContext;
+    ArrayList<AShop> aShopsList = new ArrayList<>();
+    ArrayList<String> shopsMainPhotoAsStrings = new ArrayList<>();
+    ArrayList<Bitmap> shopsMainPhoto = new ArrayList<>();
+    Integer indexOfShopPhotoToReceiveNext = 0;
 
     EditText searchEditText;
     CustomRecyclerViewAdapter customRecyclerViewAdapter;
@@ -54,8 +53,12 @@ public class MainActivity extends AppCompatActivity {
     TextView bookedShopMainActivityTextView;
     TextView bookedHairCutMainActivityTextView;
     Button goToBookedShopMainActivityButton;
-    public  String successfullyBookedHaircut =null;
-    public  String successfullyBookedShop =null;
+    AShop successfullyBookedShop;
+
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseStorage firebaseStorage;
 
 
     @Override
@@ -63,201 +66,202 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mContext=this;
-      // getActionBar().hide();
-volleyErrorListener=new Response.ErrorListener() {
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        error.printStackTrace();
-        Log.v("VolleyErrors", "onErrorResponse: IN MAIN ACTIVITY "+error.toString());
+        mContext = this;
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        if(firebaseUser==null){
+            Intent goToSignInOrUp=new Intent(this,SignInOrUp.class);
+            startActivity(goToSignInOrUp);
+        } else{
+            firebaseFirestore = FirebaseFirestore.getInstance();
+            firebaseStorage = FirebaseStorage.getInstance();
 
-    }
-};
-volleyListener=new Response.Listener<JSONObject>() {
-    @Override
-    public void onResponse(JSONObject response) {
-        Log.v("VolleyReceived","IN MAIN ACTIVITY"+ response.toString());
+            // getActionBar().hide();
 
-        if(response.has("ListOfShopsMainDataOnly")){
-            try {
-                //DONT FLIP THE ORDER OF THESE TWO FUNCTIONS
-                serverResponseWithBookForMainActivity(response.getJSONObject("BookInfoForMainActivity"));
-                serverResponseWithListOfShopsMainDataOnly(response.getJSONObject("ListOfShopsMainDataOnly"));
+            bookedShopMainActivityTextView = findViewById(R.id.BookedShopMainActivityTextView);
+            bookedShopMainActivityTextView.setVisibility(View.GONE);
+            bookedHairCutMainActivityTextView = findViewById(R.id.BookedHairCutMainActivityTextView);
+            bookedHairCutMainActivityTextView.setVisibility(View.GONE);
+            goToBookedShopMainActivityButton = findViewById(R.id.GoToBookedShopFromMainActivityButton);
+            goToBookedShopMainActivityButton.setVisibility(View.GONE);
+            recyclerView = findViewById(R.id.searchResultRecyclerView);
+            searchEditText = findViewById(R.id.searchEditText);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-};
+            customRecyclerViewAdapter = new CustomRecyclerViewAdapter(this, aShopsList, shopsMainPhoto);
+            recyclerView.setAdapter(customRecyclerViewAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        shopsNames.add("Marouan");
-        shopsNames.add("Anouar");
-        shopsNames.add("Said");
-        shopsNames.add("Saleh");
-        shopsNames.add("Marzek");
-
-        recyclerView=findViewById(R.id.searchResultRecyclerView);
-        customRecyclerViewAdapter=new CustomRecyclerViewAdapter(this, shopsNames, shopsAddresses, shopsImages, shopsImagesLinks, successfullyBookedShop, successfullyBookedHaircut);
-        recyclerView.setAdapter(customRecyclerViewAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        requestQueue= Volley.newRequestQueue(this);
-
-     searchEditText=findViewById(R.id.searchEditText);
-     searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-         @Override
-         public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-
-            if(actionId== EditorInfo.IME_ACTION_DONE || actionId==EditorInfo.IME_ACTION_SEARCH ||keyEvent!=null && keyEvent.getAction()==KeyEvent.ACTION_DOWN && keyEvent.getKeyCode()==KeyEvent.KEYCODE_ENTER ){
-                    if(keyEvent==null || !keyEvent.isShiftPressed()){
-                        search(searchEditText.getText().toString());
-                        View view = getCurrentFocus();
-                        if (view != null) {
-                            //this code is used to close on screen keyboard
-                            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-
-                        }
-                          return true;
-                     }
-             }
-             return false;
-         }
-
-     });
-
-        bookedShopMainActivityTextView =findViewById(R.id.BookedShopMainActivityTextView);
-        bookedShopMainActivityTextView.setVisibility(View.GONE);
-        bookedHairCutMainActivityTextView =findViewById(R.id.BookedHairCutMainActivityTextView);
-        bookedHairCutMainActivityTextView.setVisibility(View.GONE);
-        goToBookedShopMainActivityButton =findViewById(R.id.GoToBookedShopFromMainActivityButton);
-        goToBookedShopMainActivityButton.setVisibility(View.GONE);
-       goToBookedShopMainActivityButton.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               Intent goToShopDetailsActivity = new Intent(mContext, ShopDetailsActivity.class);
-               goToShopDetailsActivity.putExtra("ShopName", successfullyBookedShop);
-               goToShopDetailsActivity.putExtra("ImagesLinks", shopsImagesLinks.get(shopsNames.indexOf(successfullyBookedShop)));
-               goToShopDetailsActivity.putExtra("SuccessfullyBookedShop", successfullyBookedShop);
-               goToShopDetailsActivity.putExtra("SuccessfullyBookedHaircut", successfullyBookedHaircut);
-               mContext.startActivity(goToShopDetailsActivity);
-           }
-       });
-        getListOfShopsMainDataOnly();
-
-
-    }
-
-
-
-    void getListOfShopsMainDataOnly(){
-        JSONObject jsonObject=new JSONObject();
-        try {
-            jsonObject.put("Request", "ListOfShopsMainDataOnly");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.POST, URL, jsonObject,volleyListener,volleyErrorListener );
-        requestQueue.add(jsonObjectRequest);
-    }
-void serverResponseWithBookForMainActivity(JSONObject BookInfoForMainActivityJSONObject){
-    try {
-        successfullyBookedHaircut =BookInfoForMainActivityJSONObject.getString("ServicesHairCutToReserved");
-    } catch (JSONException e) {
-        e.printStackTrace();
-    }
-    try {
-        successfullyBookedShop =BookInfoForMainActivityJSONObject.getString("BookedShop");
-    } catch (JSONException e) {
-        e.printStackTrace();
-    }
-    if(successfullyBookedShop !=null && successfullyBookedHaircut !=null){
-        if(successfullyBookedShop.length()>0 && successfullyBookedHaircut.length()>0){
-            bookedShopMainActivityTextView.setText(successfullyBookedShop);
-            bookedShopMainActivityTextView.setVisibility(View.VISIBLE);
-            bookedHairCutMainActivityTextView.setText(successfullyBookedHaircut);
-            bookedHairCutMainActivityTextView.setVisibility(View.VISIBLE);
-            goToBookedShopMainActivityButton.setVisibility(View.VISIBLE);
-        }else{
-            hideBookInfoVIEWS();
-        }
-
-    }else{
-
-        hideBookInfoVIEWS();
-    }
-
-}  void hideBookInfoVIEWS(){
-        bookedShopMainActivityTextView.setVisibility(View.GONE);
-        bookedHairCutMainActivityTextView.setVisibility(View.GONE);
-        goToBookedShopMainActivityButton.setVisibility(View.GONE);
-    }
-    void serverResponseWithListOfShopsMainDataOnly(JSONObject ListOfShopsMainDataOnlyJSONObjectResponse){
-        try {
-            shopsNames.clear();
-            for(int i=0;i<ListOfShopsMainDataOnlyJSONObjectResponse.getJSONArray("ShopsNames").length();i++){
-              shopsNames.add(ListOfShopsMainDataOnlyJSONObjectResponse.getJSONArray("ShopsNames").getString(i));
-            }
-
-            shopsAddresses.clear();
-            for(int i=0;i<ListOfShopsMainDataOnlyJSONObjectResponse.getJSONArray("ShopsAddresses").length();i++){
-                shopsAddresses.add(ListOfShopsMainDataOnlyJSONObjectResponse.getJSONArray("ShopsAddresses").getString(i));
-            }
-
-
-            shopsImagesLinks.clear();
-            for (int i=0;i<ListOfShopsMainDataOnlyJSONObjectResponse.getJSONArray("ShopsImagesLinks").length();i++){
-                ArrayList<String> ListOfLinksOfEachShop= new ArrayList<>();
-                for(int j=0;j<ListOfShopsMainDataOnlyJSONObjectResponse.getJSONArray("ShopsImagesLinks").getJSONArray(i).length();j++){
-                    ListOfLinksOfEachShop.add(ListOfShopsMainDataOnlyJSONObjectResponse.getJSONArray("ShopsImagesLinks").getJSONArray(i).getString(j));
+            goToBookedShopMainActivityButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent goToShopDetailsActivity = new Intent(mContext, ShopDetailsActivity.class);
+                    goToShopDetailsActivity.putExtra("aShop", successfullyBookedShop);
+                    mContext.startActivity(goToShopDetailsActivity);
                 }
-               shopsImagesLinks.add(ListOfLinksOfEachShop);
+            });
+
+            searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+
+                    if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_SEARCH || keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                        if (keyEvent == null || !keyEvent.isShiftPressed()) {
+                            search(searchEditText.getText().toString());
+                            View view = getCurrentFocus();
+                            if (view != null) {
+                                //this code is used to close on screen keyboard
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+                            }
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+            });
+
+            getListOfShopsData();
+            getBookedShopUid();
+        }
+
+    }
+
+
+    void getListOfShopsData() {
+        firebaseFirestore.collection("Shops").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                serverResponseWithListOfShopsData(queryDocumentSnapshots.getDocuments());
             }
-            shopsImages.clear();
-            indexOfImageToReceiveNext =0;
-            requestImage(shopsImagesLinks.get(indexOfImageToReceiveNext).get(0));
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.v("MyFirebase", e.getMessage());
+            }
+        });
+        /*
+        firebaseFirestore.collection("Shops").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+            //    serverResponseWithBookForMainActivity(response.getJSONObject("BookInfoForMainActivity"));
+                allShopsDataRawFromServer=queryDocumentSnapshots;
+                serverResponseWithListOfShopsMainDataOnly(queryDocumentSnapshots.getDocuments());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });*/
+    }
+    void getBookedShopUid(){
+        firebaseFirestore.collection("Clients").document(firebaseUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+              if(documentSnapshot.contains("BookedShopUid")){
+                getBookedShopData(documentSnapshot.get("BookedShopUid").toString());
+              }else{
+                  successfullyBookedShop=null;
+                  hideBookInfoVIEWS();
+              }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+            Log.v("MyFirebase","Failed to get booked shop status");
+            }
+        });
+    }
+    void getBookedShopData(String Uid){
+        firebaseFirestore.collection("Shops").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                   successfullyBookedShop=convertDocumentSnapshotToAShop(documentSnapshot);
+                   showBookInfoViews();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+            Log.v("MyFirebase","Failed to get booked shop data");
+            hideBookInfoVIEWS();
+            }
+        });
+    }
+
+    void showBookInfoViews(){
+        bookedShopMainActivityTextView.setText(successfullyBookedShop.getShopName());
+        bookedShopMainActivityTextView.setVisibility(View.VISIBLE);
+        bookedHairCutMainActivityTextView.setText(successfullyBookedShop.getSuccessfullyBookedHaircut());
+        bookedHairCutMainActivityTextView.setVisibility(View.VISIBLE);
+        goToBookedShopMainActivityButton.setVisibility(View.VISIBLE);}
+
+    void hideBookInfoVIEWS() {
+        bookedShopMainActivityTextView.setVisibility(View.GONE);
+        bookedHairCutMainActivityTextView.setVisibility(View.GONE);
+        goToBookedShopMainActivityButton.setVisibility(View.GONE);
+    }
+
+    void serverResponseWithListOfShopsData(List<DocumentSnapshot> allShopsData) {
+        try {
+            aShopsList.clear();
+            for (int i = 0; i < allShopsData.size(); i++) {
+                aShopsList.add(convertDocumentSnapshotToAShop(allShopsData.get(i)));
+            }
+
+            shopsMainPhoto.clear();
+            indexOfShopPhotoToReceiveNext = 0;
+            requestPhoto(aShopsList.get(indexOfShopPhotoToReceiveNext).getShopMainPhotoReference());
 
 
-           // customRecyclerViewAdapter.notifyDataSetChanged(); NOTTIFYING DID NOT WORK PROPERLY SINCE SUCCESSFULLYBOKKEDSTORE AND HAIRCUT DID NOT UPDATE TO NEW VALUE
-            customRecyclerViewAdapter=new CustomRecyclerViewAdapter(this, shopsNames, shopsAddresses, shopsImages, shopsImagesLinks, successfullyBookedShop, successfullyBookedHaircut);
+            // customRecyclerViewAdapter.notifyDataSetChanged(); NOTTIFYING DID NOT WORK PROPERLY SINCE SUCCESSFULLYBOKKEDSTORE AND HAIRCUT DID NOT UPDATE TO NEW VALUE
+            customRecyclerViewAdapter = new CustomRecyclerViewAdapter(this, aShopsList, shopsMainPhoto);
             recyclerView.swapAdapter(customRecyclerViewAdapter, true);
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Toast.makeText(this, "Problem in ServerResponseWith Shops Data function", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
 
     }
 
+    private String getShopUidFromPath(String path) {
+        path = path.replace("Shops/", "");
+        int indexWhereToStartRemoving = path.indexOf("/");
+        return path.substring(0, indexWhereToStartRemoving);
+    }
 
-void requestImage(String Link){
+    void requestPhoto(String photoStoragePath) {
 
-    ImageRequest imageRequest=new ImageRequest(Link, new Response.Listener<Bitmap>() {
-        @Override
-        public void onResponse(Bitmap response) {
-        shopsImages.add(response);
-        shopsImagesAsStrings.add(CommonMehods.bitmapToString(response));
-        customRecyclerViewAdapter.notifyDataSetChanged();
-        indexOfImageToReceiveNext++;
-        if(indexOfImageToReceiveNext < shopsImagesLinks.size()){
-            requestImage(shopsImagesLinks.get(indexOfImageToReceiveNext).get(0));
-        }
+        StorageReference storageReference = firebaseStorage.getReference();
+        StorageReference photoReference = storageReference.child(photoStoragePath);
+        photoReference.getBytes(6 * 1024 * 1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
 
-        }
-    }, 0, 0, ImageView.ScaleType.CENTER_CROP, null, new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            Log.v("VolleyErrors", "onErrorResponse: IN MAIN ACTIVITY IMAGES " + error.toString());
-        }
-    });
-    requestQueue.add(imageRequest);
-}
+                Bitmap photo = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                shopsMainPhoto.add(photo);
+                shopsMainPhotoAsStrings.add(CommonMehods.bitmapToString(photo));
+                customRecyclerViewAdapter.notifyDataSetChanged();
+                indexOfShopPhotoToReceiveNext++;
+                if (indexOfShopPhotoToReceiveNext < aShopsList.size()) {
+                    requestPhoto(aShopsList.get(indexOfShopPhotoToReceiveNext).getShopMainPhotoReference());
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.v("MyFirebase", "Getting Shop Main Photo Failed " + e.getMessage());
+            }
+        });
 
-    void search(String criteria){
+    }
+
+    void search(String criteria) {
 //////////////////////////////////////////////////////////////////////
-       /// USE CODE BELOW FOR LOCAL SEARCH ON AVAILBLE LIST
+        /// USE CODE BELOW FOR LOCAL SEARCH ON AVAILBLE LIST
 /////////////////////////////////////////////////////////////////////
 /*
       for (int i = 0; i< shopsNames.size(); i++){
@@ -283,16 +287,107 @@ void requestImage(String Link){
         /// USE CODE BELOW FOR ONLINE SEARCH ON SERVER SIDE RESULT WILL BE DISPLAYED FROM FUNCTION serverResponseWithListOfShopsMainDataOnly
         /// THIS MEANS THE RESULT SHOULD BE RETURNED IN JSONOBJECT WITH NAME ListOfShopsMainDataOnly
 /////////////////////////////////////////////////////////////////////
-        JSONObject jsonObject=new JSONObject();
+        JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("Request", "Search");
-            jsonObject.put("Criteria",criteria);
+            jsonObject.put("Criteria", criteria);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.POST, URL, jsonObject,volleyListener,volleyErrorListener );
-        requestQueue.add(jsonObjectRequest);
+        //  JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL, jsonObject, volleyListener, volleyErrorListener);
+        //   requestQueue.add(jsonObjectRequest);
 
     }
 
+    AShop convertDocumentSnapshotToAShop(DocumentSnapshot snapshot){
+        AShop aShop=new AShop();
+
+           aShop.setShopUid(getShopUidFromPath(snapshot.getReference().getPath()));
+
+           aShop.setShopName(snapshot.get("ShopName").toString());
+
+
+           aShop.setSelectedCommune(snapshot.get("SelectedCommune").toString());
+           aShop.setSelectedState(snapshot.get("SelectedState").toString());
+
+           aShop.setShopMainPhotoReference(snapshot.get("MainShopPhotoReferenceInStorage").toString());
+
+
+           aShop.setFreshPhotosReferencesFromServer((List<String>) snapshot.get("PhotosPathsInFireStorage"));
+
+
+           aShop.setServicesHairCutsNames((List<String>) snapshot.get("ServicesHairCutsNames"));
+
+
+           aShop.setServicesHairCutsDuration((List<String>) snapshot.get("ServicesHairCutsDuration"));
+
+
+           aShop.setServicesHairCutsPrices((List<String>) snapshot.get("ServicesHairCutsPrices"));
+
+
+           aShop.setReviewersNames((List<String>) snapshot.get("ReviewersNames"));
+
+
+           aShop.setReviewersComments((List<String>) snapshot.get("ReviewersComments"));
+
+
+           aShop.setReviewersCommentDate((List<String>) snapshot.get("ReviewersCommentDate"));
+
+
+           aShop.setReviewersGivenStars((List<Float>) snapshot.get("ReviewersGivenStars"));
+
+
+           aShop.setEmailAddress(snapshot.get("EmailAddress").toString());
+
+
+           aShop.setBusinessOwner((boolean) snapshot.get("IsBusinessOwner"));
+           aShop.setEmployee(!(boolean) snapshot.get("IsBusinessOwner"));
+
+           aShop.setUsesCoordinates((boolean) snapshot.get("UsesCoordinatesAKAaddMap"));
+            if ((boolean) snapshot.get("UsesCoordinatesAKAaddMap")) {
+               aShop.setShopLatitude((double) snapshot.get("Latitude"));
+               aShop.setShopLongitude((double) snapshot.get("Longitude"));}
+
+
+           aShop.setMen((boolean) snapshot.get("IsMen"));
+
+           aShop.setShopPhoneNumber(snapshot.get("ShopPhoneNumber").toString());
+
+           aShop.setFacebookLink(snapshot.get("FacebookLink").toString());
+
+           aShop.setInstagramLink(snapshot.get("instagramLink").toString());
+
+           aShop.setCoiffure((boolean) snapshot.get("Coiffure"));
+
+           aShop.setMakeUp((boolean) snapshot.get("MakeUp"));
+
+           aShop.setMeches((boolean) snapshot.get("Meches"));
+
+           aShop.setTinte((boolean) snapshot.get("Tinte"));
+
+           aShop.setPedcure((boolean) snapshot.get("Pedcure"));
+
+           aShop.setManage((boolean) snapshot.get("Manage"));
+
+           aShop.setManicure((boolean) snapshot.get("Manicure"));
+
+           aShop.setCoupe((boolean) snapshot.get("Coup"));
+
+
+           aShop.setSaturday(snapshot.get("Saturday").toString());
+
+           aShop.setSunday(snapshot.get("Sunday").toString());
+
+           aShop.setMonday(snapshot.get("Monday").toString());
+
+           aShop.setTuesday(snapshot.get("Tuesday").toString());
+
+           aShop.setWednesday(snapshot.get("Wednesday").toString());
+
+           aShop.setThursday(snapshot.get("Thursday").toString());
+
+           aShop.setFriday(snapshot.get("Friday").toString());
+
+           return  aShop;
+}
 }

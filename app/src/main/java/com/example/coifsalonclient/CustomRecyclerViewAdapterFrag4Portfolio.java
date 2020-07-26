@@ -25,7 +25,7 @@ public class CustomRecyclerViewAdapterFrag4Portfolio extends RecyclerView.Adapte
     @NonNull
     @Override
     public CustomRecyclerViewAdapterFrag4Portfolio.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.store_portfolio_recyclerview_item_frag4, viewGroup,false);
+        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.shop_portfolio_recyclerview_item_frag4, viewGroup,false);
         ViewHolder viewHolder=new ViewHolder(view);
         return  viewHolder;
     }

@@ -20,12 +20,16 @@ public class ShopDetails_Frag2 extends Fragment implements  OnMapReadyCallback {
     View view;
     GoogleMap mMap;
 
+    ShopDetailsActivity shopDetailsActivity;
+    public ShopDetails_Frag2(ShopDetailsActivity shopDetailsActivity){
+        this.shopDetailsActivity=shopDetailsActivity;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view=inflater.inflate(R.layout.shopdetails_frag2, container,false);
 ///THE IMPORTANT PART IS TO USE this.getChildFragmentManager() instead of getSupportFragmentManager
-        if(ShopDetailsActivity.usesCoordinates){
+        if(shopDetailsActivity.aShop.getUsesCoordinates()){
             SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.mapView_Frag2);
             mapFragment.getMapAsync(this);
 
@@ -42,8 +46,8 @@ public class ShopDetails_Frag2 extends Fragment implements  OnMapReadyCallback {
         mMap = googleMap;
 
 
-        LatLng position=new LatLng(ShopDetailsActivity.shopLatitude, ShopDetailsActivity.shopLongitude);
-        mMap.addMarker(new MarkerOptions().position(position).title(ShopDetailsActivity.shopNameFromRecyclerView).visible(true)).showInfoWindow();
+        LatLng position=new LatLng(shopDetailsActivity.aShop.getShopLatitude(), shopDetailsActivity.aShop.getShopLongitude());
+        mMap.addMarker(new MarkerOptions().position(position).title(shopDetailsActivity.aShop.getShopName()).visible(true)).showInfoWindow();
         mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(16));//range is 2 to 21
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);

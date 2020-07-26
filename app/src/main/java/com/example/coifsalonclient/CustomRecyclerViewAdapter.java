@@ -18,23 +18,16 @@ import java.util.ArrayList;
 
 public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecyclerViewAdapter.ViewHolder> {
 
-    ArrayList<String> shopNamesList =new ArrayList<>();
-    ArrayList<String> shopAddresses =new ArrayList<>();
+
+    ArrayList<AShop> aShopsList=new ArrayList<>();
     ArrayList<Bitmap> shopsImages =new ArrayList<>();
-    ArrayList<ArrayList<String>> shopsImagesLinks =new ArrayList<>();
-    String  successfullyBookedShop;
-    String successfullyBookedHaircut;
     Context mContext;
 
 
-    public CustomRecyclerViewAdapter(Context context, ArrayList<String> ShopNamesList, ArrayList<String> ShopAddresses, ArrayList<Bitmap> ShopsImages, ArrayList<ArrayList<String>> ShopsImagesLinks, String successfullyBookedShop, String successfullyBookedHaircut) {
+    public CustomRecyclerViewAdapter(Context context,  ArrayList<AShop> aShopsList, ArrayList<Bitmap> ShopsImages) {
 
-        this.shopNamesList = ShopNamesList;
-        this.shopAddresses = ShopAddresses;
+        this.aShopsList=aShopsList;
         this.shopsImages = ShopsImages;
-        this.shopsImagesLinks = ShopsImagesLinks;
-        this.successfullyBookedShop = successfullyBookedShop;
-        this.successfullyBookedHaircut = successfullyBookedHaircut;
         this.mContext=context;
     }
 
@@ -50,30 +43,21 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
 
-        if(i< shopNamesList.size()) {
-            viewHolder.shopNameTextView.setText(shopNamesList.get(i));
-
+        if(i < aShopsList.size()) {
+            viewHolder.shopNameTextView.setText(aShopsList.get(i).getShopName());
         }
-        if(i< shopAddresses.size()) {
-            viewHolder.shopAddressTextView.setText(shopAddresses.get(i));
-
-}
-       if(i< shopsImages.size()) {
+        if(i < aShopsList.size()) {
+            viewHolder.shopAddressTextView.setText(aShopsList.get(i).getSelectedCommune()+" "+aShopsList.get(i).getSelectedState());
+        }
+       if(i < shopsImages.size()) {
            viewHolder.shopMainImageImageView.setImageBitmap(shopsImages.get(i));
-
        }
 
        viewHolder.radioGroup.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
                Intent goToShopDetailsActivity = new Intent(mContext, ShopDetailsActivity.class);
-               goToShopDetailsActivity.putExtra("ShopName", shopNamesList.get(i));
-               goToShopDetailsActivity.putExtra("SuccessfullyBookedShop", successfullyBookedShop);
-               goToShopDetailsActivity.putExtra("SuccessfullyBookedHaircut", successfullyBookedHaircut);
-               if(i< shopsImagesLinks.size()){
-                   goToShopDetailsActivity.putExtra("ImagesLinks", shopsImagesLinks.get(i));
-               }
-
+               goToShopDetailsActivity.putExtra("aShop",aShopsList.get(i));
                mContext.startActivity(goToShopDetailsActivity);
            }
        });
@@ -82,7 +66,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
 
     @Override
     public int getItemCount() {
-        return shopNamesList.size();
+        return aShopsList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
