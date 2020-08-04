@@ -38,7 +38,12 @@ public class ShopDetails_Frag4 extends Fragment {
     }
 
     public void receivedNewImagesNotifyRecyclerView(){
-       customRecyclerViewAdapterFrag4Portfolio =new CustomRecyclerViewAdapterFrag4Portfolio(ShopDetailsActivity.portfolioPhotos,mContext);
-       recyclerViewFrag4Portfolio.swapAdapter(customRecyclerViewAdapterFrag4Portfolio, true);
+        //if a photo loads before recyclerViewFrag4Portfolio error (and it happened)...now even if all photos load before
+        //recyclerViewFrag4Portfolio that means the follwing code we run and get all the photos(onCreateView).
+        if(recyclerViewFrag4Portfolio!=null){
+            customRecyclerViewAdapterFrag4Portfolio =new CustomRecyclerViewAdapterFrag4Portfolio(ShopDetailsActivity.portfolioPhotos,mContext);
+            recyclerViewFrag4Portfolio.swapAdapter(customRecyclerViewAdapterFrag4Portfolio, true);
+        }
+
     }
 }
