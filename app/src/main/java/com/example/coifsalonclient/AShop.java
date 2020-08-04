@@ -52,7 +52,7 @@ class AShop  implements  Parcelable{
     private List<String> reviewersNames = new ArrayList<>();
     private List<String> reviewersComments = new ArrayList<>();
     private List<String> reviewersCommentDate = new ArrayList<>();
-    private List<Float> reviewersGivenStars = new ArrayList<>();
+    private float[] reviewersGivenStars;
     ///////////////////////////////////////////////////////////////////////////////
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -127,8 +127,8 @@ class AShop  implements  Parcelable{
         reviewersNames = in.createStringArrayList();
         reviewersComments = in.createStringArrayList();
         reviewersCommentDate = in.createStringArrayList();
+        reviewersGivenStars = in.createFloatArray();
         freshPhotosReferencesFromServer = in.createStringArrayList();
-
     }
 
     public static final Creator<AShop> CREATOR = new Creator<AShop>() {
@@ -296,7 +296,7 @@ class AShop  implements  Parcelable{
         return reviewersCommentDate;
     }
 
-    public List<Float> getReviewersGivenStars() {
+    public float[] getReviewersGivenStars() {
         return reviewersGivenStars;
     }
 
@@ -457,14 +457,13 @@ class AShop  implements  Parcelable{
         this.reviewersCommentDate = reviewersCommentDate;
     }
 
-    public void setReviewersGivenStars(List<Float> reviewersGivenStars) {
+    public void setReviewersGivenStars(float[] reviewersGivenStars) {
         this.reviewersGivenStars = reviewersGivenStars;
     }
 
     public void setFreshPhotosReferencesFromServer(List<String> freshPhotosReferencesFromServer) {
         this.freshPhotosReferencesFromServer = freshPhotosReferencesFromServer;
     }
-
 
     @Override
     public int describeContents() {
@@ -521,6 +520,7 @@ class AShop  implements  Parcelable{
         parcel.writeStringList(reviewersNames);
         parcel.writeStringList(reviewersComments);
         parcel.writeStringList(reviewersCommentDate);
+        parcel.writeFloatArray(reviewersGivenStars);
         parcel.writeStringList(freshPhotosReferencesFromServer);
     }
 }
