@@ -41,7 +41,7 @@ public class CustomRecyclerViewAdapterFrag3Reviews extends RecyclerView.Adapter<
        viewHolder.reviewerComment.setText(aShop.getReviewersComments().get(i));
        viewHolder.reviewerCommentDate.setText(aShop.getReviewersCommentDate().get(i));
        viewHolder.ratingBar.setNumStars(5);
-       viewHolder.ratingBar.setRating(aShop.getReviewersGivenStars().get(i));
+       viewHolder.ratingBar.setRating(aShop.getReviewersGivenStars()[i]);
 
     }
 

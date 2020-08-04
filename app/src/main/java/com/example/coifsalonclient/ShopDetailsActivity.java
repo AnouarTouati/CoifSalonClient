@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ShopDetailsActivity extends FragmentActivity {
@@ -529,7 +530,16 @@ public class ShopDetailsActivity extends FragmentActivity {
           public void onSuccess(Void aVoid) {
           aShop.getReviewersNames().add(0,ReviewerName);
           aShop.getReviewersComments().add(0,ReviewerComment);
-          aShop.getReviewersGivenStars().add(0,ReviewerGivenStars);
+          //this conversion thing might be problematic
+                  ArrayList<Double> reviewersGivenStarsList=new ArrayList<>();
+
+                  for (float number : aShop.getReviewersGivenStars()) {
+                      reviewersGivenStarsList.add(Double.valueOf(number));
+                  }
+                  reviewersGivenStarsList.add(0,Double.valueOf(ReviewerGivenStars));
+
+                  aShop.setReviewersGivenStars( CommonMehods.convertFloatListToPrimitivefloatArray(reviewersGivenStarsList));
+         //////////////////////////////////////////////
           aShop.getReviewersCommentDate().add(0, new Date().toString());
           shopDetails_frag3.ReceivedNewReviewsNotifyRecyclerView();
           

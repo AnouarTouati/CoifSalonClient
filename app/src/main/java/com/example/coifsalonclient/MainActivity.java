@@ -340,7 +340,7 @@ public class MainActivity extends AppCompatActivity {
 
                aShop.setReviewersCommentDate((List<String>) snapshot.get("ReviewersCommentDate"));
 
-               aShop.setReviewersGivenStars((List<Float>) snapshot.get("ReviewersGivenStars"));
+               aShop.setReviewersGivenStars( CommonMehods.convertFloatListToPrimitivefloatArray((List<Double>)snapshot.get("ReviewersGivenStars")));
            }else{
                aShop.setReviewersNames(new ArrayList<String>());
 
@@ -348,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
 
                aShop.setReviewersCommentDate(new ArrayList<String>());
 
-               aShop.setReviewersGivenStars(new ArrayList<Float>());
+               aShop.setReviewersGivenStars(null);
            }
            if(snapshot.get("EmailAddress")!=null){
                aShop.setEmailAddress(snapshot.get("EmailAddress").toString());
@@ -356,9 +356,9 @@ public class MainActivity extends AppCompatActivity {
                aShop.setEmailAddress("");
            }
 
-           if(snapshot.get("UsesCoordinatesAKAaddMap")!=null){
-               aShop.setUsesCoordinates((boolean) snapshot.get("UsesCoordinatesAKAaddMap"));
-               if ((boolean) snapshot.get("UsesCoordinatesAKAaddMap")) {
+           if(snapshot.get("UseCoordinatesAKAaddMap")!=null){
+               aShop.setUsesCoordinates((boolean) snapshot.get("UseCoordinatesAKAaddMap"));
+               if ((boolean) snapshot.get("UseCoordinatesAKAaddMap")) {
                    if(snapshot.get("Latitude")!=null && snapshot.get("Longitude")!=null){
                        aShop.setShopLatitude((double) snapshot.get("Latitude"));
                        aShop.setShopLongitude((double) snapshot.get("Longitude"));}
