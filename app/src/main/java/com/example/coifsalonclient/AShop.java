@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-class AShop implements Parcelable {
+class AShop  implements  Parcelable{
     private String shopName;
     private String shopUid;
     private String shopMainPhotoReference;
@@ -64,7 +64,9 @@ class AShop implements Parcelable {
     public  AShop(){
       shopLatitude=0d;
       shopLongitude=0d;
+      saturday=sunday=monday=tuesday=thursday=friday="NoNoNoNo";
     }
+
 
     protected AShop(Parcel in) {
         shopName = in.readString();
@@ -126,6 +128,7 @@ class AShop implements Parcelable {
         reviewersComments = in.createStringArrayList();
         reviewersCommentDate = in.createStringArrayList();
         freshPhotosReferencesFromServer = in.createStringArrayList();
+
     }
 
     public static final Creator<AShop> CREATOR = new Creator<AShop>() {
@@ -461,6 +464,7 @@ class AShop implements Parcelable {
     public void setFreshPhotosReferencesFromServer(List<String> freshPhotosReferencesFromServer) {
         this.freshPhotosReferencesFromServer = freshPhotosReferencesFromServer;
     }
+
 
     @Override
     public int describeContents() {

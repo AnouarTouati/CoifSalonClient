@@ -53,6 +53,8 @@ public class ShopDetailsActivity extends FragmentActivity {
     AShop aShop;
 
     ShopDetails_Frag1 shopDetails_Frag1;
+    ShopDetails_Frag3 shopDetails_frag3;
+    ShopDetails_Frag4 shopDetails_frag4;
 
     Context mContext;
 
@@ -343,8 +345,8 @@ public class ShopDetailsActivity extends FragmentActivity {
         customFragmentPagerAdapter = new CustomFragmentPagerAdapter(getSupportFragmentManager());
         customFragmentPagerAdapter.addFragment(shopDetails_Frag1=new ShopDetails_Frag1(this), "ShopDetails_Frag1");
         customFragmentPagerAdapter.addFragment(new ShopDetails_Frag2(this), "ShopDetails_Frag2");
-        customFragmentPagerAdapter.addFragment(new ShopDetails_Frag3(this), "ShopDetails_Frag3");
-        customFragmentPagerAdapter.addFragment(new ShopDetails_Frag4(), "ShopDetails_Frag4");
+        customFragmentPagerAdapter.addFragment(shopDetails_frag3=new ShopDetails_Frag3(this), "ShopDetails_Frag3");
+        customFragmentPagerAdapter.addFragment(shopDetails_frag4=new ShopDetails_Frag4(), "ShopDetails_Frag4");
         viewPager.setAdapter(customFragmentPagerAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -529,6 +531,8 @@ public class ShopDetailsActivity extends FragmentActivity {
           aShop.getReviewersComments().add(0,ReviewerComment);
           aShop.getReviewersGivenStars().add(0,ReviewerGivenStars);
           aShop.getReviewersCommentDate().add(0, new Date().toString());
+          shopDetails_frag3.ReceivedNewReviewsNotifyRecyclerView();
+          
           }
       }).addOnFailureListener(new OnFailureListener() {
           @Override
@@ -571,6 +575,7 @@ public class ShopDetailsActivity extends FragmentActivity {
                 if (indexOfImageToReceiveNext < portfolioPhotosReferencesToBeRequested.size()) {
                     requestImage(portfolioPhotosReferencesToBeRequested.get(indexOfImageToReceiveNext));
                 }
+                shopDetails_frag4.receivedNewImagesNotifyRecyclerView();
 
             }
         }).addOnFailureListener(new OnFailureListener() {

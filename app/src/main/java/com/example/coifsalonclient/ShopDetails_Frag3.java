@@ -51,7 +51,7 @@ public class ShopDetails_Frag3 extends Fragment {
                        EditText ReviewerNameEditText=DialogView.findViewById(R.id.reviewerNameToAdd);
                        EditText ReviewerCommentEditText=DialogView.findViewById(R.id.reviewerCommentToAdd);
                        RatingBar RatingBar=DialogView.findViewById(R.id.ratingBarToAdd);
-                       ((ShopDetailsActivity)getActivity()).addReview(ReviewerNameEditText.getText().toString(), ReviewerCommentEditText.getText().toString(), RatingBar.getRating());
+                      shopDetailsActivity.addReview(ReviewerNameEditText.getText().toString(), ReviewerCommentEditText.getText().toString(), RatingBar.getRating());
                    }
                });
                AlertDialogBuilder.setNegativeButton(R.string.AddReviewSubmitNegativeAlarDialog_Frag3, new DialogInterface.OnClickListener() {
