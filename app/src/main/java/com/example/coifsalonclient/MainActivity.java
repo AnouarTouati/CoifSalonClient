@@ -229,8 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String getShopUidFromPath(String path) {
         path = path.replace("Shops/", "");
-        int indexWhereToStartRemoving = path.indexOf("/");
-        return path.substring(0, indexWhereToStartRemoving);
+        return path;
     }
 
     void requestPhoto(String photoStoragePath) {
@@ -312,80 +311,105 @@ public class MainActivity extends AppCompatActivity {
 
            aShop.setShopMainPhotoReference(snapshot.get("MainShopPhotoReferenceInStorage").toString());
 
-
-           aShop.setFreshPhotosReferencesFromServer((List<String>) snapshot.get("PhotosPathsInFireStorage"));
-
-
-           aShop.setServicesHairCutsNames((List<String>) snapshot.get("ServicesHairCutsNames"));
-
-
-           aShop.setServicesHairCutsDuration((List<String>) snapshot.get("ServicesHairCutsDuration"));
+           if(snapshot.get("PhotosPathsInFireStorage")!=null){
+               aShop.setFreshPhotosReferencesFromServer((List<String>) snapshot.get("PhotosPathsInFireStorage"));
+           }else{
+               aShop.setFreshPhotosReferencesFromServer(new ArrayList<String>());
+           }
 
 
-           aShop.setServicesHairCutsPrices((List<String>) snapshot.get("ServicesHairCutsPrices"));
+           if(snapshot.get("ServicesHairCutsNames")!=null){
+               aShop.setServicesHairCutsNames((List<String>) snapshot.get("ServicesHairCutsNames"));
+
+               aShop.setServicesHairCutsDuration((List<String>) snapshot.get("ServicesHairCutsDuration"));
+
+               aShop.setServicesHairCutsPrices((List<String>) snapshot.get("ServicesHairCutsPrices"));
+
+           }else{
+               aShop.setServicesHairCutsNames(new ArrayList<String>());
+
+               aShop.setServicesHairCutsDuration(new ArrayList<String>());
+
+               aShop.setServicesHairCutsPrices(new ArrayList<String>());
+           }
+
+           if(snapshot.get("ReviewersNames")!=null){
+               aShop.setReviewersNames((List<String>) snapshot.get("ReviewersNames"));
+
+               aShop.setReviewersComments((List<String>) snapshot.get("ReviewersComments"));
+
+               aShop.setReviewersCommentDate((List<String>) snapshot.get("ReviewersCommentDate"));
+
+               aShop.setReviewersGivenStars((List<Float>) snapshot.get("ReviewersGivenStars"));
+           }else{
+               aShop.setReviewersNames(new ArrayList<String>());
+
+               aShop.setReviewersComments(new ArrayList<String>());
+
+               aShop.setReviewersCommentDate(new ArrayList<String>());
+
+               aShop.setReviewersGivenStars(new ArrayList<Float>());
+           }
+           if(snapshot.get("EmailAddress")!=null){
+               aShop.setEmailAddress(snapshot.get("EmailAddress").toString());
+           }else{
+               aShop.setEmailAddress("");
+           }
+
+           if(snapshot.get("UsesCoordinatesAKAaddMap")!=null){
+               aShop.setUsesCoordinates((boolean) snapshot.get("UsesCoordinatesAKAaddMap"));
+               if ((boolean) snapshot.get("UsesCoordinatesAKAaddMap")) {
+                   if(snapshot.get("Latitude")!=null && snapshot.get("Longitude")!=null){
+                       aShop.setShopLatitude((double) snapshot.get("Latitude"));
+                       aShop.setShopLongitude((double) snapshot.get("Longitude"));}
+                   }else{
+                   aShop.setShopLatitude(0d);
+                   aShop.setShopLongitude(0d);}
+               }else{
+               aShop.setUsesCoordinates(false);
+           }
+
+           if(snapshot.get("IsMen")!=null){
+               aShop.setMen((boolean) snapshot.get("IsMen"));
+           }else{
+               aShop.setMen(null);
+           }
+           if(snapshot.get("ShopPhoneNumber")!=null){
+               aShop.setShopPhoneNumber(snapshot.get("ShopPhoneNumber").toString());
+           }else{
+               aShop.setShopPhoneNumber("");
+           }
+
+           if(snapshot.get("FacebookLink")!=null){
+               aShop.setFacebookLink(snapshot.get("FacebookLink").toString());
+           }else{
+               aShop.setFacebookLink("www.facebook.com");
+           }
+           if(snapshot.get("instagramLink")!=null){
+               aShop.setInstagramLink(snapshot.get("instagramLink").toString());
+           }else{
+               aShop.setInstagramLink("www.instagram.com");
+           }
 
 
-           aShop.setReviewersNames((List<String>) snapshot.get("ReviewersNames"));
+            if(snapshot.get("Saturday")!=null)
+                aShop.setSaturday(snapshot.get("Saturday").toString());
 
+            if(snapshot.get("Sunday")!=null)
+                aShop.setSunday(snapshot.get("Sunday").toString());
 
-           aShop.setReviewersComments((List<String>) snapshot.get("ReviewersComments"));
-
-
-           aShop.setReviewersCommentDate((List<String>) snapshot.get("ReviewersCommentDate"));
-
-
-           aShop.setReviewersGivenStars((List<Float>) snapshot.get("ReviewersGivenStars"));
-
-
-           aShop.setEmailAddress(snapshot.get("EmailAddress").toString());
-
-
-           aShop.setBusinessOwner((boolean) snapshot.get("IsBusinessOwner"));
-           aShop.setEmployee(!(boolean) snapshot.get("IsBusinessOwner"));
-
-           aShop.setUsesCoordinates((boolean) snapshot.get("UsesCoordinatesAKAaddMap"));
-            if ((boolean) snapshot.get("UsesCoordinatesAKAaddMap")) {
-               aShop.setShopLatitude((double) snapshot.get("Latitude"));
-               aShop.setShopLongitude((double) snapshot.get("Longitude"));}
-
-
-           aShop.setMen((boolean) snapshot.get("IsMen"));
-
-           aShop.setShopPhoneNumber(snapshot.get("ShopPhoneNumber").toString());
-
-           aShop.setFacebookLink(snapshot.get("FacebookLink").toString());
-
-           aShop.setInstagramLink(snapshot.get("instagramLink").toString());
-
-           aShop.setCoiffure((boolean) snapshot.get("Coiffure"));
-
-           aShop.setMakeUp((boolean) snapshot.get("MakeUp"));
-
-           aShop.setMeches((boolean) snapshot.get("Meches"));
-
-           aShop.setTinte((boolean) snapshot.get("Tinte"));
-
-           aShop.setPedcure((boolean) snapshot.get("Pedcure"));
-
-           aShop.setManage((boolean) snapshot.get("Manage"));
-
-           aShop.setManicure((boolean) snapshot.get("Manicure"));
-
-           aShop.setCoupe((boolean) snapshot.get("Coup"));
-
-
-           aShop.setSaturday(snapshot.get("Saturday").toString());
-
-           aShop.setSunday(snapshot.get("Sunday").toString());
-
+            if(snapshot.get("Monday")!=null)
            aShop.setMonday(snapshot.get("Monday").toString());
 
+            if(snapshot.get("Tuesday")!=null)
            aShop.setTuesday(snapshot.get("Tuesday").toString());
-
+            if(snapshot.get("Wednesday")!=null)
            aShop.setWednesday(snapshot.get("Wednesday").toString());
 
+            if(snapshot.get("Thursday")!=null)
            aShop.setThursday(snapshot.get("Thursday").toString());
 
+            if(snapshot.get("Friday")!=null)
            aShop.setFriday(snapshot.get("Friday").toString());
 
            return  aShop;
