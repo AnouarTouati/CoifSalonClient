@@ -76,6 +76,7 @@ public class ShopDetailsActivity extends FragmentActivity {
        firebaseUser=firebaseAuth.getCurrentUser();
 
        weGotTheDataDisplayIt();
+       loadLocalData(aShop.getShopUid());
     }
 
 /*
@@ -313,29 +314,27 @@ public class ShopDetailsActivity extends FragmentActivity {
 
 
                     } else {
-                        portfolioPhotosReferencesToBeRequested.clear();
-                        indexOfImageToReceiveNext = 0;
-                        portfolioPhotosReferencesToBeRequested.addAll(aShop.getFreshPhotosReferencesFromServer());
-                        if (portfolioPhotosReferencesToBeRequested.size() > 0) {
-                            requestImage(portfolioPhotosReferencesToBeRequested.get(indexOfImageToReceiveNext));//indexOfImageToReceiveNext should equal zero at this stage
-                        }
-                      /*
-                       for(int i=1;i<imagesLinkFromRecyclerView.size();i++){//i=1 to ignore the main shop image
-                           requestImage(imagesLinkFromRecyclerView.get(i));
-                       }
-
-                       */
+                       getAllImagesFreshFromServer();
                     }
-
                 }
-            } else {
-                //null is handled in the calling function loadJSONFile()
+                else { getAllImagesFreshFromServer();}
             }
-
 
         } catch (JSONException e) {
             Log.v("LoadFromCache", "Error parsing JSON in ShopDetailsActivity loadLocalData function");
             e.printStackTrace();
+        }
+    }
+
+    void getAllImagesFreshFromServer(){
+        portfolioPhotos.clear();
+        portfolioPhotosAsStrings.clear();
+
+        portfolioPhotosReferencesToBeRequested.clear();
+        indexOfImageToReceiveNext = 0;
+        portfolioPhotosReferencesToBeRequested.addAll(aShop.getFreshPhotosReferencesFromServer());
+        if (portfolioPhotosReferencesToBeRequested.size() > 0) {
+            requestImage(portfolioPhotosReferencesToBeRequested.get(indexOfImageToReceiveNext));//indexOfImageToReceiveNext should equal zero at this stage
         }
     }
 
