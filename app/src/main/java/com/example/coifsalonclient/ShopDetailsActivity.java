@@ -28,10 +28,12 @@ import com.google.firebase.storage.StorageReference;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ShopDetailsActivity extends FragmentActivity {
@@ -211,7 +213,31 @@ public class ShopDetailsActivity extends FragmentActivity {
     }
 */
 
+
+    void saveUpdatedShopDataToMemory() {
+
+
+        Map<String, Object> UpdatedShopDataMap = new HashMap<>();
 /*
+        UpdatedShopDataMap.put("ServicesHairCutsDuration", servicesHairCutsDuration);
+        UpdatedShopDataMap.put("ServicesHairCutsPrices", servicesHairCutsPrices);
+        UpdatedShopDataMap.put("ServicesHairCutsNames", servicesHairCutsNames);
+        UpdatedShopDataMap.put("ReviewersGivenStars", reviewersGivenStars);
+        UpdatedShopDataMap.put("ReviewersCommentDate", reviewersCommentDate);
+        UpdatedShopDataMap.put("ReviewersComments", reviewersComments);
+        UpdatedShopDataMap.put("ReviewersNames", reviewersNames);*/
+        UpdatedShopDataMap.put("PortfolioImagesAsStrings", portfolioPhotosAsStrings);
+        UpdatedShopDataMap.put("PortfolioImagesLinks", portfolioPhotosReferencesLocal);
+/*
+        UpdatedShopDataMap.put("UsesCoordinates", usesCoordinates);
+        UpdatedShopDataMap.put("ShopLatitude", shopLatitude);
+        UpdatedShopDataMap.put("ShopLongitude", shopLongitude);
+*/
+        JSONObject jsonObject = new JSONObject(UpdatedShopDataMap);
+
+        writeNewShopDataToLocalMemory(jsonObject);
+    }
+
     public void writeNewShopDataToLocalMemory(JSONObject NewShopDataJSON) {
         try {
 
@@ -219,16 +245,18 @@ public class ShopDetailsActivity extends FragmentActivity {
             if (localMemoryJsonAsString != null) {
 
                 JSONObject localMemoryJsonObject = new JSONObject(localMemoryJsonAsString);
-                if (localMemoryJsonObject.has(shopNameFromRecyclerView)) {
-                    localMemoryJsonObject.remove(shopNameFromRecyclerView);
+                if (localMemoryJsonObject.has(aShop.getShopUid())) {
+                    localMemoryJsonObject.remove(aShop.getShopUid());
 
                 }
-                localMemoryJsonObject.put(shopNameFromRecyclerView, NewShopDataJSON);
+                localMemoryJsonObject.put(aShop.getShopUid(), NewShopDataJSON);
 
                 FileOutputStream fos = openFileOutput("ShopsData.txt", MODE_PRIVATE);
                 fos.write(localMemoryJsonObject.toString().getBytes());
 
                 fos.close();
+                //we wont be needing this anymore ....still untested might cause problems
+                portfolioPhotosAsStrings.clear();
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -239,7 +267,7 @@ public class ShopDetailsActivity extends FragmentActivity {
         }
 
     }
-*/
+
     public void loadLocalData(String shopUid) {
 
         try {
@@ -311,7 +339,7 @@ public class ShopDetailsActivity extends FragmentActivity {
                         for (int i = 0; i < PortfolioImagesAsStringsLocal.size(); i++) {
                             portfolioPhotos.add(CommonMehods.convertStringToBitmap(PortfolioImagesAsStringsLocal.get(i)));
                         }
-
+                         //dont clear portfolioPhotosAsStrings here we will need it if we receive new photos or reviews
 
                     } else {
                        getAllImagesFreshFromServer();
@@ -486,15 +514,18 @@ public class ShopDetailsActivity extends FragmentActivity {
         alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-               Map<String,Object> map=new HashMap<>();
-               map.put("ServicesHairCut",ServicesHairCutToReserve);
+               final Map<String,Object> map=new HashMap<>();
+               map.put("ClientFakeFirebaseUid", "null");
+               map.put("ClientFireBaseUid", firebaseUser.getUid());
+               map.put("PersonName", "Not Implemented yet on client side");
+               map.put("Services",ServicesHairCutToReserve);
+               map.put("ShopUid",aShop.getShopUid());
 
             firebaseFirestore.collection("Shops").document(aShop.getShopUid()).collection("ClientsPending").document(firebaseUser.getUid())
                     .set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    aShop.setSuccessfullyBookedHaircut(ServicesHairCutToReserve);
-                    shopDetails_Frag1.BookWasSuccessfulNotifyRecyclerViewAdapter();
+                   registerBookingOnClientFilesOnFirestore(map);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -513,7 +544,41 @@ public class ShopDetailsActivity extends FragmentActivity {
         });
         alertDialogBuilder.create().show();
 
+    }
+   public void unBook(){
+        firebaseFirestore.collection("Shops").document(aShop.getShopUid()).collection("ClientsPending").document(firebaseUser.getUid()).delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        firebaseFirestore.collection("Clients").document(firebaseUser.getUid()).delete()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                       aShop.setBookedShop(false);
+                                       aShop.setSuccessfullyBookedHaircut(null);
+                                        shopDetails_Frag1.BookUnBookWasSuccessfulNotifyRecyclerViewAdapter();
+                                    }
+                                });
+                    }
+                });
 
+   }
+    void registerBookingOnClientFilesOnFirestore(final Map<String,Object> map){
+        firebaseFirestore.collection("Clients").document(firebaseUser.getUid())
+                .set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                aShop.setSuccessfullyBookedHaircut( map.get("Services").toString());
+                aShop.setBookedShop(true);
+                shopDetails_Frag1.BookUnBookWasSuccessfulNotifyRecyclerViewAdapter();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.v("MyFirebase","Failed to book");
+                firebaseFirestore.collection("Shops").document(aShop.getShopUid()).collection("ClientsPending").document(firebaseUser.getUid()).delete();
+            }
+        });
     }
 
     public void addReview(final String ReviewerName, final String ReviewerComment, final float ReviewerGivenStars) {
@@ -579,10 +644,11 @@ public class ShopDetailsActivity extends FragmentActivity {
                 portfolioPhotos.add(photo);
                 portfolioPhotosAsStrings.add(CommonMehods.bitmapToString(photo));
                 portfolioPhotosReferencesLocal.add(photoStoragePath);
-                //  saveUpdatedShopDataToMemoryAndNotifyPortfolioRecyclerView();
                 indexOfImageToReceiveNext++;
                 if (indexOfImageToReceiveNext < portfolioPhotosReferencesToBeRequested.size()) {
                     requestImage(portfolioPhotosReferencesToBeRequested.get(indexOfImageToReceiveNext));
+                }else{
+                         saveUpdatedShopDataToMemory();
                 }
                 shopDetails_frag4.receivedNewImagesNotifyRecyclerView();
 
@@ -598,40 +664,13 @@ public class ShopDetailsActivity extends FragmentActivity {
                 indexOfImageToReceiveNext++;
                 if (indexOfImageToReceiveNext < portfolioPhotosReferencesToBeRequested.size()) {
                     requestImage(portfolioPhotosReferencesToBeRequested.get(indexOfImageToReceiveNext));
+                }else{
+                    saveUpdatedShopDataToMemory();
                 }
             }
         });
 
     }
 
-/*
-    void saveUpdatedShopDataToMemoryAndNotifyPortfolioRecyclerView() {
-        if (ShopDetails_Frag4.mContext != null) {
-            ShopDetails_Frag4.receivedNewImagesNotifyRecyclerView();
-        }
-        if (ShopDetails_Frag3.mContext != null) {
-            ShopDetails_Frag3.ReceivedNewReviewsNotifyRecyclerView();
-        }
-        Map<String, Object> UpdatedShopDataMap = new HashMap<>();
-
-        UpdatedShopDataMap.put("ServicesHairCutsDuration", servicesHairCutsDuration);
-        UpdatedShopDataMap.put("ServicesHairCutsPrices", servicesHairCutsPrices);
-        UpdatedShopDataMap.put("ServicesHairCutsNames", servicesHairCutsNames);
-        UpdatedShopDataMap.put("ReviewersGivenStars", reviewersGivenStars);
-        UpdatedShopDataMap.put("ReviewersCommentDate", reviewersCommentDate);
-        UpdatedShopDataMap.put("ReviewersComments", reviewersComments);
-        UpdatedShopDataMap.put("ReviewersNames", reviewersNames);
-        UpdatedShopDataMap.put("PortfolioImagesAsStrings", portfolioPhotosAsStrings);
-        UpdatedShopDataMap.put("PortfolioImagesLinks", portfolioPhotosReferencesLocal);
-
-        UpdatedShopDataMap.put("UsesCoordinates", usesCoordinates);
-        UpdatedShopDataMap.put("ShopLatitude", shopLatitude);
-        UpdatedShopDataMap.put("ShopLongitude", shopLongitude);
-
-        JSONObject jsonObject = new JSONObject(UpdatedShopDataMap);
-
-        writeNewShopDataToLocalMemory(jsonObject);
-    }
-*/
 
 }

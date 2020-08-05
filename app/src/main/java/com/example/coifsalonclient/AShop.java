@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-class AShop  implements  Parcelable{
+class AShop implements  Parcelable{
     private String shopName;
     private String shopUid;
     private String shopMainPhotoReference;
@@ -44,7 +44,7 @@ class AShop  implements  Parcelable{
     private List<String> servicesHairCutsPrices = new ArrayList<>();
     private List<String> servicesHairCutsDuration = new ArrayList<>();
     private String successfullyBookedHaircut = null;
-    private String successfullyBookedShop = null;
+    private boolean IsBookedShop = false;
     ///////////////////////////////////////////////////////////////////////////////
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -123,7 +123,7 @@ class AShop  implements  Parcelable{
         servicesHairCutsPrices = in.createStringArrayList();
         servicesHairCutsDuration = in.createStringArrayList();
         successfullyBookedHaircut = in.readString();
-        successfullyBookedShop = in.readString();
+        IsBookedShop = in.readByte() != 0;
         reviewersNames = in.createStringArrayList();
         reviewersComments = in.createStringArrayList();
         reviewersCommentDate = in.createStringArrayList();
@@ -280,8 +280,8 @@ class AShop  implements  Parcelable{
         return successfullyBookedHaircut;
     }
 
-    public String getSuccessfullyBookedShop() {
-        return successfullyBookedShop;
+    public boolean IsBookedShop() {
+        return IsBookedShop;
     }
 
     public List<String> getReviewersNames() {
@@ -441,8 +441,8 @@ class AShop  implements  Parcelable{
         this.successfullyBookedHaircut = successfullyBookedHaircut;
     }
 
-    public void setSuccessfullyBookedShop(String successfullyBookedShop) {
-        this.successfullyBookedShop = successfullyBookedShop;
+    public void setBookedShop(boolean bookedShop) {
+        this.IsBookedShop = bookedShop;
     }
 
     public void setReviewersNames(List<String> reviewersNames) {
@@ -464,6 +464,7 @@ class AShop  implements  Parcelable{
     public void setFreshPhotosReferencesFromServer(List<String> freshPhotosReferencesFromServer) {
         this.freshPhotosReferencesFromServer = freshPhotosReferencesFromServer;
     }
+
 
     @Override
     public int describeContents() {
@@ -516,7 +517,7 @@ class AShop  implements  Parcelable{
         parcel.writeStringList(servicesHairCutsPrices);
         parcel.writeStringList(servicesHairCutsDuration);
         parcel.writeString(successfullyBookedHaircut);
-        parcel.writeString(successfullyBookedShop);
+        parcel.writeByte((byte) (IsBookedShop ? 1 : 0));
         parcel.writeStringList(reviewersNames);
         parcel.writeStringList(reviewersComments);
         parcel.writeStringList(reviewersCommentDate);

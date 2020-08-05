@@ -21,13 +21,15 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
 
     ArrayList<AShop> aShopsList=new ArrayList<>();
     ArrayList<Bitmap> shopsImages =new ArrayList<>();
+    MainActivity mainActivity;
     Context mContext;
 
 
-    public CustomRecyclerViewAdapter(Context context,  ArrayList<AShop> aShopsList, ArrayList<Bitmap> ShopsImages) {
+    public CustomRecyclerViewAdapter(Context context, MainActivity mainActivity, ArrayList<AShop> aShopsList, ArrayList<Bitmap> ShopsImages) {
 
         this.aShopsList=aShopsList;
         this.shopsImages = ShopsImages;
+        this.mainActivity=mainActivity;
         this.mContext=context;
     }
 
@@ -57,6 +59,12 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
            @Override
            public void onClick(View view) {
                Intent goToShopDetailsActivity = new Intent(mContext, ShopDetailsActivity.class);
+               if(mainActivity.successfullyBookedShop!=null){
+                   if(aShopsList.get(i).getShopUid().equals(mainActivity.successfullyBookedShop.getShopUid())){
+                       aShopsList.get(i).setBookedShop(true);
+                       aShopsList.get(i).setSuccessfullyBookedHaircut(mainActivity.successfullyBookedShop.getSuccessfullyBookedHaircut());
+                   }
+               }
                goToShopDetailsActivity.putExtra("aShop",aShopsList.get(i));
                mContext.startActivity(goToShopDetailsActivity);
            }
