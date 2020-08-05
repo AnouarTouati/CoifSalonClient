@@ -42,8 +42,7 @@ public class CustomRecyclerViewAdapterFrag1Services extends RecyclerView.Adapter
         viewHolder.price.setText(aShop.getServicesHairCutsPrices().get(i) + " DA");
         viewHolder.duration.setText(aShop.getServicesHairCutsDuration().get(i) + " Min");
 
-        if (aShop.getSuccessfullyBookedHaircut() != null) {
-
+        if (aShop.IsBookedShop()) {
                 if (aShop.getSuccessfullyBookedHaircut().equals(aShop.getServicesHairCutsNames().get(i))) {
                     viewHolder.bookButton.setText("Reserved");
                     viewHolder.bookButton.setBackgroundColor(Color.GREEN);
@@ -57,7 +56,12 @@ public class CustomRecyclerViewAdapterFrag1Services extends RecyclerView.Adapter
         viewHolder.bookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shopDetails_frag1.shopDetailsActivity.book(aShop.getServicesHairCutsNames().get(i));
+                if(!aShop.IsBookedShop()){
+                    shopDetails_frag1.shopDetailsActivity.book(aShop.getServicesHairCutsNames().get(i));
+                }
+               else{
+                    shopDetails_frag1.shopDetailsActivity.unBook();
+                }
             }
         });
 

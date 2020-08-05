@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Toast.makeText(this, "Created main activity", Toast.LENGTH_SHORT).show();
         mContext = this;
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             recyclerView = findViewById(R.id.searchResultRecyclerView);
             searchEditText = findViewById(R.id.searchEditText);
 
-            customRecyclerViewAdapter = new CustomRecyclerViewAdapter(this, aShopsList, shopsMainPhoto);
+            customRecyclerViewAdapter = new CustomRecyclerViewAdapter(this, this,aShopsList, shopsMainPhoto);
             recyclerView.setAdapter(customRecyclerViewAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -123,14 +123,29 @@ public class MainActivity extends AppCompatActivity {
 
             });
 
-            getListOfShopsData();
-            getBookedShopUid();
+
         }
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //doing it here to prevent persistence of booking  and unbooking
+        //and also load new data when book and get back to main activity
+
+        getListOfShopsData();
+        getBookedShop();
+    }
 
     void getListOfShopsData() {
+        aShopsList.clear();
+        shopsMainPhoto.clear();
+        shopsMainPhotoAsStrings.clear();
+        indexOfShopPhotoToReceiveNext = 0;
+        customRecyclerViewAdapter = new CustomRecyclerViewAdapter(this,this, aShopsList, shopsMainPhoto);
+        recyclerView.swapAdapter(customRecyclerViewAdapter, true);
+
         firebaseFirestore.collection("Shops").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -157,15 +172,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
     }
-    void getBookedShopUid(){
+    void getBookedShop(){
+        successfullyBookedShop=null;
+        hideBookInfoVIEWSAndClear();
         firebaseFirestore.collection("Clients").document(firebaseUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-              if(documentSnapshot.contains("BookedShopUid")){
-                getBookedShopData(documentSnapshot.get("BookedShopUid").toString());
+              if(documentSnapshot.contains("ShopUid")){
+                getBookedShopData(documentSnapshot.get("ShopUid").toString(),documentSnapshot.get("Services").toString());
               }else{
                   successfullyBookedShop=null;
-                  hideBookInfoVIEWS();
+                  hideBookInfoVIEWSAndClear();
               }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -175,18 +192,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    void getBookedShopData(String Uid){
-        firebaseFirestore.collection("Shops").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+    void getBookedShopData(String bookedShopUid, final String services){
+        firebaseFirestore.collection("Shops").document(bookedShopUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                    successfullyBookedShop=convertDocumentSnapshotToAShop(documentSnapshot);
+                   successfullyBookedShop.setBookedShop(true);
+                   successfullyBookedShop.setSuccessfullyBookedHaircut(services);
                    showBookInfoViews();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
             Log.v("MyFirebase","Failed to get booked shop data");
-            hideBookInfoVIEWS();
             }
         });
     }
@@ -198,26 +216,25 @@ public class MainActivity extends AppCompatActivity {
         bookedHairCutMainActivityTextView.setVisibility(View.VISIBLE);
         goToBookedShopMainActivityButton.setVisibility(View.VISIBLE);}
 
-    void hideBookInfoVIEWS() {
+    void hideBookInfoVIEWSAndClear() {
         bookedShopMainActivityTextView.setVisibility(View.GONE);
         bookedHairCutMainActivityTextView.setVisibility(View.GONE);
         goToBookedShopMainActivityButton.setVisibility(View.GONE);
+        bookedShopMainActivityTextView.setText("");
+        bookedHairCutMainActivityTextView.setText("");
     }
 
     void serverResponseWithListOfShopsData(List<DocumentSnapshot> allShopsData) {
         try {
-            aShopsList.clear();
+
             for (int i = 0; i < allShopsData.size(); i++) {
                 aShopsList.add(convertDocumentSnapshotToAShop(allShopsData.get(i)));
             }
 
-            shopsMainPhoto.clear();
-            indexOfShopPhotoToReceiveNext = 0;
             requestPhoto(aShopsList.get(indexOfShopPhotoToReceiveNext).getShopMainPhotoReference());
 
-
             // customRecyclerViewAdapter.notifyDataSetChanged(); NOTTIFYING DID NOT WORK PROPERLY SINCE SUCCESSFULLYBOKKEDSTORE AND HAIRCUT DID NOT UPDATE TO NEW VALUE
-            customRecyclerViewAdapter = new CustomRecyclerViewAdapter(this, aShopsList, shopsMainPhoto);
+            customRecyclerViewAdapter = new CustomRecyclerViewAdapter(this,this, aShopsList, shopsMainPhoto);
             recyclerView.swapAdapter(customRecyclerViewAdapter, true);
 
         } catch (Exception e) {
@@ -359,9 +376,9 @@ public class MainActivity extends AppCompatActivity {
            if(snapshot.get("UseCoordinatesAKAaddMap")!=null){
                aShop.setUsesCoordinates((boolean) snapshot.get("UseCoordinatesAKAaddMap"));
                if ((boolean) snapshot.get("UseCoordinatesAKAaddMap")) {
-                   if(snapshot.get("Latitude")!=null && snapshot.get("Longitude")!=null){
-                       aShop.setShopLatitude((double) snapshot.get("Latitude"));
-                       aShop.setShopLongitude((double) snapshot.get("Longitude"));}
+                   if(snapshot.get("ShopLatitude")!=null && snapshot.get("ShopLongitude")!=null){
+                       aShop.setShopLatitude((double) snapshot.get("ShopLatitude"));
+                       aShop.setShopLongitude((double) snapshot.get("ShopLongitude"));}
                    }else{
                    aShop.setShopLatitude(0d);
                    aShop.setShopLongitude(0d);}

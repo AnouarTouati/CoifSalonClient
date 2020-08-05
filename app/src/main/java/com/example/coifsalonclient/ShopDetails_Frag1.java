@@ -36,7 +36,7 @@ public class ShopDetails_Frag1 extends Fragment {
         return view;
     }
 
-    public void BookWasSuccessfulNotifyRecyclerViewAdapter(){
+    public void BookUnBookWasSuccessfulNotifyRecyclerViewAdapter(){
         customRecyclerViewAdapterFrag1Services=new CustomRecyclerViewAdapterFrag1Services(getContext(),shopDetailsActivity.aShop,this);
         recyclerView.swapAdapter(customRecyclerViewAdapterFrag1Services,true);
     }
