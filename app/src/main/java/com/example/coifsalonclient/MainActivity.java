@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -65,14 +66,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toast.makeText(this, "Created main activity", Toast.LENGTH_SHORT).show();
+
         mContext = this;
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = firebaseAuth.getCurrentUser();
-        if(firebaseUser==null){
+        if(!isAuthenticated()){
             Intent goToSignInOrUp=new Intent(this,SignInOrUp.class);
             startActivity(goToSignInOrUp);
+            this.finish();
         } else{
             firebaseFirestore = FirebaseFirestore.getInstance();
             firebaseStorage = FirebaseStorage.getInstance();
@@ -134,10 +134,22 @@ public class MainActivity extends AppCompatActivity {
         //doing it here to prevent persistence of booking  and unbooking
         //and also load new data when book and get back to main activity
 
-        getListOfShopsData();
-        getBookedShop();
+        // we shouldnt get here if we are not authenticated by just in case
+        //double check
+         if(isAuthenticated()){
+             getListOfShopsData();
+             getBookedShop();
+         }
+
     }
 
+    private boolean isAuthenticated(){
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        if(firebaseUser==null){return false;}
+        else{return true;}
+
+    }
     void getListOfShopsData() {
         aShopsList.clear();
         shopsMainPhoto.clear();
@@ -350,23 +362,6 @@ public class MainActivity extends AppCompatActivity {
                aShop.setServicesHairCutsPrices(new ArrayList<String>());
            }
 
-           if(snapshot.get("ReviewersNames")!=null){
-               aShop.setReviewersNames((List<String>) snapshot.get("ReviewersNames"));
-
-               aShop.setReviewersComments((List<String>) snapshot.get("ReviewersComments"));
-
-               aShop.setReviewersCommentDate((List<String>) snapshot.get("ReviewersCommentDate"));
-
-               aShop.setReviewersGivenStars( CommonMehods.convertFloatListToPrimitivefloatArray((List<Double>)snapshot.get("ReviewersGivenStars")));
-           }else{
-               aShop.setReviewersNames(new ArrayList<String>());
-
-               aShop.setReviewersComments(new ArrayList<String>());
-
-               aShop.setReviewersCommentDate(new ArrayList<String>());
-
-               aShop.setReviewersGivenStars(null);
-           }
            if(snapshot.get("EmailAddress")!=null){
                aShop.setEmailAddress(snapshot.get("EmailAddress").toString());
            }else{

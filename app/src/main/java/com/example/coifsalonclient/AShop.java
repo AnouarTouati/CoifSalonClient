@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class AShop implements  Parcelable{
+
     private String shopName;
     private String shopUid;
     private String shopMainPhotoReference;
@@ -53,6 +54,7 @@ class AShop implements  Parcelable{
     private List<String> reviewersComments = new ArrayList<>();
     private List<String> reviewersCommentDate = new ArrayList<>();
     private float[] reviewersGivenStars;
+    private boolean loadedReviews=false;
     ///////////////////////////////////////////////////////////////////////////////
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -128,6 +130,7 @@ class AShop implements  Parcelable{
         reviewersComments = in.createStringArrayList();
         reviewersCommentDate = in.createStringArrayList();
         reviewersGivenStars = in.createFloatArray();
+        loadedReviews = in.readByte() != 0;
         freshPhotosReferencesFromServer = in.createStringArrayList();
     }
 
@@ -143,6 +146,7 @@ class AShop implements  Parcelable{
         }
     };
 
+    public boolean hasLoadedReviews(){return loadedReviews;}
     public String getShopMainPhotoReference() {
         return shopMainPhotoReference;
     }
@@ -464,6 +468,7 @@ class AShop implements  Parcelable{
     public void setFreshPhotosReferencesFromServer(List<String> freshPhotosReferencesFromServer) {
         this.freshPhotosReferencesFromServer = freshPhotosReferencesFromServer;
     }
+    public void setHasLoadedReviews(boolean value){loadedReviews=value;}
 
 
     @Override
@@ -522,6 +527,7 @@ class AShop implements  Parcelable{
         parcel.writeStringList(reviewersComments);
         parcel.writeStringList(reviewersCommentDate);
         parcel.writeFloatArray(reviewersGivenStars);
+        parcel.writeByte((byte) (loadedReviews ? 1 : 0));
         parcel.writeStringList(freshPhotosReferencesFromServer);
     }
 }

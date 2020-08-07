@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.TextView;
 
 public class ShopDetails_Frag3 extends Fragment {
    static  CustomRecyclerViewAdapterFrag3Reviews customRecyclerViewAdapterFrag3Reviews;
@@ -33,8 +34,10 @@ public class ShopDetails_Frag3 extends Fragment {
         mContext=getContext();
         view=inflater.inflate(R.layout.shopdetails_frag3, container, false);
         recyclerView=view.findViewById(R.id.recyclerView_Frag3);
+
         customRecyclerViewAdapterFrag3Reviews=new CustomRecyclerViewAdapterFrag3Reviews(getContext(),shopDetailsActivity.aShop);
         recyclerView.setAdapter(customRecyclerViewAdapterFrag3Reviews);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         addReviewButtonFrag3 =view.findViewById(R.id.AddReviewButton_Frag3);
         addReviewButtonFrag3.setOnClickListener(new View.OnClickListener() {
@@ -44,14 +47,15 @@ public class ShopDetails_Frag3 extends Fragment {
                 LayoutInflater layoutInflater=getLayoutInflater();
                 final View DialogView=layoutInflater.inflate(R.layout.add_review_alertdialog_view_frag3,null);
                 AlertDialogBuilder.setView(DialogView);
-
+                TextView ReviewerNameTextView=DialogView.findViewById(R.id.reviewerNameToAdd);
+                ReviewerNameTextView.setText(shopDetailsActivity.getFirebaseUser().getDisplayName());
                AlertDialogBuilder.setPositiveButton(R.string.AddReviewSubmitPositiveAlarDialog_Frag3, new DialogInterface.OnClickListener() {
                    @Override
                    public void onClick(DialogInterface dialogInterface, int i) {
-                       EditText ReviewerNameEditText=DialogView.findViewById(R.id.reviewerNameToAdd);
+
                        EditText ReviewerCommentEditText=DialogView.findViewById(R.id.reviewerCommentToAdd);
                        RatingBar RatingBar=DialogView.findViewById(R.id.ratingBarToAdd);
-                      shopDetailsActivity.addReview(ReviewerNameEditText.getText().toString(), ReviewerCommentEditText.getText().toString(), RatingBar.getRating());
+                      shopDetailsActivity.addReview(ReviewerCommentEditText.getText().toString(), RatingBar.getRating());
                    }
                });
                AlertDialogBuilder.setNegativeButton(R.string.AddReviewSubmitNegativeAlarDialog_Frag3, new DialogInterface.OnClickListener() {

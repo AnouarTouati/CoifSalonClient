@@ -37,17 +37,26 @@ public class CustomRecyclerViewAdapterFrag3Reviews extends RecyclerView.Adapter<
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-       viewHolder.reviewerName.setText(aShop.getReviewersNames().get(i));
-       viewHolder.reviewerComment.setText(aShop.getReviewersComments().get(i));
-       viewHolder.reviewerCommentDate.setText(aShop.getReviewersCommentDate().get(i));
-       viewHolder.ratingBar.setNumStars(5);
-       viewHolder.ratingBar.setRating(aShop.getReviewersGivenStars()[i]);
+
+        if(aShop.hasLoadedReviews()){
+            viewHolder.reviewerName.setText(aShop.getReviewersNames().get(i));
+            viewHolder.reviewerComment.setText(aShop.getReviewersComments().get(i));
+            viewHolder.reviewerCommentDate.setText(aShop.getReviewersCommentDate().get(i));
+            viewHolder.ratingBar.setNumStars(5);
+            viewHolder.ratingBar.setRating(aShop.getReviewersGivenStars()[i]);
+        }
+
 
     }
 
     @Override
     public int getItemCount() {
-        return aShop.getReviewersNames().size();
+        if(aShop.hasLoadedReviews()){
+            return aShop.getReviewersNames().size();
+        }else{
+            return 0;
+        }
+
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{

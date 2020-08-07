@@ -20,7 +20,9 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -31,9 +33,11 @@ import org.json.JSONObject;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ShopDetailsActivity extends FragmentActivity {
@@ -79,6 +83,7 @@ public class ShopDetailsActivity extends FragmentActivity {
 
        weGotTheDataDisplayIt();
        loadLocalData(aShop.getShopUid());
+       getReviews();
     }
 
 /*
@@ -213,7 +218,60 @@ public class ShopDetailsActivity extends FragmentActivity {
     }
 */
 
+void getReviews(){
+    aShop.getReviewersNames().clear();
+    aShop.getReviewersComments().clear();
+    aShop.getReviewersCommentDate().clear();
+    aShop.setReviewersGivenStars(new float[]{});
 
+    firebaseFirestore.collection("Shops").document(aShop.getShopUid()).collection("Reviews").get()
+            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    try{
+                        List<DocumentSnapshot> reviews=queryDocumentSnapshots.getDocuments();
+
+                        List<String> reviewersNames=new ArrayList<>();
+                        List<String> reviewersComments=new ArrayList<>();
+                        List<String> reviewersCommentDate=new ArrayList<>();
+                        List<Double> reviewersGivenStars=new ArrayList<>();
+
+                        for(int i=0;i<reviews.size();i++){
+                            reviewersNames.add(reviews.get(i).getString("ReviewerName"));
+                            reviewersComments.add(reviews.get(i).getString("ReviewerComment"));
+                            Long reviewerCommentDateInMillis=(Long)reviews.get(i).get("ReviewerCommentDateInMillis");
+
+                            Date date=new Date(reviewerCommentDateInMillis);
+                            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+                            String simpleDateString=simpleDateFormat.format(date);
+                            reviewersCommentDate.add(simpleDateString);
+                            reviewersGivenStars.add((Double)reviews.get(i).get("ReviewerGivenStars"));
+                        }
+
+
+                        aShop.setReviewersNames(reviewersNames);
+
+                        aShop.setReviewersComments(reviewersComments);
+
+                        aShop.setReviewersCommentDate(reviewersCommentDate);
+
+                        aShop.setReviewersGivenStars( CommonMehods.convertFloatListToPrimitivefloatArray(reviewersGivenStars));
+
+                        aShop.setHasLoadedReviews(true);
+
+                        shopDetails_frag3.ReceivedNewReviewsNotifyRecyclerView();
+                    }catch (Exception e){
+                        Log.v("MyFirebase","Error parsing reviews data");
+                    }
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+        @Override
+        public void onFailure(@NonNull Exception e) {
+          Log.v("MyFirebase", "Error getting reviews");
+        }
+    });
+}
     void saveUpdatedShopDataToMemory() {
 
 
@@ -517,7 +575,7 @@ public class ShopDetailsActivity extends FragmentActivity {
                final Map<String,Object> map=new HashMap<>();
                map.put("ClientFakeFirebaseUid", "null");
                map.put("ClientFireBaseUid", firebaseUser.getUid());
-               map.put("PersonName", "Not Implemented yet on client side");
+               map.put("PersonName", firebaseUser.getDisplayName());
                map.put("Services",ServicesHairCutToReserve);
                map.put("ShopUid",aShop.getShopUid());
 
@@ -581,10 +639,10 @@ public class ShopDetailsActivity extends FragmentActivity {
         });
     }
 
-    public void addReview(final String ReviewerName, final String ReviewerComment, final float ReviewerGivenStars) {
+    public void addReview(final String ReviewerComment, final float ReviewerGivenStars) {
 
         Map<String, Object> map = new HashMap<>();
-        map.put("ReviewerName", ReviewerName);
+        map.put("ReviewerName", firebaseUser.getDisplayName());
         map.put("ReviewerComment", ReviewerComment);
         map.put("ReviewerGivenStars", ReviewerGivenStars);
 
@@ -592,7 +650,7 @@ public class ShopDetailsActivity extends FragmentActivity {
               .set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
           @Override
           public void onSuccess(Void aVoid) {
-          aShop.getReviewersNames().add(0,ReviewerName);
+          aShop.getReviewersNames().add(0,firebaseUser.getDisplayName());
           aShop.getReviewersComments().add(0,ReviewerComment);
           //this conversion thing might be problematic
                   ArrayList<Double> reviewersGivenStarsList=new ArrayList<>();
@@ -671,6 +729,6 @@ public class ShopDetailsActivity extends FragmentActivity {
         });
 
     }
-
+   public FirebaseUser getFirebaseUser(){return firebaseUser;}
 
 }
