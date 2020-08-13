@@ -17,5 +17,6 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="invalid_name">"The name should be at least 4 characters long"</string>
-
+    <string name="invalid_email_or_password">"Invalid email or password"</string>
+    <string name="something_went_wrong_we_could_not_sign_you_in"> "something went wrong we couldn't sign you in"</string>
 </resources>

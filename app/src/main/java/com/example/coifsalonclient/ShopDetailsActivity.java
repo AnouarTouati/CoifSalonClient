@@ -662,7 +662,9 @@ void getReviews(){
 
                   aShop.setReviewersGivenStars( CommonMehods.convertFloatListToPrimitivefloatArray(reviewersGivenStarsList));
          //////////////////////////////////////////////
-          aShop.getReviewersCommentDate().add(0, new Date().toString());
+              SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+
+          aShop.getReviewersCommentDate().add(0, simpleDateFormat.format(new Date()));
           shopDetails_frag3.ReceivedNewReviewsNotifyRecyclerView();
           
           }

@@ -2,6 +2,7 @@ package com.example.coifsalonclient;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,16 +19,24 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class SignInOrUp extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
+    FirebaseFirestore firebaseFirestore;
     EditText emailEditTex, passwordEditText, nameEditText;
-    Button signInButton, signUpButton, submitNameButton;
+    Button signInButton, signUpButton, submitNameButton,retryButton;
     TextView errorTextView;
+    ConstraintLayout errorLayout,layout1,layout2;
     Context mContext;
-
+    enum GoBackTo {
+        SUBMIT_USER_NAME,
+        SIGN_IN_UP
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +44,11 @@ public class SignInOrUp extends AppCompatActivity {
 
         mContext = this;
         firebaseAuth = FirebaseAuth.getInstance();
+        firebaseFirestore=FirebaseFirestore.getInstance();
+
+        layout1=findViewById(R.id.signInOrUpSubLayout1);
+        layout2=findViewById(R.id.signInOrUpSubLayout2);
+        errorLayout=findViewById(R.id.signInOrUpSubLayout3);
 
         emailEditTex = findViewById(R.id.editTextTextEmailAddress);
         passwordEditText = findViewById(R.id.editTextTextPassword);
@@ -61,7 +75,9 @@ public class SignInOrUp extends AppCompatActivity {
             }
         });
         errorTextView = findViewById(R.id.errorTextView);
-        errorTextView.setVisibility(View.GONE);
+        retryButton=findViewById(R.id.retryButtonSignInUpActivity);
+
+        showLayout1();
     }
 
 
@@ -70,24 +86,51 @@ public class SignInOrUp extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        Intent goToMainActivity = new Intent(mContext, MainActivity.class);
-                        startActivity(goToMainActivity);
+                       checkIfIsNotBusinessAccount(authResult.getUser());
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.v("MyFirebase", "Failed to sign in");
+                showErrorLayout(R.string.invalid_email_or_password,GoBackTo.SIGN_IN_UP);
             }
         });
     }
 
+    private void checkIfIsNotBusinessAccount(FirebaseUser firebaseUser){
+        firebaseFirestore.collection("Shops").document(firebaseUser.getUid()).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot snapshot) {
+                        if(!snapshot.contains("ShopUid")){
+                            //indeed the user doesn't have a shop
+                            Intent goToMainActivity = new Intent(mContext, MainActivity.class);
+                            startActivity(goToMainActivity);
+                        }else{
+                            //user has a shop with his id thus his account is business
+                            showErrorLayout(R.string.invalid_email_or_password,GoBackTo.SIGN_IN_UP);
+                            firebaseAuth.signOut();
+                            Log.v("MyFirebase", "is business account not allowed");
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.v("MyFirebase", "Failed to check if account is client");
+                showErrorLayout(R.string.something_went_wrong_we_could_not_sign_you_in,GoBackTo.SIGN_IN_UP);
+                firebaseAuth.signOut();
+            }
+        });
+
+
+    }
     private void signUp() {
         firebaseAuth.createUserWithEmailAndPassword(emailEditTex.getText().toString(), passwordEditText.getText().toString())
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         firebaseUser = authResult.getUser();
-                        showNameField();
+                    showLayout2();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -98,6 +141,32 @@ public class SignInOrUp extends AppCompatActivity {
 
     }
 
+    private void showErrorLayout(int resourceString, final GoBackTo goBackTo){
+     layout1.setVisibility(View.GONE);
+     layout2.setVisibility(View.GONE);
+     errorLayout.setVisibility(View.VISIBLE);
+     errorTextView.setText(resourceString);
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+             switch(goBackTo){
+                 case SUBMIT_USER_NAME: showLayout2();break;
+                 case SIGN_IN_UP: showLayout1();break;
+             }
+            }
+        });
+    }
+    private void showLayout1(){
+        layout1.setVisibility(View.VISIBLE);
+        layout2.setVisibility(View.GONE);
+        errorLayout.setVisibility(View.GONE);
+    }
+    private void showLayout2(){
+        layout1.setVisibility(View.GONE);
+        layout2.setVisibility(View.VISIBLE);
+        errorLayout.setVisibility(View.GONE);
+    }
+/*
     private void showNameField() {
         ////////////////////////////////////////
         emailEditTex.setVisibility(View.GONE);
@@ -109,10 +178,9 @@ public class SignInOrUp extends AppCompatActivity {
         submitNameButton.setVisibility(View.VISIBLE);
         errorTextView.setVisibility(View.GONE);
     }
-
+*/
     private void setTheName() {
         if (firebaseUser != null) {
-            errorTextView.setVisibility(View.GONE);
             String name = nameEditText.getText().toString();
             if (name.length() > 3) {
                 UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder()
@@ -130,8 +198,7 @@ public class SignInOrUp extends AppCompatActivity {
                     }
                 });
             } else {
-                errorTextView.setText(R.string.invalid_name);
-                errorTextView.setVisibility(View.VISIBLE);
+                showErrorLayout(R.string.invalid_name,GoBackTo.SUBMIT_USER_NAME);
             }
 
         }
