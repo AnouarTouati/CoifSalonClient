@@ -106,6 +106,7 @@ public class SignInOrUp extends AppCompatActivity {
                             //indeed the user doesn't have a shop
                             Intent goToMainActivity = new Intent(mContext, MainActivity.class);
                             startActivity(goToMainActivity);
+                            finish();
                         }else{
                             //user has a shop with his id thus his account is business
                             showErrorLayout(R.string.invalid_email_or_password,GoBackTo.SIGN_IN_UP);
@@ -190,6 +191,7 @@ public class SignInOrUp extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
                         Intent goToMainActivity = new Intent(mContext, MainActivity.class);
                         startActivity(goToMainActivity);
+                        finish();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

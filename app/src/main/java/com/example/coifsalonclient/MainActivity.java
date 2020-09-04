@@ -38,6 +38,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> shopsMainPhotoAsStrings = new ArrayList<>();
     ArrayList<Bitmap> shopsMainPhoto = new ArrayList<>();
     Integer indexOfShopPhotoToReceiveNext = 0;
+    AShop successfullyBookedShop;
 
     EditText searchEditText;
     CustomRecyclerViewAdapter customRecyclerViewAdapter;
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     TextView bookedShopMainActivityTextView;
     TextView bookedHairCutMainActivityTextView;
     Button goToBookedShopMainActivityButton;
-    AShop successfullyBookedShop;
+
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
@@ -151,12 +153,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
     void getListOfShopsData() {
-        aShopsList.clear();
-        shopsMainPhoto.clear();
-        shopsMainPhotoAsStrings.clear();
-        indexOfShopPhotoToReceiveNext = 0;
-        customRecyclerViewAdapter = new CustomRecyclerViewAdapter(this,this, aShopsList, shopsMainPhoto);
-        recyclerView.swapAdapter(customRecyclerViewAdapter, true);
+
+        clearDataForPreviousResults();
 
         firebaseFirestore.collection("Shops").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -169,20 +167,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.v("MyFirebase", e.getMessage());
             }
         });
-        /*
-        firebaseFirestore.collection("Shops").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-            //    serverResponseWithBookForMainActivity(response.getJSONObject("BookInfoForMainActivity"));
-                allShopsDataRawFromServer=queryDocumentSnapshots;
-                serverResponseWithListOfShopsMainDataOnly(queryDocumentSnapshots.getDocuments());
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
 
-            }
-        });*/
     }
     void getBookedShop(){
         successfullyBookedShop=null;
@@ -239,15 +224,16 @@ public class MainActivity extends AppCompatActivity {
     void serverResponseWithListOfShopsData(List<DocumentSnapshot> allShopsData) {
         try {
 
-            for (int i = 0; i < allShopsData.size(); i++) {
-                aShopsList.add(convertDocumentSnapshotToAShop(allShopsData.get(i)));
+            if(allShopsData.size()>0){
+                for (int i = 0; i < allShopsData.size(); i++) {
+                    aShopsList.add(convertDocumentSnapshotToAShop(allShopsData.get(i)));
+                }
+                requestPhoto(aShopsList.get(indexOfShopPhotoToReceiveNext).getShopMainPhotoReference());
+
+                // customRecyclerViewAdapter.notifyDataSetChanged(); NOTTIFYING DID NOT WORK PROPERLY SINCE SUCCESSFULLYBOKKEDSTORE AND HAIRCUT DID NOT UPDATE TO NEW VALUE
+                customRecyclerViewAdapter = new CustomRecyclerViewAdapter(this,this, aShopsList, shopsMainPhoto);
+                recyclerView.swapAdapter(customRecyclerViewAdapter, true);
             }
-
-            requestPhoto(aShopsList.get(indexOfShopPhotoToReceiveNext).getShopMainPhotoReference());
-
-            // customRecyclerViewAdapter.notifyDataSetChanged(); NOTTIFYING DID NOT WORK PROPERLY SINCE SUCCESSFULLYBOKKEDSTORE AND HAIRCUT DID NOT UPDATE TO NEW VALUE
-            customRecyclerViewAdapter = new CustomRecyclerViewAdapter(this,this, aShopsList, shopsMainPhoto);
-            recyclerView.swapAdapter(customRecyclerViewAdapter, true);
 
         } catch (Exception e) {
             Toast.makeText(this, "Problem in ServerResponseWith Shops Data function", Toast.LENGTH_LONG).show();
@@ -255,7 +241,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
+private void clearDataForPreviousResults(){
+    aShopsList.clear();
+    shopsMainPhoto.clear();
+    shopsMainPhotoAsStrings.clear();
+    indexOfShopPhotoToReceiveNext = 0;
+    customRecyclerViewAdapter = new CustomRecyclerViewAdapter(this,this, aShopsList, shopsMainPhoto);
+    recyclerView.swapAdapter(customRecyclerViewAdapter, true);
+}
     private String getShopUidFromPath(String path) {
         path = path.replace("Shops/", "");
         return path;
@@ -287,44 +280,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    void search(String criteria) {
-//////////////////////////////////////////////////////////////////////
-        /// USE CODE BELOW FOR LOCAL SEARCH ON AVAILBLE LIST
-/////////////////////////////////////////////////////////////////////
-/*
-      for (int i = 0; i< shopsNames.size(); i++){
-
-            if(!shopsNamesOriginal.contains(shopsNames.get(i))){
-                shopsNamesOriginal.add(shopsNames.get(i));
+    void search(String shopName) {
+        clearDataForPreviousResults();
+        //trim removes trailing and leading white spaces
+        //split("\\s+") removes ALL white spaces between each two words
+        String[] keyWords=shopName.trim().split("\\s+");
+        firebaseFirestore.collection("Shops").whereIn("ShopName", Arrays.asList(keyWords)).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                serverResponseWithListOfShopsData(queryDocumentSnapshots.getDocuments());
             }
-        }
-
-        shopsNames.clear();
-        String lowercaseCriteria=criteria.toLowerCase();
-        for (int i = 0; i< shopsNamesOriginal.size(); i++){
-
-            String nameOriginalLowerCase= shopsNamesOriginal.get(i).toLowerCase();
-            if(nameOriginalLowerCase.contains(lowercaseCriteria)){
-                shopsNames.add(shopsNamesOriginal.get(i));
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.v("MyFirebase", e.getMessage());
             }
-        }
-        customRecyclerViewAdapter.notifyDataSetChanged();
-*/
-
-//////////////////////////////////////////////////////////////////////
-        /// USE CODE BELOW FOR ONLINE SEARCH ON SERVER SIDE RESULT WILL BE DISPLAYED FROM FUNCTION serverResponseWithListOfShopsMainDataOnly
-        /// THIS MEANS THE RESULT SHOULD BE RETURNED IN JSONOBJECT WITH NAME ListOfShopsMainDataOnly
-/////////////////////////////////////////////////////////////////////
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("Request", "Search");
-            jsonObject.put("Criteria", criteria);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //  JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL, jsonObject, volleyListener, volleyErrorListener);
-        //   requestQueue.add(jsonObjectRequest);
-
+        });
     }
 
     AShop convertDocumentSnapshotToAShop(DocumentSnapshot snapshot){
