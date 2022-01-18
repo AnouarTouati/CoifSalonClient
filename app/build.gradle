@@ -1,5 +1,8 @@
+
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+
+
 android {
     compileSdkVersion 31
     defaultConfig {
@@ -16,6 +19,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
@@ -42,4 +46,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation 'androidx.test:runner:1.4.0'
     androidTestImplementation 'androidx.test:rules:1.4.0'
+
 }
