@@ -1,4 +1,4 @@
-package com.example.coifsalonclient;
+package com.example.coifsalonclient.shopdetails;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,19 +11,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.coifsalonclient.R;
+
 public class ShopDetails_Frag4 extends Fragment {
     static RecyclerView recyclerViewFrag4Portfolio;
     CustomRecyclerViewAdapterFrag4Portfolio customRecyclerViewAdapterFrag4Portfolio;
 
     public  Context mContext;
+    private ShopDetailsActivity shopDetailsActivity;
     View view;
+    public ShopDetails_Frag4(ShopDetailsActivity shopDetailsActivity){
+        this.shopDetailsActivity=shopDetailsActivity;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
        mContext=getContext();
        view=inflater.inflate(R.layout.shopdetails_frag4, container,false);
        recyclerViewFrag4Portfolio =view.findViewById(R.id.recyclerView_Fra4);
-        customRecyclerViewAdapterFrag4Portfolio =new CustomRecyclerViewAdapterFrag4Portfolio(ShopDetailsActivity.portfolioPhotos,mContext);
+        customRecyclerViewAdapterFrag4Portfolio =new CustomRecyclerViewAdapterFrag4Portfolio(shopDetailsActivity.portfolioPhotos,mContext);
         recyclerViewFrag4Portfolio.setAdapter(customRecyclerViewAdapterFrag4Portfolio);
         recyclerViewFrag4Portfolio.setLayoutManager(new LinearLayoutManager(mContext));
 
@@ -38,12 +45,10 @@ public class ShopDetails_Frag4 extends Fragment {
     }
 
     public void receivedNewImagesNotifyRecyclerView(){
-        //if a photo loads before recyclerViewFrag4Portfolio error (and it happened)...now even if all photos load before
-        //recyclerViewFrag4Portfolio that means the follwing code we run and get all the photos(onCreateView).
+
         if(recyclerViewFrag4Portfolio!=null){
-            customRecyclerViewAdapterFrag4Portfolio =new CustomRecyclerViewAdapterFrag4Portfolio(ShopDetailsActivity.portfolioPhotos,mContext);
+            customRecyclerViewAdapterFrag4Portfolio =new CustomRecyclerViewAdapterFrag4Portfolio(shopDetailsActivity.portfolioPhotos,mContext);
             recyclerViewFrag4Portfolio.swapAdapter(customRecyclerViewAdapterFrag4Portfolio, true);
         }
-
     }
 }

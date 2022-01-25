@@ -1,4 +1,4 @@
-package com.example.coifsalonclient;
+package com.example.coifsalonclient.shopdetails;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.example.coifsalonclient.AShop;
+import com.example.coifsalonclient.R;
 
 public class CustomRecyclerViewAdapterFrag1Services extends RecyclerView.Adapter<CustomRecyclerViewAdapterFrag1Services.ViewHolder> {
 

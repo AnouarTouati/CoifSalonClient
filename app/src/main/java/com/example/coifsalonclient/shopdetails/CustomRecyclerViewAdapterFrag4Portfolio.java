@@ -1,4 +1,4 @@
-package com.example.coifsalonclient;
+package com.example.coifsalonclient.shopdetails;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.example.coifsalonclient.R;
 
 import java.util.ArrayList;
 

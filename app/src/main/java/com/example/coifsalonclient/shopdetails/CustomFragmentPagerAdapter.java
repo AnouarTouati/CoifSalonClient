@@ -1,4 +1,4 @@
-package com.example.coifsalonclient;
+package com.example.coifsalonclient.shopdetails;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;

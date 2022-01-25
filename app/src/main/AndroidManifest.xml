@@ -19,9 +19,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".SignInOrUp"
+            android:name=".signinorup.SignInOrUp"
             android:label="@string/title_activity_login" />
-        <activity android:name=".ShopDetailsActivity" />
+        <activity android:name=".shopdetails.ShopDetailsActivity" />
         <activity android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

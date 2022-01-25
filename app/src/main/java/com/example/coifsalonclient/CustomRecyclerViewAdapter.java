@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.example.coifsalonclient.shopdetails.ShopDetailsActivity;
+
 import java.util.ArrayList;
 
 public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecyclerViewAdapter.ViewHolder> {

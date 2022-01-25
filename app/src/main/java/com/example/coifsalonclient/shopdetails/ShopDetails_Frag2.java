@@ -1,4 +1,4 @@
-package com.example.coifsalonclient;
+package com.example.coifsalonclient.shopdetails;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.coifsalonclient.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;

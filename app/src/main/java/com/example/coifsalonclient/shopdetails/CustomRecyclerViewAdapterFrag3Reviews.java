@@ -1,4 +1,4 @@
-package com.example.coifsalonclient;
+package com.example.coifsalonclient.shopdetails;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,10 +12,10 @@ import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.example.coifsalonclient.R.layout.shop_reviews_recyclerview_item_frag3;
+
+import com.example.coifsalonclient.AShop;
+import com.example.coifsalonclient.R;
 
 public class CustomRecyclerViewAdapterFrag3Reviews extends RecyclerView.Adapter<CustomRecyclerViewAdapterFrag3Reviews.ViewHolder> {
 

@@ -1,6 +1,5 @@
-package com.example.coifsalonclient;
+package com.example.coifsalonclient.shopdetails;
 
-import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,10 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.coifsalonclient.R;
+
 public class ShopDetails_Frag1 extends Fragment {
     View view;
    static  RecyclerView recyclerView;
-     CustomRecyclerViewAdapterFrag1Services  customRecyclerViewAdapterFrag1Services;
+     CustomRecyclerViewAdapterFrag1Services customRecyclerViewAdapterFrag1Services;
     ShopDetailsActivity shopDetailsActivity;
 
     public ShopDetails_Frag1(ShopDetailsActivity shopDetailsActivity){
@@ -36,7 +37,7 @@ public class ShopDetails_Frag1 extends Fragment {
         return view;
     }
 
-    public void BookUnBookWasSuccessfulNotifyRecyclerViewAdapter(){
+    public void BookingStatusChangedNotifyRecyclerViewAdapter(){
         customRecyclerViewAdapterFrag1Services=new CustomRecyclerViewAdapterFrag1Services(getContext(),shopDetailsActivity.aShop,this);
         recyclerView.swapAdapter(customRecyclerViewAdapterFrag1Services,true);
     }

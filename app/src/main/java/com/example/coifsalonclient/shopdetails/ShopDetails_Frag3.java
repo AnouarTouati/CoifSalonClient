@@ -1,4 +1,4 @@
-package com.example.coifsalonclient;
+package com.example.coifsalonclient.shopdetails;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,8 +17,10 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.example.coifsalonclient.R;
+
 public class ShopDetails_Frag3 extends Fragment {
-   static  CustomRecyclerViewAdapterFrag3Reviews customRecyclerViewAdapterFrag3Reviews;
+   static CustomRecyclerViewAdapterFrag3Reviews customRecyclerViewAdapterFrag3Reviews;
    static  RecyclerView recyclerView;
     public static Context mContext;
     Button addReviewButtonFrag3;
@@ -70,7 +72,9 @@ public class ShopDetails_Frag3 extends Fragment {
         return view;
     }
     public  void ReceivedNewReviewsNotifyRecyclerView(){
-        customRecyclerViewAdapterFrag3Reviews=new CustomRecyclerViewAdapterFrag3Reviews( mContext,shopDetailsActivity.aShop);
-        recyclerView.swapAdapter(customRecyclerViewAdapterFrag3Reviews, true);
+        if(recyclerView!=null) {
+            customRecyclerViewAdapterFrag3Reviews = new CustomRecyclerViewAdapterFrag3Reviews(mContext, shopDetailsActivity.aShop);
+            recyclerView.swapAdapter(customRecyclerViewAdapterFrag3Reviews, true);
+        }
     }
 }
