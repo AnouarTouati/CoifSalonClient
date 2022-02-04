@@ -8,7 +8,25 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/drawable/background_style_01.xml" value="0.1035" />
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/drawable/button_type_0.xml" value="0.1035" />
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/drawable/button_type_01.xml" value="0.1035" />
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/drawable/button_type_02.xml" value="0.1035" />
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/drawable/button_type_03.xml" value="0.1035" />
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/drawable/button_type_04.xml" value="0.1035" />
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/drawable/button_type_1.xml" value="0.1035" />
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/layout/activity_shop_details.xml" value="0.33" />
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/layout/activity_sign_in_or_up.xml" value="0.1" />
         <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/layout/alayout.xml" value="0.10520833333333333" />
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/layout/search_result_recyclerview_item.xml" value="0.20416666666666666" />
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/layout/shop_portfolio_recyclerview_item_frag4.xml" value="0.15925925925925927" />
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/layout/shop_reviews_recyclerview_item_frag3.xml" value="0.15925925925925927" />
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/layout/shop_services_recyclerview_item_frag1.xml" value="0.20416666666666666" />
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/layout/shopdetails_frag1.xml" value="0.15925925925925927" />
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/layout/shopdetails_frag2.xml" value="0.33" />
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/layout/shopdetails_frag3.xml" value="0.15925925925925927" />
+        <entry key="..\:/Projects/AndroidAPPS/CoifSalonClient/app/src/main/res/layout/shopdetails_frag4.xml" value="0.15925925925925927" />
       </map>
     </option>
   </component>

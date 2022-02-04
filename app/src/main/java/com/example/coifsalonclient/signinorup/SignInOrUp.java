@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.coifsalonclient.MainActivity;
 import com.example.coifsalonclient.R;
@@ -169,7 +170,8 @@ public class SignInOrUp extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.v("MyFirebase", "Failed to sign up");
+                Log.e("MyFirebase", "Failed to sign up");
+                Toast.makeText(mContext, "Failed to sign up",Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -206,7 +208,8 @@ public class SignInOrUp extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.v("MyFirebase", "Failed to sign up");
+                        Log.e("MyFirebase", "Failed to sign up");
+                        Toast.makeText(mContext, "Failed to sign up",Toast.LENGTH_LONG).show();
                     }
                 });
             } else {

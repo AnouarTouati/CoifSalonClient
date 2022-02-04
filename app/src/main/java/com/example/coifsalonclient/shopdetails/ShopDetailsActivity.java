@@ -40,7 +40,6 @@ import java.util.Map;
 public class ShopDetailsActivity extends FragmentActivity {
 
 
-    private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseStorage firebaseStorage;
@@ -67,7 +66,7 @@ public class ShopDetailsActivity extends FragmentActivity {
         mContext = this;
 
         firebaseFirestore = FirebaseFirestore.getInstance();
-        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
 
@@ -97,7 +96,13 @@ public class ShopDetailsActivity extends FragmentActivity {
             @Override
             public void onPageSelected(int i) {
 
-                tabLayout.getTabAt(i).select();
+                try{
+                    tabLayout.getTabAt(i).select();
+                }catch (Exception e){
+                    Log.e("MyFirebase","Unexpected error occurred "+e);
+                    Toast.makeText(mContext, "Unexpected error occurred",Toast.LENGTH_LONG).show();
+                }
+
             }
 
             @Override
@@ -170,7 +175,8 @@ public class ShopDetailsActivity extends FragmentActivity {
                             extractReviewsFromServerResponse(queryDocumentSnapshots);
                             shopDetails_frag3.ReceivedNewReviewsNotifyRecyclerView();
                         } catch (Exception e) {
-                            Log.v("MyFirebase", "Error parsing reviews data");
+                            Log.e("MyFirebase", "Error parsing reviews data");
+                            Toast.makeText(mContext, "Unexpected error occurred",Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -178,41 +184,48 @@ public class ShopDetailsActivity extends FragmentActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.v("MyFirebase", "Error getting reviews");
+                Toast.makeText(mContext, "Unexpected error occurred",Toast.LENGTH_LONG).show();
             }
         });
     }
 
 
   private void extractReviewsFromServerResponse(QuerySnapshot queryDocumentSnapshots){
-      List<DocumentSnapshot> reviews = queryDocumentSnapshots.getDocuments();
+        try{
+            List<DocumentSnapshot> reviews = queryDocumentSnapshots.getDocuments();
 
-      List<String> reviewersNames = new ArrayList<>();
-      List<String> reviewersComments = new ArrayList<>();
-      List<String> reviewersCommentDate = new ArrayList<>();
-      List<Double> reviewersGivenStars = new ArrayList<>();
+            List<String> reviewersNames = new ArrayList<>();
+            List<String> reviewersComments = new ArrayList<>();
+            List<String> reviewersCommentDate = new ArrayList<>();
+            List<Double> reviewersGivenStars = new ArrayList<>();
 
-      for (int i = 0; i < reviews.size(); i++) {
-          reviewersNames.add(reviews.get(i).getString("ReviewerName"));
-          reviewersComments.add(reviews.get(i).getString("ReviewerComment"));
-          Long reviewerCommentDateInMillis = (Long) reviews.get(i).get("ReviewerCommentDateInMillis");
+            for (int i = 0; i < reviews.size(); i++) {
+                reviewersNames.add(reviews.get(i).getString("ReviewerName"));
+                reviewersComments.add(reviews.get(i).getString("ReviewerComment"));
+                Long reviewerCommentDateInMillis = (Long) reviews.get(i).get("ReviewerCommentDateInMillis");
 
-          Date date = new Date(reviewerCommentDateInMillis);
-          SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-          String simpleDateString = simpleDateFormat.format(date);
-          reviewersCommentDate.add(simpleDateString);
-          reviewersGivenStars.add((Double) reviews.get(i).get("ReviewerGivenStars"));
-      }
+                Date date = new Date(reviewerCommentDateInMillis);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                String simpleDateString = simpleDateFormat.format(date);
+                reviewersCommentDate.add(simpleDateString);
+                reviewersGivenStars.add((Double) reviews.get(i).get("ReviewerGivenStars"));
+            }
 
 
-      aShop.setReviewersNames(reviewersNames);
+            aShop.setReviewersNames(reviewersNames);
 
-      aShop.setReviewersComments(reviewersComments);
+            aShop.setReviewersComments(reviewersComments);
 
-      aShop.setReviewersCommentDate(reviewersCommentDate);
+            aShop.setReviewersCommentDate(reviewersCommentDate);
 
-      aShop.setReviewersGivenStars(CommonMethods.convertFloatListToPrimitivefloatArray(reviewersGivenStars));
+            aShop.setReviewersGivenStars(CommonMethods.convertFloatListToPrimitivefloatArray(reviewersGivenStars));
 
-      aShop.setHasLoadedReviews(true);
+            aShop.setHasLoadedReviews(true);
+        }catch (Exception e){
+            Log.e("MyFirebase", "Error getting extracting reviews");
+            Toast.makeText(mContext, "Unexpected error occurred",Toast.LENGTH_LONG).show();
+        }
+
   }
 
     public void book(final String ServicesHairCutToReserve) {
@@ -240,7 +253,8 @@ public class ShopDetailsActivity extends FragmentActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.v("MyFirebase", "Failed to book");
+                        Log.e("MyFirebase", "Failed to book");
+                        Toast.makeText(mContext, "Failed to book",Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -249,7 +263,6 @@ public class ShopDetailsActivity extends FragmentActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Toast.makeText(mContext, "We didn't book anything", Toast.LENGTH_LONG).show();
-
             }
         });
         alertDialogBuilder.create().show();
@@ -261,15 +274,22 @@ public class ShopDetailsActivity extends FragmentActivity {
                 .set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                aShop.setSuccessfullyBookedHaircut(map.get("Services").toString());
-                aShop.setBookedShop(true);
-                shopDetails_Frag1.BookingStatusChangedNotifyRecyclerViewAdapter();
+                try{
+                    aShop.setSuccessfullyBookedHaircut(map.get("Services").toString());
+                    aShop.setBookedShop(true);
+                    shopDetails_Frag1.BookingStatusChangedNotifyRecyclerViewAdapter();
+                }catch (Exception e){
+                    Log.e("MyFirebase", "Failed to book");
+                    Toast.makeText(mContext, "Failed to book",Toast.LENGTH_LONG).show();
+                }
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.v("MyFirebase", "Failed to book");
                 firebaseFirestore.collection("Shops").document(aShop.getShopUid()).collection("ClientsPending").document(firebaseUser.getUid()).delete();
+                Toast.makeText(mContext, "Failed to book",Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -290,7 +310,6 @@ public class ShopDetailsActivity extends FragmentActivity {
                                 });
                     }
                 });
-
     }
 
 
@@ -305,28 +324,34 @@ public class ShopDetailsActivity extends FragmentActivity {
                 .set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                aShop.getReviewersNames().add(0, firebaseUser.getDisplayName());
-                aShop.getReviewersComments().add(0, ReviewerComment);
-                //this conversion thing might be problematic
-                ArrayList<Double> reviewersGivenStarsList = new ArrayList<>();
+                try{
+                    aShop.getReviewersNames().add(0, firebaseUser.getDisplayName());
+                    aShop.getReviewersComments().add(0, ReviewerComment);
+                    //this conversion thing might be problematic
+                    ArrayList<Double> reviewersGivenStarsList = new ArrayList<>();
 
-                for (float number : aShop.getReviewersGivenStars()) {
-                    reviewersGivenStarsList.add(Double.valueOf(number));
+                    for (float number : aShop.getReviewersGivenStars()) {
+                        reviewersGivenStarsList.add(Double.valueOf(number));
+                    }
+                    reviewersGivenStarsList.add(0, Double.valueOf(ReviewerGivenStars));
+
+                    aShop.setReviewersGivenStars(CommonMethods.convertFloatListToPrimitivefloatArray(reviewersGivenStarsList));
+                    //////////////////////////////////////////////
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+                    aShop.getReviewersCommentDate().add(0, simpleDateFormat.format(new Date()));
+                    shopDetails_frag3.ReceivedNewReviewsNotifyRecyclerView();
+                }catch (Exception e){
+                    Log.e("MyFirebase", "Failed to parse review response "+e);
+                    Toast.makeText(mContext, "Unexpected Error Occurred", Toast.LENGTH_LONG).show();
                 }
-                reviewersGivenStarsList.add(0, Double.valueOf(ReviewerGivenStars));
-
-                aShop.setReviewersGivenStars(CommonMethods.convertFloatListToPrimitivefloatArray(reviewersGivenStarsList));
-                //////////////////////////////////////////////
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
-                aShop.getReviewersCommentDate().add(0, simpleDateFormat.format(new Date()));
-                shopDetails_frag3.ReceivedNewReviewsNotifyRecyclerView();
 
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.v("MyFirebase", "Failed to add a review");
+                Log.e("MyFirebase", "Failed to add a review");
+                Toast.makeText(mContext, "Unexpected Error Occurred", Toast.LENGTH_LONG).show();
             }
         });
     }

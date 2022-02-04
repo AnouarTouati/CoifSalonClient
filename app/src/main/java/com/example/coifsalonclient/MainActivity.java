@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.v("MyFirebase", e.getMessage());
+                Log.e("MyFirebase", e.getMessage());
             }
         });
 
@@ -205,7 +205,8 @@ public class MainActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.v("MyFirebase", "Getting Shop Main Photo Failed " + e.getMessage());
+                Log.e("MyFirebase", "Getting Shop Main Photo Failed " + e.getMessage());
+                Toast.makeText(mContext,"Getting Shop Main Photo Failed",Toast.LENGTH_LONG).show();
             }
         });
 
@@ -216,14 +217,21 @@ public class MainActivity extends AppCompatActivity {
         firebaseFirestore.collection("Clients").document(firebaseUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.contains("ShopUid")) {
-                    getBookedShopData(documentSnapshot.get("ShopUid").toString(), documentSnapshot.get("Services").toString());
+                try{
+                    if (documentSnapshot.contains("ShopUid")) {
+                        getBookedShopData(documentSnapshot.get("ShopUid").toString(), documentSnapshot.get("Services").toString());
+                    }
+                }catch (Exception e){
+                    Log.e("MyFirebase", "Getting booked shop failed " + e.getMessage());
+                    Toast.makeText(mContext,"Getting booked shop failed 1",Toast.LENGTH_LONG).show();
                 }
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.v("MyFirebase", "Failed to get booked shop status");
+                Log.e("MyFirebase", "Getting booked shop failed " + e.getMessage());
+                Toast.makeText(mContext,"Getting booked shop failed 1",Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -246,7 +254,8 @@ public class MainActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.v("MyFirebase", "Failed to get booked shop data");
+                Log.e("MyFirebase", "Getting booked shop failed " + e.getMessage());
+                Toast.makeText(mContext,"Getting booked shop failed 2",Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -271,110 +280,83 @@ public class MainActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.v("MyFirebase", e.getMessage());
+                Log.e("MyFirebase", "Search failed " + e.getMessage());
+                Toast.makeText(mContext,"Search failed",Toast.LENGTH_LONG).show();
             }
         });
     }
 
     AShop convertDocumentSnapshotToAShop(DocumentSnapshot snapshot) {
         AShop aShop = new AShop();
+        try{
+            aShop.setShopUid(getShopUidFromPath(snapshot.getReference().getPath()));
 
-        aShop.setShopUid(getShopUidFromPath(snapshot.getReference().getPath()));
-
-        aShop.setShopName(snapshot.get("ShopName").toString());
-
-
-        aShop.setSelectedCommune(snapshot.get("SelectedCommune").toString());
-        aShop.setSelectedState(snapshot.get("SelectedState").toString());
-
-        aShop.setShopMainPhotoReference(snapshot.get("MainShopPhotoReferenceInStorage").toString());
-
-        if (snapshot.get("PhotosPathsInFireStorage") != null) {
-            aShop.setFreshPhotosReferencesFromServer((List<String>) snapshot.get("PhotosPathsInFireStorage"));
-        } else {
-            aShop.setFreshPhotosReferencesFromServer(new ArrayList<String>());
-        }
+            aShop.setShopName(snapshot.get("ShopName").toString());
 
 
-        if (snapshot.get("ServicesHairCutsNames") != null) {
-            aShop.setServicesHairCutsNames((List<String>) snapshot.get("ServicesHairCutsNames"));
+            aShop.setSelectedCommune(snapshot.get("SelectedCommune").toString());
+            aShop.setSelectedState(snapshot.get("SelectedState").toString());
 
-            aShop.setServicesHairCutsDuration((List<String>) snapshot.get("ServicesHairCutsDuration"));
+            aShop.setShopMainPhotoReference(snapshot.get("MainShopPhotoReferenceInStorage").toString());
 
-            aShop.setServicesHairCutsPrices((List<String>) snapshot.get("ServicesHairCutsPrices"));
+            if (snapshot.get("PhotosPathsInFireStorage") != null) {
+                aShop.setFreshPhotosReferencesFromServer((List<String>) snapshot.get("PhotosPathsInFireStorage"));
+            } else {
+                aShop.setFreshPhotosReferencesFromServer(new ArrayList<String>());
+            }
 
-        } else {
-            aShop.setServicesHairCutsNames(new ArrayList<String>());
 
-            aShop.setServicesHairCutsDuration(new ArrayList<String>());
+            if (snapshot.get("ServicesHairCutsNames") != null) {
+                aShop.setServicesHairCutsNames((List<String>) snapshot.get("ServicesHairCutsNames"));
 
-            aShop.setServicesHairCutsPrices(new ArrayList<String>());
-        }
+                aShop.setServicesHairCutsDuration((List<String>) snapshot.get("ServicesHairCutsDuration"));
 
-        if (snapshot.get("EmailAddress") != null) {
-            aShop.setEmailAddress(snapshot.get("EmailAddress").toString());
-        } else {
-            aShop.setEmailAddress("");
-        }
+                aShop.setServicesHairCutsPrices((List<String>) snapshot.get("ServicesHairCutsPrices"));
 
-        if (snapshot.get("UseCoordinatesAKAaddMap") != null) {
-            aShop.setUsesCoordinates((boolean) snapshot.get("UseCoordinatesAKAaddMap"));
-            if ((boolean) snapshot.get("UseCoordinatesAKAaddMap")) {
-                if (snapshot.get("ShopLatitude") != null && snapshot.get("ShopLongitude") != null) {
-                    aShop.setShopLatitude((double) snapshot.get("ShopLatitude"));
-                    aShop.setShopLongitude((double) snapshot.get("ShopLongitude"));
+            } else {
+                aShop.setServicesHairCutsNames(new ArrayList<String>());
+
+                aShop.setServicesHairCutsDuration(new ArrayList<String>());
+
+                aShop.setServicesHairCutsPrices(new ArrayList<String>());
+            }
+
+            if (snapshot.get("EmailAddress") != null) {
+                aShop.setEmailAddress(snapshot.get("EmailAddress").toString());
+            } else {
+                aShop.setEmailAddress("");
+            }
+
+            if (snapshot.get("UseCoordinatesAKAaddMap") != null) {
+                aShop.setUsesCoordinates((boolean) snapshot.get("UseCoordinatesAKAaddMap"));
+                if ((boolean) snapshot.get("UseCoordinatesAKAaddMap")) {
+                    if (snapshot.get("ShopLatitude") != null && snapshot.get("ShopLongitude") != null) {
+                        aShop.setShopLatitude((double) snapshot.get("ShopLatitude"));
+                        aShop.setShopLongitude((double) snapshot.get("ShopLongitude"));
+                    }
+                } else {
+                    aShop.setShopLatitude(0d);
+                    aShop.setShopLongitude(0d);
                 }
             } else {
-                aShop.setShopLatitude(0d);
-                aShop.setShopLongitude(0d);
+                aShop.setUsesCoordinates(false);
             }
-        } else {
-            aShop.setUsesCoordinates(false);
+
+            if (snapshot.get("IsMen") != null) {
+                aShop.setMen((boolean) snapshot.get("IsMen"));
+            } else {
+                aShop.setMen(null);
+            }
+            if (snapshot.get("ShopPhoneNumber") != null) {
+                aShop.setShopPhoneNumber(snapshot.get("ShopPhoneNumber").toString());
+            } else {
+                aShop.setShopPhoneNumber("");
+            }
+
+        }catch (Exception e){
+            Log.e("MyFirebase", "Unexpected error occurred " + e.getMessage());
+            Toast.makeText(mContext,"Unexpected error occurred",Toast.LENGTH_LONG).show();
         }
-
-        if (snapshot.get("IsMen") != null) {
-            aShop.setMen((boolean) snapshot.get("IsMen"));
-        } else {
-            aShop.setMen(null);
-        }
-        if (snapshot.get("ShopPhoneNumber") != null) {
-            aShop.setShopPhoneNumber(snapshot.get("ShopPhoneNumber").toString());
-        } else {
-            aShop.setShopPhoneNumber("");
-        }
-
-        if (snapshot.get("FacebookLink") != null) {
-            aShop.setFacebookLink(snapshot.get("FacebookLink").toString());
-        } else {
-            aShop.setFacebookLink("www.facebook.com");
-        }
-        if (snapshot.get("instagramLink") != null) {
-            aShop.setInstagramLink(snapshot.get("instagramLink").toString());
-        } else {
-            aShop.setInstagramLink("www.instagram.com");
-        }
-
-
-        if (snapshot.get("Saturday") != null)
-            aShop.setSaturday(snapshot.get("Saturday").toString());
-
-        if (snapshot.get("Sunday") != null)
-            aShop.setSunday(snapshot.get("Sunday").toString());
-
-        if (snapshot.get("Monday") != null)
-            aShop.setMonday(snapshot.get("Monday").toString());
-
-        if (snapshot.get("Tuesday") != null)
-            aShop.setTuesday(snapshot.get("Tuesday").toString());
-        if (snapshot.get("Wednesday") != null)
-            aShop.setWednesday(snapshot.get("Wednesday").toString());
-
-        if (snapshot.get("Thursday") != null)
-            aShop.setThursday(snapshot.get("Thursday").toString());
-
-        if (snapshot.get("Friday") != null)
-            aShop.setFriday(snapshot.get("Friday").toString());
-
         return aShop;
     }
     private String getShopUidFromPath(String path) {

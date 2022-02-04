@@ -18,7 +18,7 @@ public class ShopDetails_Frag4 extends Fragment {
     CustomRecyclerViewAdapterFrag4Portfolio customRecyclerViewAdapterFrag4Portfolio;
 
     public  Context mContext;
-    private ShopDetailsActivity shopDetailsActivity;
+    private final ShopDetailsActivity shopDetailsActivity;
     View view;
     public ShopDetails_Frag4(ShopDetailsActivity shopDetailsActivity){
         this.shopDetailsActivity=shopDetailsActivity;

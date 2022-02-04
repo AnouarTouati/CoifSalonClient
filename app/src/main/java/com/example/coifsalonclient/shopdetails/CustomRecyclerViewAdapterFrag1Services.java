@@ -33,9 +33,8 @@ public class CustomRecyclerViewAdapterFrag1Services extends RecyclerView.Adapter
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.shop_services_recyclerview_item_frag1, viewGroup, false);
-        ViewHolder viewHolder = new ViewHolder(view);
 
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
 

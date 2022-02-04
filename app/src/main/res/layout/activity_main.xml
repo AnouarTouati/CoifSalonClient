@@ -8,82 +8,90 @@
     android:fillViewport="true"
     >
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/BookedShopMainActivityTextView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/BookedHairCutMainActivityTextView"
-        android:text="Store Booked"
-        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/searchResultRecyclerView"
+        app:layout_constraintTop_toTopOf="@+id/searchResultRecyclerView">
 
 
-        app:layout_constraintVertical_chainStyle="spread"
-        app:layout_constraintVertical_bias="0"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-></TextView>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/BookedHairCutMainActivityTextView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/BookedShopMainActivityTextView"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#4AC9DF"
+                android:orientation="vertical">
 
-        android:text="HairCut Booked"
-        android:textSize="24sp"
-
-        ></TextView>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/GoToBookedShopFromMainActivityButton"
-        android:text="Go To Booked Store"
-        android:textSize="24sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/BookedHairCutMainActivityTextView"
-        app:layout_constraintBottom_toTopOf="@id/searchEditText"></Button>
-    <EditText
-        android:id="@+id/searchEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        app:layout_constraintTop_toBottomOf="@id/GoToBookedShopFromMainActivityButton"
-        app:layout_constraintBottom_toTopOf="@id/searchResultRecyclerView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+                <TextView
+                    android:id="@+id/BookedShopMainActivityTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="cursive"
+                    android:text="Store Booked"
 
 
-        android:hint="@android:string/search_go"
-        android:inputType="textPersonName"
-        android:textSize="21dp"
+                    android:textAlignment="center"
+                    android:textSize="34sp"></TextView>
+
+                <TextView
+                    android:id="@+id/BookedHairCutMainActivityTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="cursive"
+                    android:text="HairCut Booked"
+
+                    android:textAlignment="center"
+                    android:textSize="34sp"></TextView>
+
+                <Button
+                    android:id="@+id/GoToBookedShopFromMainActivityButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_type_01"
+                    android:text="Go To Booked Store"
+                    android:textSize="24sp"></Button>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
 
 
-       />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/searchResultRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+            android:layout_marginTop="31dp"
+            android:backgroundTint="@color/colorPrimary"
 
 
-        app:layout_constraintTop_toBottomOf="@id/searchEditText"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+            android:hint="@android:string/search_go"
+            android:inputType="textPersonName"
+            android:textSize="21dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
-        android:layout_marginTop="40dp"
-        />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchResultRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+            android:layout_marginTop="21dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchEditText" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
